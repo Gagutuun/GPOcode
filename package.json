@@ -1,0 +1,16 @@
+{
+  "name": "testproject",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "officeparser": "^2.3.0",
+    "pg": "^8.8.0"
+  }
+}
