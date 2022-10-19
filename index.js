@@ -23,11 +23,11 @@ const officeParser = require('officeparser');
 
 officeParser.parseWordAsync("protokol.docx", false)
 .then((data) => {
-    Finder(data);
-    pool.end(() => {
-        console.log('pool has ended')
-      })
-})
+    Finder(data)
+    })
+.catch(err) => {
+    console.log(err)
+}
 
 function Finder(data) {
     let regPoruch = new RegExp("\d{1,}[.]");
