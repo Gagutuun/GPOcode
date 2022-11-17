@@ -12,7 +12,7 @@ const { Pool } = require('pg');
  user: 'postgres', 
  host: 'localhost', 
  database: 'GAZPROM', 
- password: '', 
+ password: '523087', 
  port: 5432, 
  }); 
  
@@ -25,9 +25,6 @@ officeParser.parseWordAsync("protokol.docx", false)
 .then((data) => {
     Finder(data)
     })
-.catch(err) => {
-    console.log(err)
-}
 
 function Finder(data) {
     let regPoruch = new RegExp("\d{1,}[.]");
@@ -47,15 +44,15 @@ function Finder(data) {
             DateOfExe = substrOfData.slice(substrOfData.indexOf(TIMETOEND + " – ") + 18, substrOfData.indexOf(". П")); // Выделяем дату поручения
             TextOfPoruch = substrOfData.slice(substrOfData.search(regPoruch) + regPoruch.length, substrOfData.indexOf(". " + OTVETV)); // Выделяем текст поручения
         } else continue;
-
-        ReqToBase()
+        console.log(substrOfData);
+        //ReqToBase();
         data=data.replace(substrOfData, "");
         substrOfData = null;
     }
 }
 
 function ReqToBase() {
-    pool.query('INSERT INTO newdata(data, otvet, poruch, date) VALUES($1, $2, $3, $4)', [substrOfData, NameOfAsgmnt, TextOfPoruch, DateOfExe], (err, res) => {
+    pool.query('INSERT INTO data(data, otvet, poruch, date) VALUES($1, $2, $3, $4)', [substrOfData, NameOfAsgmnt, TextOfPoruch, DateOfExe], (err, res) => {
         if (err) throw err
             console.log("Запрос успешно выполнен!")
       })
