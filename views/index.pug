@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  .content
+    .logo
+      a.button(href='/')
+        img(src='../images/logo.png')
+    .item.forma
+      form#uploadForm(ref='uploadForm', action='/upload', method='post', enctype='multipart/form-data')
+        input(type='file', name='sampleFile', accept=".docx")
+        input(type='submit', value='Загрузить')

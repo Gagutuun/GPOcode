@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  .content
+    .logo
+      a.button(href='/')
+        img(src='../images/logo.png')
+    .item
+      h1 Документ успешно загружен!
+    .item
+      form
+        h3 Текст, содержащийся в документе:
+        p= text
+    .item
+      form
+        h3 Результат работы алгоритма:
+        p= result
