@@ -10,6 +10,7 @@ var asyncHandler = require('express-async-handler')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var resultRouter = require('./routes/result');
+var taskRouter = require('./routes/task'); //Gleb_Task
 
 var app = express();
 
@@ -62,6 +63,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/task', taskRouter);
+
 app.post('/upload', function(req, res, next) {
   let sampleFile;
   let uploadPath;

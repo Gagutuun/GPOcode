@@ -1,0 +1,110 @@
+body{
+    background-color: #ffffff;
+    margin: 0px;
+    padding: 0px;
+    font-family:'Times New Roman', Times, serif;
+    width: 100%;
+    height: 100%;
+
+}
+.header{
+    display: flex;
+    flex-direction: row;
+    background-color: #007AC2;
+    height: 30pt;
+}
+.header-items{
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-right: 10pt;
+    padding-left: 10pt;
+    filter: invert(100%);
+    height: 20pt;
+    width: 20pt;
+}
+.user_name{
+    margin-top: 8pt;
+    width: 200pt;
+}
+.user_mail{
+    margin-left: auto;
+}
+
+.edit_report{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+}
+.left-side{
+    width: 80pt;
+    height: 1100pt;/*ПРИДУМАЙТЕ ЧТО-ТО С ВЫСОТОЙ!!!!/*/
+    background-color: #D9D9D9;
+}
+.board-logo{
+    margin-left: 5pt;
+}
+.board-divisions{
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+}
+.board-item{
+    color: white;
+    text-align: center;
+    padding: 3pt;
+    background-color: #007AC2;
+    margin-left: 10pt;
+    margin-top: 5pt;
+}
+
+
+table{
+    border: 2px solid black;
+}
+tr{
+    border: 1px solid black;
+}
+th{
+    border: 2px solid black;
+}
+.droppable{
+    height: 100pt;
+}
+.droppable-text{
+    text-align: start;
+    padding-bottom: auto;
+}
+
+
+
+/* Перемещение подразделения */
+.badge-primary {
+    color: white;
+    text-align: center;
+    padding: 3pt;
+    background-color: #007AC2;
+    margin-left: 10pt;
+    margin-top: 5pt;
+    animation-duration: .6;
+    animation: cur-move-vanish;
+}
+
+.send-button {
+  margin: 0 auto 0 auto;
+}
+
+.cur-move {
+  display: block;
+  z-index: 1000;
+  position: fixed;
+  cursor: grabbing;
+  animation-duration: .5s;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes cur-move-vanish {
+  from {
+    opacity: 0;
+  }
+}
