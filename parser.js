@@ -1,22 +1,23 @@
+
 const UPLINE = "РЕШИЛИ: ";
 const TIMETOEND = "Срок исполнения";
 const LASTRESH = "Решения предыдущих совещаний";
 const OTVETV = "Ответственн";
 const ZAMS = "заместители генерального директора";
-const DIRECTOR = "Бакало";
-const STOP_WORD = "Решение предыдущих совещаний";
+const DIRECTOR = "Бакало"; 
 
-function Finder(data) {
+
+module.exports = function(data) {
     let regPoruch = new RegExp("\d{1,}[.]");
     let parsedData = new Array();//Матрица данных, которые отправляем в БД
     data = data.replace(data.substr(0, data.indexOf(UPLINE) + 8 ), ""); //Убираем все до "РЕШИЛИ: " включительно. 
     console.log(data);
     console.log();
-    while(data.indexOf(TIMETOEND) != -1 || data.indexOf(STOP_WORD) != 0) {
+    while(data.indexOf(TIMETOEND) != -1) {
         while(data.charAt(0)== ' ')
             data = data.replace(" ","");
         if(data.indexOf(LASTRESH) == 0)
-            data = data.replace(LASTRESH + ' ',"");
+            break;
         substrOfData = data.slice(0, data.indexOf(TIMETOEND) + 29);//Вырезаем подстроку для обработки
         data = data.replace(substrOfData, "");//И сразу же удаляем ее
         NameOfAsgmnt = substrOfData.slice(substrOfData.indexOf(OTVETV)+16, substrOfData.indexOf("Срок")); // Выделяем имена ответственных
@@ -32,5 +33,3 @@ function Finder(data) {
     }
     return parsedData;
   }
-
-module.exports = {Finder};

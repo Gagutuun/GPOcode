@@ -6,7 +6,7 @@ var logger = require('morgan');
 var fileUpload = require('express-fileupload');
 var officeParser = require('officeparser');
 var asyncHandler = require('express-async-handler')
-var parser = require('./parser.js');
+var parser = require('./parser');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var resultRouter = require('./routes/result');
@@ -25,47 +25,26 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
-let uploadPath;
-app.post('/upload', function(req, res, next) {
+app.post('/upload', asyncHandler(async (req, res) => {
   let sampleFile;
+  let uploadPath;
 
   if (!req.files || Object.keys(req.files).length === 0) {
     res.status(400).send('No files were uploaded.');
     return;
   }
 
-  console.log('req.files >>>', req.files); // eslint-disable-line
-
   sampleFile = req.files.sampleFile;
-
   uploadPath = __dirname + '/public/files/' + sampleFile.name;
 
-  sampleFile.mv(uploadPath, function(err) {
-    if (err) {
-      return res.status(500).send(err);
-    }
-    //res.render('result', { title: 'GPO_test' });
-  });
-  next();
-});
+  await sampleFile.mv(uploadPath);
 
-app.post(
-  '/upload',
-  asyncHandler(async (req, res) => {
-    await sleep(1000)
-      function sleep(ms) {
-        return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-  });
-}
-    await officeParser.parseWordAsync(uploadPath)
-    .then((data) => {
+  await new Promise(resolve => setTimeout(resolve, 1000));
 
-      res.render('result', { title: 'GPO_test', text: data , result: parser.Finder(data)});
-        });
-  })
-)
+  const data = await officeParser.parseWordAsync(uploadPath);
+  
+  res.render('result', { title: 'GPO_test', text: data , result: parser(data)});
+}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
