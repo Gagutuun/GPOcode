@@ -1,2 +1,0 @@
-# GPOcode
-Code for GPO.
