@@ -1,23 +1,28 @@
-const assert = require('assert');
-const parserFunc = require('../../src/utils/parser'); //replace with actual file path
+//IMPORTS
+const parseData = require('../../src/utils/parser');
 
-describe('parserFunc', () => {
-  it('should return an array of parsed data', () => {
-    const testData = `
-    Some text
-    РЕШИЛИ: 
-      Разработать новую программу. Ответственный - Бакало. срок исполнения – 16.11.2022. 
-      Разработать новую страницу на сайте. Ответственный - Иванов. срок исполнения – 15.05.2021. 
-      Решения предыдущих совещаний
-      
-      Другой текст`;
-    const expected = [["Разработать новую программу", "Бакало", "16.11.2022"], ["Разработать новую страницу на сайте", "Иванов", "15.05.2021"]];
-    const result = parserFunc(testData);
-    assert.deepStrictEqual(result, expected);
-  });
-  it('should return an empty array if no data is provided', () => {
-    const result = parserFunc("");
-    assert.deepStrictEqual(result, []);
-  });
-  //Add more test cases as needed
+//TEST SUITE
+describe('parseData', () => {
+    const UPLINE = "РЕШИЛИ: ";
+    const TIMETOEND = "Срок исполнения";
+    const LASTRESH = "Решения предыдущих совещаний";
+    const OTVETV = "Ответственн";
+    const ZAMS = "заместители генерального директора";
+    const DIRECTOR = "Бакало";
+
+    // TEST CASE ONE
+    it('should parse data for valid input', () => {
+        const input = 'Поручение 1. Ответственные – заместители генерального директора, Иванов И.И.. Срок исполнения – постоянно.';
+        const expectedOutput = [["Поручение 1.", "заместители генерального директора", "Иванов И.И..", "постоянно."]];
+        const output = parseData(input);
+        expect(output).toEqual(expectedOutput);
+    });
+
+    // TEST CASE TWO
+    it('should return empty array for empty input', () => {
+        const input = '';
+        const expectedOutput = [];
+        const output = parseData(input);
+        expect(output).toEqual(expectedOutput);
+    });
 });
