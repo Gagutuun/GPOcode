@@ -32,7 +32,7 @@ describe('Routes', () => {
     it('should respond with 200 if a file is uploaded', async () => {
       const response = await request(app)
         .post('/upload')
-        .attach('sampleFile', '../../src/public/files/protokol.docx')
+        .attach('sampleFile', '../../protokol.docx')
         .expect(200);
 
       expect(response.headers['content-type']).toMatch(/text\/html/);

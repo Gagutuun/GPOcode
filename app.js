@@ -9,6 +9,7 @@ var asyncHandler = require('express-async-handler')
 var parser = require('./src/utils/parser');
 var indexRouter = require('./src/routes/index');
 var usersRouter = require('./src/routes/users');
+var authRouter = require('./src/routes/auth')
 var resultRouter = require('./src/routes/result');
 
 var app = express();
@@ -25,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'src/public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 app.post('/upload', asyncHandler(async (req, res) => {
   let sampleFile;
   let uploadPath;

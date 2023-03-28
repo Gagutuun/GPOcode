@@ -1,6 +1,11 @@
 extends layout
 
-    h1 Welcome to the authentication page!
+block content
+  .content
+    .logo
+      a.button(href='/')
+        img(src='../images/logo.png')
+    .item.forma
     form(action="/auth/login", method="POST")
       label(for="email") Email
       input(type="email", id="email", name="email", required)
