@@ -7,7 +7,6 @@ async function parsePDF(path) {
     await pdf(dataBuf).then((data) => {
         textData = data.text;
     })
-    fs.writeFileSync('pdf.txt',textData,(err)=>{console.error(err)});
     return textData;
 }
 
