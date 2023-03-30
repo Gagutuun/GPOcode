@@ -4,12 +4,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var fileUpload = require('express-fileupload');
-var officeParser = require('officeparser');
 var asyncHandler = require('express-async-handler')
-var parser = require('./src/utils/parser');
+var findNewAssign = require('./src/utils/finder');
 var indexRouter = require('./src/routes/index');
 var usersRouter = require('./src/routes/users');
 var resultRouter = require('./src/routes/result');
+var pdfParser = require('./src/utils/pdfParser');
 
 var app = express();
 
@@ -41,9 +41,9 @@ app.post('/upload', asyncHandler(async (req, res) => {
 
   await new Promise(resolve => setTimeout(resolve, 1000));
 
-  const data = await officeParser.parseWordAsync(uploadPath);
+  const pdfData = await pdfParser.parsePDF(uploadPath);
   
-  res.render('result', { title: 'GPO_test', text: data , result: parser(data)});
+  res.render('result', { title: 'GPO_test', text: pdfData , result: findNewAssign(pdfData)});
 }));
 
 // catch 404 and forward to error handler
