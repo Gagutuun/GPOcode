@@ -1,6 +1,11 @@
 extends layout
 
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+  .content
+    .logo
+      a.button(href='/')
+        img(src='../images/logo.png')
+    h1= "Произошла ошибка!"      
+    h1= message
+    h2= error.status
+    pre #{error.stack}

@@ -1,17 +1,13 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var fileUpload = require('express-fileupload');
-var asyncHandler = require('express-async-handler')
-var findNewAssign = require('./src/utils/finder');
-var indexRouter = require('./src/routes/index');
-var usersRouter = require('./src/routes/users');
-var resultRouter = require('./src/routes/result');
-var pdfParser = require('./src/utils/pdfParser');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const fileUpload = require('express-fileupload');
+// -----------------------------------------------------
+const router = require('./src/routes/index');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'src/views'));
@@ -23,28 +19,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'src/public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.post('/upload', asyncHandler(async (req, res) => {
-  let sampleFile;
-  let uploadPath;
+app.use('/', router);
 
-  if (!req.files || Object.keys(req.files).length === 0) {
-    res.status(400).send('No files were uploaded.');
-    return;
-  }
-
-  sampleFile = req.files.sampleFile;
-  uploadPath = __dirname + '/src/public/files/' + sampleFile.name;
-
-  await sampleFile.mv(uploadPath);
-
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  const pdfData = await pdfParser.parsePDF(uploadPath);
-  
-  res.render('result', { title: 'GPO_test', text: pdfData , result: findNewAssign(pdfData)});
-}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
