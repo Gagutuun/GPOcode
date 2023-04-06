@@ -21,7 +21,10 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
     _MakeTimeLable(),
     uploadPath.replace('temp/', '')
   )
-  rename(uploadPath, newFilePath);
+  rename(uploadPath, newFilePath, (err) => {
+    if(err)
+      console.error(err);
+  });
 
   await new Promise(resolve => setTimeout(resolve, 1000));
 
