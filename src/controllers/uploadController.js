@@ -4,7 +4,7 @@ const findNewAssign = require('../utils/finder');
 const { rename } = require('fs');
 
 exports.uploadProtocol = asyncHandler(async (req, res) => {
-  const TEMP_DOWNDLOAD_DIR = '/..public/files/temp';
+  const TEMP_DOWNDLOAD_DIR = '/../public/files/temp/';
   let sampleFile;
   let uploadPath;
 
@@ -28,6 +28,8 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
 
   await new Promise(resolve => setTimeout(resolve, 1000));
 
+  // _AwaitFileRedirection();
+
   const pdfData = await pdfParser.parsePDF(uploadPath);
   const assignArray = findNewAssign(pdfData);
 
@@ -42,5 +44,12 @@ function _MakeTimeLable() {
 
 function _IntegrateTimeLableIntoFileName(timeLable, fileName) {
   const FILE_EXTENSION = ".pdf";
-  return fileName.replace(FILE_EXTENSION, timeLable) + FILE_EXTENSION;
+  return fileName.replace(FILE_EXTENSION, "_" + timeLable) + FILE_EXTENSION;
+}
+
+function _AwaitFileRedirection() {
+  const offset = 100;
+  const startDate = Date.now();
+  while(Date.now() - startDate < offset)
+    ;
 }
