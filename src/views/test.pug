@@ -1,0 +1,38 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    title Drag and Drop Example
+    script(src='https://code.jquery.com/jquery-3.6.0.min.js')
+    script(src='https://code.jquery.com/ui/1.13.0/jquery-ui.min.js')
+    link(rel='stylesheet', href='https://code.jquery.com/ui/1.13.0/themes/smoothness/jquery-ui.css')
+    style.
+      #droppable {
+        width: 500px;
+        height: 300px;
+        border: 2px dashed #ccc;
+        padding: 10px;
+      }
+  body
+    h1 Drag and Drop Example
+    p Drag the blocks into the drop zone to create your content.
+    .block(id='block1')
+      p Block 1
+    .block(id='block2')
+      p Block 2
+    #droppable
+      p Drop Zone
+
+    script.
+      $(function() {
+        $(".block").draggable({
+          helper: 'clone',
+          revert: "invalid"
+        });
+        $("#droppable").droppable({
+          accept: ".block",
+          drop: function(event, ui) {
+            $(this).append(ui.draggable);
+          }
+        });
+      });
