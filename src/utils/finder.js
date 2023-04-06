@@ -1,4 +1,3 @@
-
 const UPLINE = "РЕШИЛИ: ";
 const TIMETOEND = "Срок исполнения";
 const LASTRESH = "Решения предыдущих совещаний";
@@ -31,5 +30,6 @@ module.exports = function(data) {
         substrOfData = null;
         parsedData.push(new Array(TextOfPoruch, NameOfAsgmnt, DateOfExe));
     }
+    console.log(parsedData);
     return parsedData;
   }

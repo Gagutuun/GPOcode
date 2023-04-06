@@ -1,11 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'GPO_test' });
+const router = express.Router();
+
+router.get('/', authMiddleware.isAuthenticated, function (req, res, next) {
+  res.render('main', { title: 'GPO_test' });
 });
-
 
 
 module.exports = router;

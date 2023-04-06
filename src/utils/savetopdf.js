@@ -3,20 +3,6 @@ require('jspdf-autotable');
 const CONSTANTS = require(__dirname + '/font');
 
 
-module.exports = function generateTableData(data) {
-  const headers = Object.keys(data[0]); // получаем заголовки из первого объекта
-  const body = data.map(item => Object.values(item)); // получаем данные из всех объектов
-  
-  return {
-    head: [headers],
-    body: body,
-  }
-}
-
-const data1 = generateTableData([
-  {}
-])
-
 const fs = require('fs');
 // Создаем новый документ
 const doc = new jsPDF({
@@ -50,6 +36,18 @@ const data = [
   ]
 ];
 
+const data1 = [
+  [
+    {rowSpan: 2, content: '1.'},
+    'Поручение 2',
+    'Ответственные - заместители генерального директора, Исайкин А.Г. Срок исполнения - постоянно'
+  ],
+  [
+    'Отчет на 15.11.2021 (дата отчета) Краткий отчет по поручению 1 для Директум',
+    'Развернутые ответы от подразделений по поручениям. Могут быть разные исполнители в разных пунктах. От 1 до 10 исполнителей. ООТиЗ: отчет ОКиТО: отчет КИ: отчет СК: отчет МС: отчет ОСР: отчет'
+  ]
+];
+const createTable = (headers, data) => {
 // определение параметров таблицы
 const tableOptions = {
   startY: 10,
@@ -82,6 +80,10 @@ const tableOptions = {
 };
 // создание таблицы с помощью auto-table
 doc.autoTable(tableOptions);
+};
+
+createTable(headers, data);
+createTable(headers, data1);
 
 // сохранение документа
 doc.save('table.pdf');

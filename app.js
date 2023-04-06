@@ -4,6 +4,9 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const fileUpload = require('express-fileupload');
+const session = require('express-session');
+const passport = require('./src/config/authConfig');
+const flash = require('connect-flash');
 // -----------------------------------------------------
 const router = require('./src/routes/index');
 
@@ -18,9 +21,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'src/public')));
-
+app.use(flash())
+app.use(session({
+  secret: 'verycherry',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use('/', router);
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
