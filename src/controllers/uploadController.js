@@ -22,7 +22,7 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
     uploadPath.replace('temp/', '')
   )
   rename(uploadPath, newFilePath, (err) => {
-    if(err)
+    if (err)
       console.error(err);
   });
 
@@ -30,7 +30,7 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
 
   // _AwaitFileRedirection();
 
-  const pdfData = await pdfParser.parsePDF(uploadPath);
+  const pdfData = await pdfParser.parsePDF(newFilePath);
   const assignArray = findNewAssign(pdfData);
 
   res.render('result', { title: 'GPO_test', text: pdfData , result: assignArray});
