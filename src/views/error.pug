@@ -1,6 +1,9 @@
 extends layout
 
 block content
+  .logo
+    a.button(href='/')
+      img(src='../images/logo.png')
   h1= message
   h2= error.status
   pre #{error.stack}

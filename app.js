@@ -1,18 +1,15 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var fileUpload = require('express-fileupload');
-var officeParser = require('officeparser');
-var asyncHandler = require('express-async-handler')
-var parser = require('./src/utils/parser');
-var indexRouter = require('./src/routes/index');
-var usersRouter = require('./src/routes/users');
-var authRouter = require('./src/routes/auth')
-var resultRouter = require('./src/routes/result');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const fileUpload = require('express-fileupload');
+const session = require('express-session');
+const passport = require('./src/config/authConfig');
+// -----------------------------------------------------
+const router = require('./src/routes/index');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'src/views'));
@@ -23,30 +20,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'src/public')));
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/auth', authRouter);
-app.post('/upload', asyncHandler(async (req, res) => {
-  let sampleFile;
-  let uploadPath;
-
-  if (!req.files || Object.keys(req.files).length === 0) {
-    res.status(400).send('No files were uploaded.');
-    return;
-  }
-
-  sampleFile = req.files.sampleFile;
-  uploadPath = __dirname + '/src/public/files/' + sampleFile.name;
-
-  await sampleFile.mv(uploadPath);
-
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  const data = await officeParser.parseWordAsync(uploadPath);
-  
-  res.render('result', { title: 'GPO_test', text: data , result: parser(data)});
+app.use(session({
+  secret: 'verycherry',
+  resave: false,
+  saveUninitialized: false
 }));
+app.use(passport.initialize());
+app.use(passport.session());
+console.log("Я тут: app.use('/', router);");
+app.use('/', router);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
