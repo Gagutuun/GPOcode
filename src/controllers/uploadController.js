@@ -23,7 +23,12 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
   })
 
 function _MakeTimeLable() {
-   let timeLable = new Date(Date.now()).toLocaleString("ru");
-   timeLable = timeLable.replaceAll('.', '_').replaceAll(':', '-').replace(', ', '_');
+  let timeLable = new Date(Date.now()).toLocaleString("ru");
+  timeLable = timeLable.replaceAll('.', '_').replaceAll(':', '-').replace(', ', '_');
   return timeLable;
+}
+
+function _IntegrateTimeLableIntoFileName(timeLable, fileName) {
+  const FILE_EXTENSION = ".pdf";
+  return fileName.replace(FILE_EXTENSION, timeLable) + FILE_EXTENSION;
 }
