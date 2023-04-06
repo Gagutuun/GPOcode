@@ -26,9 +26,7 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
       console.error(err);
   });
 
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  // _AwaitFileRedirection();
+  _AwaitFileRedirection();
 
   const pdfData = await pdfParser.parsePDF(newFilePath);
   const assignArray = findNewAssign(pdfData);
