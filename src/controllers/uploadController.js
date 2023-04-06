@@ -22,8 +22,8 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
     res.render('result', { title: 'GPO_test', text: pdfData , result: findNewAssign(pdfData)});
   })
 
-  function _MakeTimeLable() {
-    let timeLable = new Date(Date.now()).toLocaleString("ru");
-    timeLable = timeLable.replaceAll('.', '_').replaceAll(':', '-').replace(', ', '_');
-    return timeLable;
-  }
+function _MakeTimeLable() {
+   let timeLable = new Date(Date.now()).toLocaleString("ru");
+   timeLable = timeLable.replaceAll('.', '_').replaceAll(':', '-').replace(', ', '_');
+  return timeLable;
+}
