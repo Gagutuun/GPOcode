@@ -1,25 +1,34 @@
 const asyncHandler = require('express-async-handler');
 const pdfParser = require('../utils/pdfParser');
 const findNewAssign = require('../utils/finder');
+const { rename } = require('fs');
 
 exports.uploadProtocol = asyncHandler(async (req, res) => {
-    let sampleFile;
-    let uploadPath;
-  
-    if (!req.files || Object.keys(req.files).length === 0) {
-      res.status(400).send('No files were uploaded.');
-      return;
-    }
-  
-    sampleFile = req.files.sampleFile;
-    uploadPath = __dirname + '/../public/files/' + sampleFile.name;
-    await sampleFile.mv(uploadPath);
+  const TEMP_DOWNDLOAD_DIR = '/..public/files/temp';
+  let sampleFile;
+  let uploadPath;
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const pdfData = await pdfParser.parsePDF(uploadPath);
+  if (!req.files || Object.keys(req.files).length === 0) {
+    res.status(400).send('No files were uploaded.');
+    return;
+  }
 
-    res.render('result', { title: 'GPO_test', text: pdfData , result: findNewAssign(pdfData)});
+  sampleFile = req.files.sampleFile;
+  uploadPath = __dirname + TEMP_DOWNDLOAD_DIR + sampleFile.name;
+  await sampleFile.mv(uploadPath);
+
+  let newFilePath = _IntegrateTimeLableIntoFileName(
+    _MakeTimeLable(),
+    uploadPath.replace('temp/', '')
+  )
+  rename(uploadPath, newFilePath);
+
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  const pdfData = await pdfParser.parsePDF(uploadPath);
+  const assignArray = findNewAssign(pdfData);
+
+  res.render('result', { title: 'GPO_test', text: pdfData , result: assignArray});
   })
 
 function _MakeTimeLable() {
