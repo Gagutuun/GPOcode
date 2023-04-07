@@ -7,5 +7,5 @@ block content
         img(src='../images/logo.png')
     .item.forma
       form#uploadForm(ref='uploadForm', action='/upload', method='post', enctype='multipart/form-data')
-        input(type='file', name='sampleFile', accept=".pdf")
+        input(type='file', name='sampleFile', accept=".pdf" required)
         input(type='submit', value='Загрузить')
