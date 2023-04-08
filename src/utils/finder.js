@@ -28,8 +28,12 @@ module.exports = function(data) {
         console.log();
         data=data.replace(substrOfData, "");
         substrOfData = null;
-        parsedData.push(new Array(TextOfPoruch, NameOfAsgmnt, DateOfExe));
+        let errandData = {
+            errandText: TextOfPoruch,
+            asgnName: NameOfAsgmnt,
+            deadline: DateOfExe
+        }
+        parsedData.push(errandData);
     }
-    console.log(parsedData);
     return parsedData;
   }
