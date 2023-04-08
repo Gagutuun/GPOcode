@@ -1,3 +1,9 @@
+// Все функции этого модуля Возвращают строковый sql запрос
+
+// функция makeInsertQuery() принимает:
+//     имя таблицы (tableName),
+//     массив имен столбцов таблицы (columnNames),
+//     число аргументов (значений, записей), которое будет добавлено в таблицу (nArgs)
 function makeInsertQuery(tableName, columnNames, nArgs) {
     let sqlQuery = `INSERT INTO ${tableName} (`;
     columnNames.forEach(columnName => {
@@ -6,12 +12,19 @@ function makeInsertQuery(tableName, columnNames, nArgs) {
     sqlQuery += `) VALUES (`;
     for (i = 0; i < nArgs; i++) {
         sqlQuery += `$${i + 1}, `;
-        console.log(i);
     }
     sqlQuery = sqlQuery.slice(0, sqlQuery.lastIndexOf(', ')) + ')';
     return sqlQuery;
 }
 
+// функция makeSelectQuery() принимает:
+//     массив имен столбцов (),
+//     имя таблицы (),
+//     условие отбора записей (),
+//     условие группировки (),
+//     условие сортировки ().
+// P.S. Все условия пишутся БЕЗ ключевых sql слов (WHEN, GROUP BY, ORDER BY)
+// P.P.S. Функция не проверялась на деле, возможно нужны правки
 function makeSelectQuery(columnNames, tableName, whenExpression, groupByExpression, orderByExpression) {
     let sqlQuery = `SELECT `;
     if (columnNames === null)

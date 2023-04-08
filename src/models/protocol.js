@@ -11,6 +11,7 @@ const columnNames = {
 }
 
 class Protocol {
+    //Добавляет новый проток в бд
     static addNewProtocol(protocolPath/*, protocolDate, protocolNumber*/) {
         db.query(
             makeInsertQuery(tableName, new Array(columnNames.file_protocol_doc), 1),
