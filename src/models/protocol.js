@@ -17,9 +17,8 @@ class Protocol {
             makeInsertQuery(tableName, new Array(columnNames.file_protocol_doc), 1),
             [protocolPath],
             (err, res) => {
-                if (err){
+                if (err)
                     console.error(err);
-                }
                 else
                     console.log("Добавлен новый протокол");
             }
