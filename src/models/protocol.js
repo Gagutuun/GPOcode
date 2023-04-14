@@ -24,6 +24,8 @@ class Protocol {
             }
         )
     }
+
+    // static getProtocolId()
 }
 
 module.exports = Protocol;

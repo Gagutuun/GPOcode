@@ -23,9 +23,9 @@ function makeInsertQuery(tableName, columnNames, nArgs) {
 //     условие отбора записей (),
 //     условие группировки (),
 //     условие сортировки ().
-// P.S. Все условия пишутся БЕЗ ключевых sql слов (WHEN, GROUP BY, ORDER BY)
+// P.S. Все условия пишутся БЕЗ ключевых sql слов (WHERE, GROUP BY, ORDER BY)
 // P.P.S. Функция не проверялась на деле, возможно нужны правки
-function makeSelectQuery(columnNames, tableName, whenExpression, groupByExpression, orderByExpression) {
+function makeSelectQuery(columnNames, tableName, whereExpression, groupByExpression, orderByExpression) {
     let sqlQuery = `SELECT `;
     if (columnNames === null)
         sqlQuery += `* FROM ${tableName}`;
@@ -36,7 +36,7 @@ function makeSelectQuery(columnNames, tableName, whenExpression, groupByExpressi
         sqlQuery = sqlQuery.replace(sqlQuery.substring(sqlQuery.lastIndexOf(', ')), `FROM ${tableName}`);
     }
     if (whenExpression != null)
-        sqlQuery += ` WHEN ${whenExpression}`;
+        sqlQuery += ` WHERE ${whereExpression}`;
     if (groupByExpression != null)
         sqlQuery += ` GROUP BY ${groupByExpression}`;
     if (orderByExpression != null)
