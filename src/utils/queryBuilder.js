@@ -14,7 +14,7 @@ class QuerryBuilder {
             sqlQuery += columnName;
         });
         sqlQuery += `) VALUES (`;
-        for (i = 0; i < nArgs; i++) {
+        for (let i = 0; i < nArgs; i++) {
             sqlQuery += `$${i + 1}, `;
         }
         sqlQuery = sqlQuery.slice(0, sqlQuery.lastIndexOf(', ')) + ')';
