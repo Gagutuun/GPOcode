@@ -24,6 +24,8 @@ class Protocol {
         )
     }
 
+    static getLast
+
     // static getProtocolId()
 }
 
