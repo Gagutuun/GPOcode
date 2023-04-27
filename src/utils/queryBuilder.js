@@ -16,22 +16,6 @@ class QuerryBuilder {
         sqlQuery = sqlQuery.slice(0, sqlQuery.lastIndexOf(', ')) + ')';
         return sqlQuery;
     }
-    // функция makeInsertQuery() принимает:
-    //     имя таблицы (tableName),
-    //     массив имен столбцов таблицы (columnNames),
-    //     число аргументов (значений, записей), которое будет добавлено в таблицу (nArgs)
-    static makeInsertQuery(tableName, columnNames, nArgs) {
-        let sqlQuery = `INSERT INTO ${tableName} (`;
-        columnNames.forEach(columnName => {
-            sqlQuery += columnName;
-        });
-        sqlQuery += `) VALUES (`;
-        for (i = 0; i < nArgs; i++) {
-            sqlQuery += `$${i + 1}, `;
-        }
-        sqlQuery = sqlQuery.slice(0, sqlQuery.lastIndexOf(', ')) + ')';
-        return sqlQuery;
-    }
     // функция makeSelectQuery() принимает:
     //     массив имен столбцов (),
     //     имя таблицы (),
