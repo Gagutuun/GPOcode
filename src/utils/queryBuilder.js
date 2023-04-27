@@ -3,6 +3,7 @@ class QuerryBuilder {
     static AND = "AND";
     static OR = "OR";
     static NOT = "NOT";
+    static DESC = "DESC";
 
     // функция makeInsertQuery() принимает:
     //     имя таблицы (tableName),
@@ -28,7 +29,14 @@ class QuerryBuilder {
     //     условие сортировки ().
     // P.S. Все условия пишутся БЕЗ ключевых sql слов (WHERE, GROUP BY, ORDER BY)
     // P.P.S. Функция не проверялась на деле, возможно нужны правки
-    static makeSelectQuery(columnNames, tableName, whereExpression, groupByExpression, orderByExpression) {
+    static makeSelectQuery(
+        columnNames,
+        tableName,
+        whereExpression,
+        groupByExpression,
+        orderByExpression,
+        limit
+    ) {
         let sqlQuery = `SELECT `;
             if (columnNames === null)
             sqlQuery += `* FROM ${tableName}`;
@@ -44,18 +52,21 @@ class QuerryBuilder {
             sqlQuery += ` GROUP BY ${groupByExpression}`;
         if (orderByExpression != null)
             sqlQuery += `ORDER BY ${orderByExpression}`;
+        if (limit != 0 || limit != null)
+            sqlQuery += `LIMIT ${limit}`;
         return sqlQuery;
     }
 
-    static makeWhereExpression() {
-        let whereExpression = ``;
+    static makeSubexpression() {
+        let subexpression = ``;
         for (let i = 0; i < arguments.length; i++) {
-            if (whereExpression != ``)
-                whereExpression += ` `;
-            whereExpression += `${arguments[i]}`;
+            if (subexpression != ``)
+                subexpression += ` `;
+            subexpression += `${arguments[i]}`;
         }
-        return whereExpression;
+        return subexpression;
     }
+
 }
 
 module.exports = QuerryBuilder;

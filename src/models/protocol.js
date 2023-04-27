@@ -24,7 +24,29 @@ class Protocol {
         )
     }
 
-    static getLast
+    static getLastProtocolId() {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeSelectQuery(
+                    this.columnNames.id,
+                    this.tableName,
+                    null,
+                    null,
+                    queryBuilder.makeSubexpression(`${this.columnNames.id} ${queryBuilder.DESC}`),
+                    1
+                ),
+                [],
+                (error, result) => {
+                    if (error)
+                        reject(error);
+                    else if (result.rows.length > 0)
+                        resolve(result.rows[0]);
+                    else
+                        resolve(null);
+                }
+            )
+        })
+    }
 
     // static getProtocolId()
 }
