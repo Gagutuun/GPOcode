@@ -34,7 +34,6 @@ class User {
         (error, result) => {
           if (error){
             reject(error);
-            console.log("Блинб ошибка :(");
           }
           else if (result.rows.length > 0) {
             const { id, login, password } = result.rows[0];
