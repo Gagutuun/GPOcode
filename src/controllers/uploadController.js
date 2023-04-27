@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler');
 const pdfParser = require('../utils/pdfParser');
 const findNewAssign = require('../utils/finder');
 const { rename } = require('fs');
-const { addNewProtocol } = require('../models/protocol');
+const Protocol = require('../models/protocol');
 
 exports.uploadProtocol = asyncHandler(async (req, res) => {
   const TEMP_DOWNDLOAD_DIR = '/../public/files/temp/';
@@ -32,7 +32,7 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
   const pdfData = await pdfParser.parsePDF(newFilePath);
   const assignArray = findNewAssign(pdfData);
 
-  addNewProtocol(newFilePath);
+  Protocol.addNewProtocol(newFilePath);
 
   res.render('result', { title: 'GPO_test', text: pdfData , result: assignArray});
   })
