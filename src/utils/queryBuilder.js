@@ -1,5 +1,10 @@
 // Все функции этого модуля Возвращают строковый sql запрос
 class QuerryBuilder {
+    static WHERE = "WHERE ";
+    static GROUP_BY = "GROUP BY ";
+    static ORDER_BY = "ORDER BY ";
+    static LIMIT = "LIMIT ";
+
     static AND = "AND";
     static OR = "OR";
     static NOT = "NOT";
@@ -51,16 +56,25 @@ class QuerryBuilder {
         }
         sqlQuery += ` FROM ${tableName}`;
         if (whereExpression != null)
-            sqlQuery += ` WHERE ${whereExpression}`;
+            sqlQuery += ` ${whereExpression}`;
         if (groupByExpression != null)
-            sqlQuery += ` GROUP BY ${groupByExpression}`;
+            sqlQuery += ` ${groupByExpression}`;
         if (orderByExpression != null)
-            sqlQuery += ` ORDER BY ${orderByExpression}`;
+            sqlQuery += ` ${orderByExpression}`;
         if (limit != 0 && limit != null)
-            sqlQuery += ` LIMIT ${limit}`;
+            sqlQuery += ` ${limit}`;
         return sqlQuery;
     }
 
+    // Создает подвыражение для запросов. P.S. соединяет все пробелами
+    // Пример использования:
+    // makeSubexpression(
+    //     QuerryBuilder.WHERE,
+    //     "Условие 1",
+    //     QuerryBuilder.AND,
+    //     "Условие 2"
+    // )
+    // Код выдаст следующее выражение: WHERE Условие 1 AND Условие 2
     static makeSubexpression() {
         let subexpression = ``;
         for (let i = 0; i < arguments.length; i++) {
