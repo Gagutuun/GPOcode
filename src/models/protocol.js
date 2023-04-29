@@ -28,7 +28,7 @@ class Protocol {
         return new Promise((resolve, reject) => {
             db.query(
                 queryBuilder.makeSelectQuery(
-                    this.columnNames.id,
+                    new Array(this.columnNames.id),
                     this.tableName,
                     null,
                     null,
@@ -40,7 +40,7 @@ class Protocol {
                     if (error)
                         reject(error);
                     else if (result.rows.length > 0)
-                        resolve(result.rows[0]);
+                        resolve(result.rows[0].id);
                     else
                         resolve(null);
                 }
@@ -48,7 +48,26 @@ class Protocol {
         })
     }
 
-    // static getProtocolId()
+    static getProtocolPathByID(id) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeSelectQuery(
+                    new Array(this.columnNames.file_protocol_doc),
+                    this.tableName,
+                    queryBuilder.makeSubexpression(`${this.columnNames.id} = $1`)
+                ),
+                [id],
+                (error, result) => {
+                    if (error)
+                        reject(error);
+                    if (result.rows.length > 0)
+                        resolve(result.rows[0].file_protocol_doc);
+                    else
+                        resolve(null);
+                }
+            )
+        })
+    }
 }
 
 module.exports = Protocol;
