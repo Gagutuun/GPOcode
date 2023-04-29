@@ -12,6 +12,8 @@ class QuerryBuilder {
     static makeInsertQuery(tableName, columnNames, nArgs) {
         let sqlQuery = `INSERT INTO ${tableName} (`;
         columnNames.forEach(columnName => {
+            if (sqlQuery != `INSERT INTO ${tableName} (`)
+                sqlQuery += `, `;
             sqlQuery += columnName;
         });
         sqlQuery += `) VALUES (`;
@@ -38,22 +40,24 @@ class QuerryBuilder {
         limit
     ) {
         let sqlQuery = `SELECT `;
-            if (columnNames === null)
-            sqlQuery += `* FROM ${tableName}`;
+        if (columnNames === null)
+            sqlQuery += `*`;
         else {
             columnNames.forEach(columnName => {
-                sqlQuery += `${columnName}, `;
+                if (sqlQuery != `SELECT `)
+                    sqlQuery += `, `;
+                sqlQuery += `${columnName}`;
             })
-            sqlQuery = sqlQuery.replace(sqlQuery.substring(sqlQuery.lastIndexOf(', ')), `FROM ${tableName}`);
         }
+        sqlQuery += ` FROM ${tableName}`;
         if (whereExpression != null)
             sqlQuery += ` WHERE ${whereExpression}`;
         if (groupByExpression != null)
             sqlQuery += ` GROUP BY ${groupByExpression}`;
         if (orderByExpression != null)
-            sqlQuery += `ORDER BY ${orderByExpression}`;
-        if (limit != 0 || limit != null)
-            sqlQuery += `LIMIT ${limit}`;
+            sqlQuery += ` ORDER BY ${orderByExpression}`;
+        if (limit != 0 && limit != null)
+            sqlQuery += ` LIMIT ${limit}`;
         return sqlQuery;
     }
 
