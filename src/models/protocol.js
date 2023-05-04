@@ -26,7 +26,59 @@ class Protocol {
         )
     }
 
-    // static getProtocolId()
+    static getProtocolId(protocolNumber, protocolDate, callback) {
+        const query = `SELECT ${columnNames.id} FROM ${tableName} WHERE 
+                        ${columnNames.protocol_number}=$1 AND 
+                        ${columnNames.protocol_date}=$2`;
+        db.query(query, [protocolNumber, protocolDate], (err, res) => {
+            if (err) {
+                console.error(err);
+                return callback(null);
+            } else {
+                if (res.rows.length === 0) {
+                    console.log("No protocol found");
+                    return callback(null);
+                } else {
+                    console.log(`Found protocol with id: ${res.rows[0][columnNames.id]}`);
+                    return callback(res.rows[0][columnNames.id]);
+                }
+            }
+        });
+    }
+    static getProtocolPath(protocolNumber, protocolDate, callback) {
+        const query = `SELECT ${columnNames.file_protocol_doc} FROM ${tableName} WHERE ${columnNames.protocol_number}=$1 AND ${columnNames.protocol_date}=$2`;
+        db.query(query, [protocolNumber, protocolDate], (err, res) => {
+            if (err) {
+                console.error(err);
+                return callback(null);
+            } else {
+                if (res.rows.length === 0) {
+                    console.log("No protocol found");
+                    return callback(null);
+                } else {
+                    return callback(res.rows[0][columnNames.file_protocol_doc]);
+                }
+            }
+        });
+    }
+    static getLastProtocolPath(callback) {
+        const query = `SELECT ${columnNames.file_protocol_doc} FROM ${tableName} ORDER BY ${columnNames.created_at} DESC LIMIT 1`;
+        db.query(query, (err, res) => {
+            if (err) {
+                console.error(err);
+                return callback(null);
+            } else {
+                if (res.rows.length === 0) {
+                    console.log("No protocols found");
+                    return callback(null);
+                } else {
+                    return callback(res.rows[0][columnNames.file_protocol_doc]);
+                }
+            }
+        });
+    }
+    
+    
 }
 
 module.exports = Protocol;

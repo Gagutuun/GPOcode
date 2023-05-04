@@ -1,0 +1,84 @@
+.container
+  .sidebar
+    ul.menu-person
+      li.person
+        a.block(href="Person.html", target="myFrame", id="home")
+          img.btn-img(src="img/person.png", width="40", height="40")
+          span.person-name Оладжувон-Нгози И.И.
+          span.tooltip Оладжувон-Нгози И.И.
+        a(href="notifications.html", target="myFrame")
+          img.btn-bell(src="../images/sidebar/bell.svg", width="30", height="30")
+    ul.menu
+      li.download-protocol
+        a.menu-link(href="DownloadProtocol.html", target="myFrame")
+          img.btn-download(src="../images/sidebar/download.svg", width="30", height="30")
+          span.menu-text Загрузка протокола
+      li.errand
+        a.menu-link(href="Errand.html", target="myFrame")
+          img.btn-errand(src="../images/sidebar/errand.svg", width="30", height="30")
+          span.menu-text Поручения
+      li.report-protocol
+        a.menu-link(href="ReportProtocol.html", target="myFrame")
+          img.btn-report-protocol(src="../images/sidebar/generalReport.svg", width="30", height="30")
+          span.menu-text Отчёты по протоколам
+      li.feedback
+        a.menu-link(href="Feedback.html", target="myFrame")
+          img.btn-feedback(src="../images/sidebar/feedback.svg", width="30", height="30")
+          span.menu-text Обратная связь
+      li.exit
+        a.menu-link(href="Exit.html", target="myFrame")
+          img.btn-exit(src="../images/sidebar/exit.svg", width="30", height="30")
+          span.menu-text Exit
+  iframe.main-content(name="myFrame", id="myFrame", frameborder="0")
+
+  //- script. 
+  //-       const links = document.querySelectorAll("a[target='myFrame']");
+  //-   links.forEach((link) => {
+  //-       link.addEventListener("click", function (event) {
+  //-           const url = this.href;
+  //-           localStorage.setItem("currentURL", url);
+  //-           document.getElementById("myFrame").src = url;
+  //-           window.location.hash = url.split("/").pop();
+  //-           event.preventDefault();
+  //-       });
+  //-   });
+
+  //-   window.onload = function () {
+  //-       const url = localStorage.getItem("currentURL");
+  //-       if (url) {
+  //-           document.getElementById("myFrame").src = url;
+  //-       }
+  //-   }
+
+  //-   const bgBtn = document.querySelectorAll("li");
+
+  //-   const selectedLi = localStorage.getItem("selectedLi");
+  //-   if (selectedLi) {
+  //-       bgBtn.forEach((li) => {
+  //-           if (li.classList.contains(selectedLi)) {
+  //-               li.classList.add("active");
+  //-           } else {
+  //-               li.classList.remove("active");
+  //-           }
+  //-       });
+  //-   }
+
+  //-   bgBtn.forEach((link) => {
+  //-       link.addEventListener("click", function (event) {
+  //-           bgBtn.forEach((li) => {
+  //-               li.classList.remove("active");
+  //-           });
+  //-           this.classList.add("active");
+
+  //-           localStorage.setItem("selectedLi", this.classList[0]);
+  //-       });
+  //-   });
+
+  //-   const hash = window.location.hash.substring(1);
+  //-   if (hash) {
+  //-       bgBtn.forEach((li) => {
+  //-           if (li.classList.contains(hash)) {
+  //-               li.click();
+  //-           }
+  //-       });
+  //-   }

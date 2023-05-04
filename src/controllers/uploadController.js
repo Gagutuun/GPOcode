@@ -20,6 +20,7 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
 
   let newFilePath = _IntegrateTimeLableIntoFileName(
     _MakeTimeLable(),
+    // req.timeLable,
     uploadPath.replace('temp/', '')
   )
   rename(uploadPath, newFilePath, (err) => {
@@ -33,6 +34,8 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
   const assignArray = findNewAssign(pdfData);
 
   addNewProtocol(newFilePath);
+
+  req.body.sampleFile = newFilePath;
 
   res.render('result', { title: 'GPO_test', text: pdfData , result: assignArray});
   })
