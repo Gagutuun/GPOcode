@@ -25,6 +25,7 @@ class User {
           null,
           this.tableName,
           queryBuilder.makeSubexpression(
+            queryBuilder.WHERE,
             "login = $1",
             queryBuilder.AND,
             "password = $2"
@@ -53,7 +54,7 @@ class User {
         queryBuilder.makeSelectQuery(
           null,
           this.tableName,
-          queryBuilder.makeSubexpression("id = $1"),
+          queryBuilder.makeSubexpression(queryBuilder.WHERE, "id = $1"),
         ),
         [id],
         (error, result) => {
