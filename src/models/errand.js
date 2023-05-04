@@ -17,6 +17,11 @@ const columnNames = {
 class Errand {
     static addNewErrand(errandParsedData) {
         // Выполняем запрос к таблице сотрудников на получение id ответсенного.
+        const idResponsible = 1; // запрос к users
+        const idProtocol = 1; // запрос к protocol
+        db.query(
+            
+        )
         // Создаем запрос на добавление новой записи в таблицу Errand
     }
 }
