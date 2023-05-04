@@ -6,6 +6,7 @@ const uploadRouter = require('./uploadRouter');
 const authRouter = require('./authRouter');
 const testRouter = require('./testRouter');
 const pdfRouter = require('./pdfRouter');
+const errands = require('./errands');
 
 // Use routes
 router.use('/', mainRouter);
@@ -13,6 +14,8 @@ router.use('/upload', uploadRouter);
 router.use('/auth', authRouter);
 router.use('/test', testRouter);
 router.use('/pdf', pdfRouter);
+router.use('/downloadProtocol', mainRouter);
+router.use('/errand', errands);
 
 
 module.exports = router;
