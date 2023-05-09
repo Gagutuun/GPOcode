@@ -1,6 +1,8 @@
 // Модель поручения
 const db = require('../config/dbConfig');
 const queryBuilder = require('../utils/queryBuilder');
+//тестовые объявления (нужно удалить)
+const Protocol = require('./protocol');
 
 class Errand {
     static tableName = 'public."Errand"';
@@ -84,6 +86,53 @@ class Errand {
             )
         })
     }
+
+    // Возвращает массив поручений с информацией: id, text_errand - по id протокола
+    static getAllErrandsOfPtoorocol(idProtocol) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeSelectQuery(
+                    new Array(
+                        this.columnNames.id,
+                        this.columnNames.text_errand
+                    ),
+                    this.tableName,
+                    queryBuilder.makeSubexpression(
+                        queryBuilder.WHERE,
+                        queryBuilder.equals(this.columnNames.id_protocol)
+                    )
+                ),[idProtocol],
+                (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else if (res.rowCount > 0) {
+                        resolve(res.rows);
+                    } else {
+                        resolve(null);
+                    }
+                }
+            )
+        })
+    }
 }
 
 module.exports = Errand;
+
+Protocol.getLastProtocolId()
+    .then((idProtocol) => {
+        console.log(`Получил id протокола: ${idProtocol}`);
+        console.log(`Запрос к Errand: ${
+            queryBuilder.makeSelectQuery(
+                null,
+                Errand.tableName,
+                queryBuilder.makeSubexpression(
+                    queryBuilder.WHERE,
+                    "id = $1"
+                )
+            )
+        }`)
+        Errand.getAllErrandsOfPtoorocol(idProtocol)
+            .then((errands) => {
+                console.log(errands);
+            })
+    })
