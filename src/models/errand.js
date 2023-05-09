@@ -62,6 +62,32 @@ class Errand {
                 }
             )
     }
+    
+    // Возвращает полную информацию о поручении по его id
+    static getErrandByID(idErrand) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeSelectQuery(
+                    null,
+                    this.tableName,
+                    queryBuilder.makeSubexpression(
+                        queryBuilder.WHERE,
+                        "id = $1"
+                    )
+                ),
+                [idErrand],
+                (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else if (res.rowCount > 0) {
+                        resolve(res.rows[0]);
+                    } else {
+                        resolve(null);
+                    }
+                }
+            )
+        })
+    }
 }
 
 module.exports = Errand;
