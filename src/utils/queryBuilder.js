@@ -83,7 +83,7 @@ class QuerryBuilder {
             sqlQuery += ` ${groupByExpression}`;
         if (orderByExpression != null)
             sqlQuery += ` ${orderByExpression}`;
-        if (limit != 0 && limit != null)
+        if (limit != null && limit != 0)
             sqlQuery += ` ${limit}`;
         return sqlQuery;
     }
@@ -110,17 +110,31 @@ class QuerryBuilder {
     static makeSubexpression() {
         let subexpression = ``;
         let countArgs = 1;
-        for (let i = 0; i < arguments.length; i++) {
-            if (subexpression != ``)
-                subexpression += ` `;
-            if (i % 2 == 1)
-                if (REG_EX_CONDITION.exec(arguments[i]) && REG_EX_CONDITION.exec(arguments[i]).index)
-                    subexpression += `${arguments[i]}`;
-                else {
-                    subexpression += `${arguments[i]}${countArgs++}`
+        // возможно нужно будет дописывать по ходу дела, но пока так
+        switch(arguments[0]) {
+            case this.WHERE: {
+                for (let i = 0; i < arguments.length; i++) {
+                    if (subexpression != ``)
+                        subexpression += ` `;
+                    if (i % 2 == 1)
+                        if (REG_EX_CONDITION.exec(arguments[i]) && REG_EX_CONDITION.exec(arguments[i]).index)
+                            subexpression += `${arguments[i]}`;
+                        else {
+                            subexpression += `${arguments[i]}${countArgs++}`
+                        }
+                    else
+                        subexpression += arguments[i];
                 }
-            else
-                subexpression += arguments[i];
+                break;
+            }
+            default: {
+                for (let i = 0; i < arguments.length; i++) {
+                    if (subexpression != ``)
+                        subexpression += ` `;
+                    subexpression += arguments[i];
+                }
+                break;
+            }
         }
         return subexpression;
     }
