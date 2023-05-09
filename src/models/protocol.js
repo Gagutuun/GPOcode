@@ -32,8 +32,16 @@ class Protocol {
                     this.tableName,
                     null,
                     null,
-                    queryBuilder.makeSubexpression(`${this.columnNames.id} ${queryBuilder.DESC}`),
-                    1
+                    // `${this.columnNames.id} ${queryBuilder.DESC}`
+                    queryBuilder.makeSubexpression(
+                        queryBuilder.ORDER_BY,
+                        this.columnNames.id,
+                        queryBuilder.DESC
+                    ),
+                    queryBuilder.makeSubexpression(
+                        queryBuilder.LIMIT,
+                        1
+                    )
                 ),
                 [],
                 (error, result) => {
