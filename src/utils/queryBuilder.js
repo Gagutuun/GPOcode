@@ -1,9 +1,11 @@
+// Вспомогательные модули (не для импорта)
+const REG_EX_CONDITION = /\d/
 // Все функции этого модуля Возвращают строковый sql запрос
 class QuerryBuilder {
-    static WHERE = "WHERE ";
-    static GROUP_BY = "GROUP BY ";
-    static ORDER_BY = "ORDER BY ";
-    static LIMIT = "LIMIT ";
+    static WHERE = "WHERE";
+    static GROUP_BY = "GROUP BY";
+    static ORDER_BY = "ORDER BY";
+    static LIMIT = "LIMIT";
 
     static AND = "AND";
     static OR = "OR";
@@ -95,18 +97,68 @@ class QuerryBuilder {
     //     "Условие 2"
     // )
     // Код выдаст следующее выражение: WHERE Условие 1 AND Условие 2
-    // 
+    //
+    // Новый способ:
+    // makeSubexpression(
+    //     QuerryBuilder.WHERE,
+    //     //на выбор есть ряд функций
+    //     QuerryBuilder.equals("имя_1"),
+    //     QuerryBuilder.AND,
+    //     QuerryBuilder.notEquals("имя_2")
+    // )
+    // Код выдаст строку: WHERE имя_1 = $1 AND имя_2 != $2
     static makeSubexpression() {
         let subexpression = ``;
+        let countArgs = 1;
         for (let i = 0; i < arguments.length; i++) {
             if (subexpression != ``)
                 subexpression += ` `;
-            subexpression += `${arguments[i]}`;
-            if (i != 0)
-                subexpression += `${i}`;
+            console.log(REG_EX_CONDITION.exec(arguments[i]))
+            if (i % 2 == 1)
+                if (REG_EX_CONDITION.exec(arguments[i]) && REG_EX_CONDITION.exec(arguments[i]).index)
+                    subexpression += `${arguments[i]}`;
+                else {
+                    subexpression += `${arguments[i]}${countArgs++}`
+                }
+            else
+                subexpression += arguments[i];
         }
         return subexpression;
     }
 
 }
 module.exports = QuerryBuilder;
+
+console.log(
+    "Old version:\n" +
+    "QuerryBuilder.makeSubexpression(\n" +
+    "\tQuerryBuilder.WHERE,\n" +
+    "\t\"id = $1\",\n" +
+    "\tQuerryBuilder.AND,\n" +
+    "\t\"constantly != $2\"\n" +
+    `) = ${
+        QuerryBuilder.makeSubexpression(
+            QuerryBuilder.WHERE,
+            "id = $1",
+            QuerryBuilder.AND,
+            "constantly != $2"
+        )
+    }`
+)
+
+console.log(
+    "New version:\n" +
+    "QuerryBuilder.makeSubexpression(\n" +
+    "\tQuerryBuilder.WHERE,\n" +
+    "\tequals(\"id\"),\n" +
+    "\tQuerryBuilder.AND,\n" +
+    "\tnotEquals(\"constantly\")\n" +
+    `) = ${
+        QuerryBuilder.makeSubexpression(
+            QuerryBuilder.WHERE,
+            QuerryBuilder.equals("id"),
+            QuerryBuilder.AND,
+            QuerryBuilder.notEquals("constantly")
+        )
+    }`
+)
