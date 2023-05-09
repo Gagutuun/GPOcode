@@ -121,7 +121,7 @@ class QuerryBuilder {
                     if (REG_EX_WHERE_CONDITION.exec(arguments[i]))
                         subexpression += `${arguments[i]}${countArgs++}`
                     else
-                        subexpression += `${arguments[i]}`;
+                        subexpression += arguments[i];
                 }
             else
                 subexpression += arguments[i];
