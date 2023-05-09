@@ -1,10 +1,6 @@
 // Модель поручения
 const db = require('../config/dbConfig');
 const queryBuilder = require('../utils/queryBuilder');
-// Для теста (нужно удалить)
-const pdfParser = require('../utils/pdfParser');
-const findNewAssign = require('../utils/finder');
-const Protocol = require('./protocol');
 
 class Errand {
     static tableName = 'public."Errand"';
