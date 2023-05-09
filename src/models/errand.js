@@ -19,6 +19,8 @@ class Errand {
         status: 'status', // Я хз че это
         id_protocol: 'id_protocol' // Нужно получить из запроса к протоколу
     };
+
+    // Добавляем новое поручение
     static addNewErrand(errandText, deadline, idProtocol, idResponsible) {
         // Выполняем запрос к таблице сотрудников на получение id ответсенного.
         // const idResponsible = 1; // запрос к users
@@ -59,7 +61,6 @@ class Errand {
                         console.log(error);
                 }
             )
-        // Создаем запрос на добавление новой записи в таблицу Errand
     }
 }
 
