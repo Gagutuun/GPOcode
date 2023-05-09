@@ -1,8 +1,6 @@
 // Модель поручения
 const db = require('../config/dbConfig');
 const queryBuilder = require('../utils/queryBuilder');
-//тестовые объявления (нужно удалить)
-const Protocol = require('./protocol');
 
 class Errand {
     static tableName = 'public."Errand"';
@@ -117,22 +115,3 @@ class Errand {
 }
 
 module.exports = Errand;
-
-Protocol.getLastProtocolId()
-    .then((idProtocol) => {
-        console.log(`Получил id протокола: ${idProtocol}`);
-        console.log(`Запрос к Errand: ${
-            queryBuilder.makeSelectQuery(
-                null,
-                Errand.tableName,
-                queryBuilder.makeSubexpression(
-                    queryBuilder.WHERE,
-                    "id = $1"
-                )
-            )
-        }`)
-        Errand.getAllErrandsOfPtoorocol(idProtocol)
-            .then((errands) => {
-                console.log(errands);
-            })
-    })
