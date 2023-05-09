@@ -113,7 +113,6 @@ class QuerryBuilder {
         for (let i = 0; i < arguments.length; i++) {
             if (subexpression != ``)
                 subexpression += ` `;
-            console.log(REG_EX_CONDITION.exec(arguments[i]))
             if (i % 2 == 1)
                 if (REG_EX_CONDITION.exec(arguments[i]) && REG_EX_CONDITION.exec(arguments[i]).index)
                     subexpression += `${arguments[i]}`;
@@ -128,37 +127,3 @@ class QuerryBuilder {
 
 }
 module.exports = QuerryBuilder;
-
-console.log(
-    "Old version:\n" +
-    "QuerryBuilder.makeSubexpression(\n" +
-    "\tQuerryBuilder.WHERE,\n" +
-    "\t\"id = $1\",\n" +
-    "\tQuerryBuilder.AND,\n" +
-    "\t\"constantly != $2\"\n" +
-    `) = ${
-        QuerryBuilder.makeSubexpression(
-            QuerryBuilder.WHERE,
-            "id = $1",
-            QuerryBuilder.AND,
-            "constantly != $2"
-        )
-    }`
-)
-
-console.log(
-    "New version:\n" +
-    "QuerryBuilder.makeSubexpression(\n" +
-    "\tQuerryBuilder.WHERE,\n" +
-    "\tequals(\"id\"),\n" +
-    "\tQuerryBuilder.AND,\n" +
-    "\tnotEquals(\"constantly\")\n" +
-    `) = ${
-        QuerryBuilder.makeSubexpression(
-            QuerryBuilder.WHERE,
-            QuerryBuilder.equals("id"),
-            QuerryBuilder.AND,
-            QuerryBuilder.notEquals("constantly")
-        )
-    }`
-)
