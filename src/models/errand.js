@@ -1,10 +1,6 @@
 // Модель поручения
 const db = require('../config/dbConfig');
 const queryBuilder = require('../utils/queryBuilder');
-// Для теста (нужно удалить)
-const pdfParser = require('../utils/pdfParser');
-const findNewAssign = require('../utils/finder');
-const Protocol = require('./protocol');
 
 class Errand {
     static tableName = 'public."Errand"';
@@ -19,6 +15,8 @@ class Errand {
         status: 'status', // Я хз че это
         id_protocol: 'id_protocol' // Нужно получить из запроса к протоколу
     };
+
+    // Добавляем новое поручение
     static addNewErrand(errandText, deadline, idProtocol, idResponsible) {
         // Выполняем запрос к таблице сотрудников на получение id ответсенного.
         // const idResponsible = 1; // запрос к users
@@ -59,7 +57,32 @@ class Errand {
                         console.log(error);
                 }
             )
-        // Создаем запрос на добавление новой записи в таблицу Errand
+    }
+    
+    // Возвращает полную информацию о поручении по его id
+    static getErrandByID(idErrand) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeSelectQuery(
+                    null,
+                    this.tableName,
+                    queryBuilder.makeSubexpression(
+                        queryBuilder.WHERE,
+                        "id = $1"
+                    )
+                ),
+                [idErrand],
+                (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else if (res.rowCount > 0) {
+                        resolve(res.rows[0]);
+                    } else {
+                        resolve(null);
+                    }
+                }
+            )
+        })
     }
 }
 

@@ -1,14 +1,37 @@
+// Вспомогательные модули (не для импорта)
+const REG_EX_CONDITION = /\d/
+const REG_EX_WHERE_CONDITION = /[$]/
 // Все функции этого модуля Возвращают строковый sql запрос
 class QuerryBuilder {
-    static WHERE = "WHERE ";
-    static GROUP_BY = "GROUP BY ";
-    static ORDER_BY = "ORDER BY ";
-    static LIMIT = "LIMIT ";
+    static WHERE = "WHERE";
+    static GROUP_BY = "GROUP BY";
+    static ORDER_BY = "ORDER BY";
+    static LIMIT = "LIMIT";
 
     static AND = "AND";
     static OR = "OR";
     static NOT = "NOT";
     static DESC = "DESC";
+
+    // Функции для составления условий
+    static equals(columnName) {
+        return `${columnName} = $`;
+    }
+    static bigger(columnName) {
+        return `${columnName} > $`;
+    }
+    static smaller(columnName) {
+        return `${columnName} < $`;
+    }
+    static notEquals(columnName) {
+        return `${columnName} != $`;
+    }
+    static notBigger(columnName) {
+        return `${columnName} <= $`;
+    }
+    static notSmaller(columnName) {
+        return `${columnName} >= $`;
+    }
 
     // функция makeInsertQuery() принимает:
     //     имя таблицы (tableName),
@@ -61,7 +84,7 @@ class QuerryBuilder {
             sqlQuery += ` ${groupByExpression}`;
         if (orderByExpression != null)
             sqlQuery += ` ${orderByExpression}`;
-        if (limit != 0 && limit != null)
+        if (limit != null && limit != 0)
             sqlQuery += ` ${limit}`;
         return sqlQuery;
     }
@@ -75,16 +98,36 @@ class QuerryBuilder {
     //     "Условие 2"
     // )
     // Код выдаст следующее выражение: WHERE Условие 1 AND Условие 2
+    //
+    // Новый способ:
+    // makeSubexpression(
+    //     QuerryBuilder.WHERE,
+    //     //на выбор есть ряд функций
+    //     QuerryBuilder.equals("имя_1"),
+    //     QuerryBuilder.AND,
+    //     QuerryBuilder.notEquals("имя_2")
+    // )
+    // Код выдаст строку: WHERE имя_1 = $1 AND имя_2 != $2
     static makeSubexpression() {
         let subexpression = ``;
+        let countArgs = 1;
         for (let i = 0; i < arguments.length; i++) {
             if (subexpression != ``)
                 subexpression += ` `;
-            subexpression += `${arguments[i]}`;
+            if (i % 2 == 1)
+                if (REG_EX_CONDITION.exec(arguments[i]) && REG_EX_CONDITION.exec(arguments[i]).index)
+                    subexpression += `${arguments[i]}`;
+                else {
+                    if (REG_EX_WHERE_CONDITION.exec(arguments[i]))
+                        subexpression += `${arguments[i]}${countArgs++}`
+                    else
+                        subexpression += `${arguments[i]}`;
+                }
+            else
+                subexpression += arguments[i];
         }
         return subexpression;
     }
 
 }
-
 module.exports = QuerryBuilder;

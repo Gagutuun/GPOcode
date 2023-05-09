@@ -10,7 +10,7 @@ router.post('/login', passport.authenticate('local', {
 }));
 
 router.get('/login', (req, res) => {
-  res.render('auth', { message: 'Неправильный логин или пароль!!' });
+  res.render('auth', { message: 'Неправильный логин или пароль!' });
 });
 
 module.exports = router;

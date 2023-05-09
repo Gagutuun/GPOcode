@@ -10,9 +10,62 @@ block content
     .item
       form
         h3 Текст, содержащийся в документе:
-        p= text
+        canvas#pdf-canvas
+        div.page-nav
+          input#page-num(type='number', min='1', max='100', value='1')
+          button#prev-page(type='button') <
+          button#next-page(type='button') >
     .item
       form
         h3 Результат работы алгоритма:
         each element in result
-          p #{`${element.errandText}, ${element.asgnName}, ${element.deadline}`}
+          p #{element}
+
+    script.
+      // Получение ссылки на PDF файл на сервере
+      var url = '/pdf';
+      // Получение canvas элемента
+      var canvas = document.getElementById('pdf-canvas');
+      // Получение элементов управления
+      var pageNumInput = document.getElementById('page-num');
+      var prevPageBtn = document.getElementById('prev-page');
+      var nextPageBtn = document.getElementById('next-page');
+      // Обработчик изменения значения в input
+      pageNumInput.addEventListener('change', function() {
+        var pageNum = parseInt(this.value);
+        renderPage(pageNum);
+      });
+      // Обработчик кнопки "Назад"
+      prevPageBtn.addEventListener('click', function() {
+        var pageNum = parseInt(pageNumInput.value);
+        if (pageNum <= 1) {
+          return;
+        }
+        pageNum--;
+        pageNumInput.value = pageNum;
+        renderPage(pageNum);
+      });
+      // Обработчик кнопки "Вперед"
+      nextPageBtn.addEventListener('click', function() {
+        var pageNum = parseInt(pageNumInput.value);
+        if (pageNum >= pdf.numPages) {
+          return;
+        }
+        pageNum++;
+        pageNumInput.value = pageNum;
+        renderPage(pageNum);
+      });
+      // Загрузка PDF файла и его отображение на canvas элементе
+      var pdf = null;
+      pdfjsLib.getDocument(url).promise.then(function(pdfDoc) {
+        pdf = pdfDoc;
+        renderPage(1);
+      });
+      function renderPage(pageNum) {
+        pdf.getPage(pageNum).then(function(page) {
+          var viewport = page.getViewport({ scale: 1.0 });
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport });
+        });
+      }
