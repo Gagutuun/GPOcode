@@ -10,6 +10,26 @@ class QuerryBuilder {
     static NOT = "NOT";
     static DESC = "DESC";
 
+    // Функции для составления условий
+    static equals(columnName) {
+        return `${columnName} = $`;
+    }
+    static bigger(columnName) {
+        return `${columnName} > $`;
+    }
+    static smaller(columnName) {
+        return `${columnName} < $`;
+    }
+    static notEquals(columnName) {
+        return `${columnName} != $`;
+    }
+    static notBigger(columnName) {
+        return `${columnName} <= $`;
+    }
+    static notSmaller(columnName) {
+        return `${columnName} >= $`;
+    }
+
     // функция makeInsertQuery() принимает:
     //     имя таблицы (tableName),
     //     массив имен столбцов таблицы (columnNames),
@@ -75,16 +95,18 @@ class QuerryBuilder {
     //     "Условие 2"
     // )
     // Код выдаст следующее выражение: WHERE Условие 1 AND Условие 2
+    // 
     static makeSubexpression() {
         let subexpression = ``;
         for (let i = 0; i < arguments.length; i++) {
             if (subexpression != ``)
                 subexpression += ` `;
             subexpression += `${arguments[i]}`;
+            if (i != 0)
+                subexpression += `${i}`;
         }
         return subexpression;
     }
 
 }
-
 module.exports = QuerryBuilder;
