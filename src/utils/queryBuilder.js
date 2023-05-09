@@ -1,5 +1,6 @@
 // Вспомогательные модули (не для импорта)
 const REG_EX_CONDITION = /\d/
+const REG_EX_WHERE_CONDITION = /[$]/
 // Все функции этого модуля Возвращают строковый sql запрос
 class QuerryBuilder {
     static WHERE = "WHERE";
@@ -110,31 +111,20 @@ class QuerryBuilder {
     static makeSubexpression() {
         let subexpression = ``;
         let countArgs = 1;
-        // возможно нужно будет дописывать по ходу дела, но пока так
-        switch(arguments[0]) {
-            case this.WHERE: {
-                for (let i = 0; i < arguments.length; i++) {
-                    if (subexpression != ``)
-                        subexpression += ` `;
-                    if (i % 2 == 1)
-                        if (REG_EX_CONDITION.exec(arguments[i]) && REG_EX_CONDITION.exec(arguments[i]).index)
-                            subexpression += `${arguments[i]}`;
-                        else {
-                            subexpression += `${arguments[i]}${countArgs++}`
-                        }
+        for (let i = 0; i < arguments.length; i++) {
+            if (subexpression != ``)
+                subexpression += ` `;
+            if (i % 2 == 1)
+                if (REG_EX_CONDITION.exec(arguments[i]) && REG_EX_CONDITION.exec(arguments[i]).index)
+                    subexpression += `${arguments[i]}`;
+                else {
+                    if (REG_EX_WHERE_CONDITION.exec(arguments[i]))
+                        subexpression += `${arguments[i]}${countArgs++}`
                     else
-                        subexpression += arguments[i];
+                        subexpression += `${arguments[i]}`;
                 }
-                break;
-            }
-            default: {
-                for (let i = 0; i < arguments.length; i++) {
-                    if (subexpression != ``)
-                        subexpression += ` `;
-                    subexpression += arguments[i];
-                }
-                break;
-            }
+            else
+                subexpression += arguments[i];
         }
         return subexpression;
     }
