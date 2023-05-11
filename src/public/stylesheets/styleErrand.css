@@ -23,7 +23,7 @@ body {
     flex: 1;
     border: none;
     outline: none;
-    font-size: 18px;
+    font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 .modes {
@@ -53,6 +53,7 @@ body {
     color: #000000;
     transition: background-color 0.3s ease;
     white-space: nowrap;
+    font: 20px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 .buttons button.active {
@@ -67,7 +68,7 @@ body {
 
 .filter span {
     margin-right: 10px;
-    font-size: 20px;
+    font: 20px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 .filter img {
@@ -130,12 +131,12 @@ body {
     margin-bottom: 20px;
     margin-left: 55px;
     padding-right: 50px;
-    font-size: 24px;
+    font: 24px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 .header-separator {
     border: none;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #000000;
     flex-grow: 1;
     margin-left: 20px;
 }
@@ -154,19 +155,21 @@ body {
     margin-bottom: 18px;
     text-decoration: none;
 }
+.event-link .event-dates-container span {
+    font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
 
 .event-title {
     display: -webkit-box;
     -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
     padding: 14px;
-    font-size: 16px;
+    font: 20px "Lucida Grande", Helvetica, Arial, sans-serif;
     color: #ffffff;
     text-decoration: none;
-    font-size: 20px;
     overflow: hidden;
     white-space: normal;
-    max-height: 100px;
+    max-height: 130px;
     position: relative;
     text-overflow: ellipsis;
 }
