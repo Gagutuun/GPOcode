@@ -8,7 +8,7 @@ const testRouter = require('./testRouter');
 const pdfRouter = require('./pdfRouter');
 const errands = require('./errands');
 const reportProtocol = require('./reportProtocol');
-
+const feedback = require('./feedback');
 
 
 // Use routes
@@ -20,6 +20,7 @@ router.use('/pdf', pdfRouter);
 router.use('/downloadProtocol', mainRouter);
 router.use('/errand', errands);
 router.use('/reportProtocol', reportProtocol);
+router.use('/feedback', feedback);
 
 
 module.exports = router;
