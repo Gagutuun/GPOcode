@@ -6,30 +6,49 @@ const Protocol = require('../models/protocol');
 const Errand = require('../models/errand');
 
 exports.uploadProtocol = asyncHandler(async (req, res) => {
-  const TEMP_DOWNDLOAD_DIR = '/../public/files/temp/';
+  const PROTOCOL_NAME_REGEX = /([Pp]roto[ck]ol|[Пп]ротокол)/;
+  const FILES_DIR = '/../public/files/';
+  const TEMP_DOWNDLOAD_DIR = FILES_DIR + 'temp/';
   
-  let sampleFile;
-  let uploadPath;
+  fs.mkdir(__dirname + FILES_DIR + 'temp', (err) => {
+    if (err)
+      return console.error('FATAL: ' + err);
+  });
+
+  _Await();
 
   if (!req.files || Object.keys(req.files).length === 0) {
     res.status(400).send('No files were uploaded.');
     return;
   }
 
-  sampleFile = req.files.sampleFile;
-  uploadPath = __dirname + TEMP_DOWNDLOAD_DIR + sampleFile.name;
+  let sampleFile = req.files.sampleFile;
+  let uploadPath = __dirname + TEMP_DOWNDLOAD_DIR + sampleFile.name;
   await sampleFile.mv(uploadPath);
 
-  let newFilePath = _IntegrateTimeLableIntoFileName(
-    _MakeTimeLable(),
-    uploadPath.replace('temp/', '')
-  )
+  let newFilePath;
+  if (PROTOCOL_NAME_REGEX.exec(uploadPath) != null) {
+    newFilePath = _IntegrateTimeLableIntoFileName(
+      _MakeTimeLable(),
+      uploadPath.replace('temp/', 'Protocols/')
+    )
+  }
+
+
   fs.rename(uploadPath, newFilePath, (err) => {
     if (err)
       console.error(err);
   });
 
-  _AwaitFileRedirection();
+  _Await();
+
+  fs.rmdir(
+    uploadPath.replace('/' + sampleFile.name, ''),
+    (err) => {
+      if (err)
+        console.error(err);
+    }
+  )
 
   const pdfData = await pdfParser.parsePDF(newFilePath);
   const errandArray = findNewAssign(pdfData);
@@ -58,8 +77,8 @@ function _IntegrateTimeLableIntoFileName(timeLable, fileName) {
   return fileName.replace(FILE_EXTENSION, "_" + timeLable) + FILE_EXTENSION;
 }
 
-function _AwaitFileRedirection() {
-  const offset = 100;
+function _Await() {
+  const offset = 100
   const startDate = Date.now();
   while(Date.now() - startDate < offset)
     ;
