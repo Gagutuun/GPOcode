@@ -2,7 +2,9 @@ const asyncHandler = require('express-async-handler');
 const pdfParser = require('../utils/pdfParser');
 const findNewAssign = require('../utils/finder');
 const { rename } = require('fs');
-const { addNewProtocol } = require('../models/protocol');
+const Protocol = require('../models/protocol');
+const User = require('../models/user');
+const Errand = require('../models/errand');
 
 exports.uploadProtocol = asyncHandler(async (req, res) => {
   const TEMP_DOWNDLOAD_DIR = '/../public/files/temp/';
@@ -31,13 +33,19 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
   _AwaitFileRedirection();
 
   const pdfData = await pdfParser.parsePDF(newFilePath);
-  const assignArray = findNewAssign(pdfData);
+  const errandArray = findNewAssign(pdfData);
 
-  addNewProtocol(newFilePath);
+  Protocol.addNewProtocol(newFilePath);
 
-  req.body.sampleFile = newFilePath;
+  const idProtocol = await Protocol.getLastProtocolId();
+  errandArray.forEach(errand => {
+    // Т.к. сейчас непонятно кому давать поручение, assignID = 1
+    // const assignID = await User.getIdByName(errand.asgnName);
+    const assignID = 1;
+    Errand.addNewErrand(errand.errandText, errand.deadline, idProtocol, assignID);
+  })
 
-  res.render('result', { title: 'GPO_test', text: pdfData , result: assignArray});
+  res.render('result', { title: 'GPO_test', text: pdfData , result: errandArray});
   })
 
 function _MakeTimeLable() {

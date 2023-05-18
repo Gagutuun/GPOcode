@@ -4,7 +4,7 @@ block content
   .content
     .logo
       a.button(href='/')
-        img(src='../images/logo.png')
+        img.mainImg(src='../images/logo.png')
     .item
       h1 Документ успешно загружен!
     .item
@@ -69,3 +69,6 @@ block content
           page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport });
         });
       }
+=========
+          p #{`${element.errandText}, ${element.asgnName}, ${element.deadline}`}
+>>>>>>>>> Temporary merge branch 2

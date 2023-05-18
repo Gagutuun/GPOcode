@@ -45,20 +45,6 @@ const data = [
   ]
 ];
 
-const createData = (textOfPoruch, dateOfPoruch, Otvetv) => {
-  
-  const dataArr = [
-    [
-      {rowSpan: 2, content: '1.'},
-      textOfPoruch,
-      `Ответственные - заместители генерального директора, Исайкин А.Г. Срок исполнения - ${dateOfPoruch}`
-    ],
-    [
-      `Отчет на ${dateOfPoruch} (дата отчета) Краткий отчет по ${textOfPoruch} для Директум`,
-    ]
-  ];
-  return dataArr;
-};
 
 
 const createTable = (headers, data) => {
@@ -96,7 +82,6 @@ const tableOptions = {
 doc.autoTable(tableOptions);
 };
 
-createTable(headers, data);
 createTable(headers, data);
 
 // сохранение документа
