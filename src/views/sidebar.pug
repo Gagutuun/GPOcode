@@ -1,0 +1,32 @@
+script(async, src="/scripts/scriptSidebar.js")
+.mainContainer
+  .sidebar
+    ul.menu-person
+      li.person
+        a.block(href="Person.html", target="myFrame", id="home")
+          img.btn-img(src="../images/SidebarImg/person.png", width="40", height="40")
+          span.person-name Оладжувон-Нгози И.И.
+          span.tooltipPerson Оладжувон-Нгози И.И.
+        a.notifications(href="notifications.html", target="myFrame")
+          img.btn-bell(src="../images/SidebarImg/bell.svg", width="30", height="30")
+    ul.menu
+      li.download-protocol
+        a.menu-link(href="/downloadProtocol")
+          img.btn-download(src="../images/SidebarImg/download.svg", width="30", height="30")
+          span.menu-text Загрузка протокола
+      li.errand
+        a.menu-link(href="/errand")
+          img.btn-errand(src="../images/SidebarImg/errand.svg", width="30", height="30")
+          span.menu-text Поручения
+      li.report-protocol
+        a.menu-link(href="/reportProtocol")
+          img.btn-report-protocol(src="../images/SidebarImg/generalReport.svg", width="30", height="30")
+          span.menu-text Отчёты по протоколам
+      li.feedback
+        a.menu-link(href="/feedback")
+          img.btn-feedback(src="../images/SidebarImg/feedback.svg", width="30", height="30")
+          span.menu-text Обратная связь
+      li.exit
+        a.menu-link(href="/exit")
+          img.btn-exit(src="../images/SidebarImg/exit.svg", width="30", height="30")
+          span.menu-text Exit

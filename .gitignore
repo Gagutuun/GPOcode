@@ -2,3 +2,4 @@
 /officeDist
 *.pdf
 package-lock.json
+/src/public/files/

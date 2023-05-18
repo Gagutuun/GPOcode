@@ -1,0 +1,16 @@
+extends layout
+
+block content  
+  div.feedback-form
+    h2 Форма заявки
+    form
+      label(for="name") Имя:
+      input(type="text", id="name", name="name", placeholder="Введите ваше имя", required)
+
+      label(for="subject") Тема обращения:
+      input(type="text", id="subject", name="subject", placeholder="Введите тему обращения", required)
+
+      label(for="message") Сообщение:
+      textarea(id="message", name="message", placeholder="Введите ваше сообщение", required)
+
+      button(type="submit") Отправить

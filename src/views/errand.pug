@@ -1,0 +1,70 @@
+extends layout
+
+block content
+  script(async, src='scripts/scriptErrand.js')
+  .search-container
+    img(src='images/ErradnsImg/search.svg', alt='Поиск')
+    input(type='text', placeholder='Поиск')
+  .modes
+    .buttons
+      button.all-btn Все поручения
+      button.active-btn Активные
+      button.archive-btn Архив
+    .filter
+      span Фильтры по поручениям
+      img(src='images/ErradnsImg/setting.svg')
+  .ActiveErrands
+    .links-header
+      span Активные
+      hr.header-separator
+    .links-grid
+      a.event-link(href='#')
+        span.event-title Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по прогаммам развития цифровой грамотности.
+        .event-dates-container
+          span.event-start-date Получено: 01.01.2023
+          span.event-end-date Срок сдачи: 05.01.2023
+      a.event-link(href='#')
+        span.event-title Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по прогаммам развития цифровой грамотности.
+        .event-dates-container
+          span.event-start-date Получено: 01.01.2023
+          span.event-end-date Срок сдачи: постоянно
+      a.event-link(href='#')
+        span.event-title Поручение....
+        .event-dates-container
+          span.event-start-date Получено: 01.01.2023
+          span.event-end-date Срок сдачи: 05.01.2023
+      a.event-link(href='#')
+        span.event-title Поручение....
+        .event-dates-container
+          span.event-start-date Получено: 01.01.2023
+          span.event-end-date Срок сдачи: 05.01.2023
+      a.event-link(href='#')
+        span.event-title Поручение....
+        .event-dates-container
+          span.event-start-date Получено: 01.01.2023
+          span.event-end-date Срок сдачи: 05.01.2023
+      a.event-link(href='#')
+        span.event-title Поручение....
+        .event-dates-container
+          span.event-start-date Получено: 01.01.2023
+          span.event-end-date Срок сдачи: 05.01.2023
+      a.event-link(href='#')
+        span.event-title Поручение....
+        .event-dates-container
+          span.event-start-date Получено: 01.01.2023
+          span.event-end-date Срок сдачи: 05.01.2023
+  .ArchiveErrands
+    .links-header
+      span Архив
+      hr.header-separator
+    .links-grid
+      a.event-link(href='#')
+        span.event-title Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по прогаммам развития цифровой грамотности.
+        .event-dates-container
+          span.event-start-date Получено: 01.01.2023
+          span.event-end-date Срок сдачи: 05.01.2023
+      a.event-link(href='#')
+        span.event-title Поручение....
+        .event-dates-container
+          span.event-start-date Получено: 01.01.2023
+          span.event-end-date Срок сдачи: 05.01.2023
