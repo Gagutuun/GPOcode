@@ -19,7 +19,11 @@ block content
       form
         h3 Результат работы алгоритма:
         each element in result
+<<<<<<< HEAD
           p #{`${element.errandText}, ${element.asgnName}, ${element.deadline}`}
+=======
+          p #{element.errandText}, #{element.asgnName}, #{element.deadline}
+>>>>>>> 7a407a6 (исправил вывод)
 
     script.
       // Получение ссылки на PDF файл на сервере
