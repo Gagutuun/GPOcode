@@ -1,5 +1,6 @@
 // Модель поручения
 const db = require('../config/dbConfig');
+const { makeSubexpression } = require('../utils/queryBuilder');
 const queryBuilder = require('../utils/queryBuilder');
 
 class Errand {
@@ -111,6 +112,33 @@ class Errand {
                 }
             )
         })
+    }
+
+    // Возвращает массив поручение, к которым приложили отчет
+    // P.S. Как оказалось, поле status это string, а не boolean 😥
+    static getFinishedErrands() {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeSelectQuery(
+                    null,
+                    this.tableName,
+                    queryBuilder.makeSubexpression(
+                        queryBuilder.WHERE,
+                        queryBuilder.equals(this.columnNames.status)
+                    )
+                ),
+                ['done'],
+                (err, res) => {
+                    if(err)
+                        reject(err);
+                    else if(res.rowCount > 0){
+                        resolve(res.rows);
+                    }
+                    else
+                        resolve(null);
+                }
+            );
+        });
     }
 }
 
