@@ -3,7 +3,6 @@ const pdfParser = require('../utils/pdfParser');
 const findNewAssign = require('../utils/finder');
 const { rename } = require('fs');
 const Protocol = require('../models/protocol');
-const User = require('../models/user');
 const Errand = require('../models/errand');
 
 exports.uploadProtocol = asyncHandler(async (req, res) => {
