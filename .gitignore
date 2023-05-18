@@ -1,3 +1,4 @@
 /node_modules
 /officeDist
 *.pdf
+package-lock.json
