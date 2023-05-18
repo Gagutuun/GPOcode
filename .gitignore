@@ -1,3 +1,4 @@
 /node_modules
 /officeDist
 *.pdf
+/src/public/files/

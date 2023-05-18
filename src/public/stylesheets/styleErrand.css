@@ -1,0 +1,209 @@
+body {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    padding: 10px;
+    margin: 40px 50px 20px 50px;
+}
+
+.search-container img {
+    height: 24px;
+    margin-right: 10px;
+    opacity: 0.5;
+}
+
+.search-container input[type="text"] {
+    flex: 1;
+    border: none;
+    outline: none;
+    font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.modes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 10px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.buttons button {
+    flex: 1;
+    margin: 5px;
+    padding: 10px 30px 10px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    background-color: #d7d7d7;
+    color: #000000;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    font: 20px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.buttons button.active {
+    background-color: #a4ddff;
+    color: #000000;
+}
+
+.filter {
+    display: flex;
+    align-items: center;
+}
+
+.filter span {
+    margin-right: 10px;
+    font: 20px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.filter img {
+    height: 30px;
+}
+
+@media (max-width: 650px) {
+    .modes {
+        flex-direction: column;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .buttons button {
+        width: 240px;
+    }
+
+    .buttons {
+        flex-direction: column;
+        margin-bottom: 10px;
+    }
+
+    .ActiveErrands .links-grid,
+    .ArchiveErrands .links-grid {
+        justify-content: center;
+        margin: 20px 55px;
+    }
+
+}
+
+.links-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin: 20px 0px 0px 55px;
+}
+
+.links-grid a {
+    text-align: center;
+    display: block;
+    border-radius: 20px;
+    height: 200px;
+    width: 240px;
+    margin: 0 15px 20px 0;
+}
+
+.ActiveErrands .links-grid a {
+    background-color: rgba(0, 121, 194, 1);
+}
+
+.ArchiveErrands .links-grid a {
+    background-color: rgba(47, 47, 47, 1);
+}
+
+.links-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    margin-left: 55px;
+    padding-right: 50px;
+    font: 24px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.header-separator {
+    border: none;
+    border-top: 1px solid #000000;
+    flex-grow: 1;
+    margin-left: 20px;
+}
+
+.event-link {
+    display: block;
+    width: 222px;
+    height: 182px;
+    background-color: #ffffff;
+    border: 1px solid #d1d1d1;
+    border-radius: 10px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+    margin-right: 28px;
+    margin-bottom: 18px;
+    text-decoration: none;
+}
+.event-link .event-dates-container span {
+    font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.event-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    padding: 14px;
+    font: 20px "Lucida Grande", Helvetica, Arial, sans-serif;
+    color: #ffffff;
+    text-decoration: none;
+    overflow: hidden;
+    white-space: normal;
+    max-height: 130px;
+    position: relative;
+    text-overflow: ellipsis;
+}
+
+.event-dates-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: #ffffff;
+    font-size: 18px;
+    padding: 8px 8px 8px 20px;
+    text-align: left;
+}
+
+.ActiveErrands .event-dates-container {
+
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.ArchiveErrands .event-dates-container {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.event-start-date {
+    display: block;
+}
+
+.event-end-date {
+    display: block;
+}
+
+.links-grid a span {
+    white-space: wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

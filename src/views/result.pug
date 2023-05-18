@@ -4,7 +4,7 @@ block content
   .content
     .logo
       a.button(href='/')
-        img(src='../images/logo.png')
+        img.mainImg(src='../images/logo.png')
     .item
       h1 Документ успешно загружен!
     .item
@@ -19,7 +19,7 @@ block content
       form
         h3 Результат работы алгоритма:
         each element in result
-          p #{element}
+          p #{element.errandText}
 
     script.
       // Получение ссылки на PDF файл на сервере
