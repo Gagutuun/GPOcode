@@ -3,3 +3,4 @@
 *.pdf
 package-lock.json
 /src/public/files/
+/src/config/dbConfig.js
