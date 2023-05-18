@@ -140,6 +140,27 @@ class Errand {
             );
         });
     }
+
+    // Возвращает все поручения
+    static getAllErrands() {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeSelectQuery(
+                    null,
+                    this.tableName
+                ),
+                [],
+                (err, res) => {
+                    if (err)
+                        reject(err);
+                    else if (res.rowCount > 0)
+                        resolve(res.rows);
+                    else
+                        resolve(null);
+                }
+            );
+        });
+    }
 }
 
 module.exports = Errand;
