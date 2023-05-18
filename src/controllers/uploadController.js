@@ -1,12 +1,13 @@
 const asyncHandler = require('express-async-handler');
 const pdfParser = require('../utils/pdfParser');
 const findNewAssign = require('../utils/finder');
-const { rename } = require('fs');
+const fs = require('fs');
 const Protocol = require('../models/protocol');
 const Errand = require('../models/errand');
 
 exports.uploadProtocol = asyncHandler(async (req, res) => {
   const TEMP_DOWNDLOAD_DIR = '/../public/files/temp/';
+  
   let sampleFile;
   let uploadPath;
 
@@ -23,7 +24,7 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
     _MakeTimeLable(),
     uploadPath.replace('temp/', '')
   )
-  rename(uploadPath, newFilePath, (err) => {
+  fs.rename(uploadPath, newFilePath, (err) => {
     if (err)
       console.error(err);
   });
