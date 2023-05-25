@@ -47,7 +47,7 @@ class Protocol {
                 (error, result) => {
                     if (error)
                         reject(error);
-                    else if (result.rows.length > 0)
+                    else if (result.rowCount > 0)
                         resolve(result.rows[0].id);
                     else
                         resolve(null);
@@ -62,13 +62,16 @@ class Protocol {
                 queryBuilder.makeSelectQuery(
                     new Array(this.columnNames.file_protocol_doc),
                     this.tableName,
-                    queryBuilder.makeSubexpression(`${this.columnNames.id} = $1`)
+                    queryBuilder.makeSubexpression(
+                        queryBuilder.WHERE,
+                        queryBuilder.equals(`${this.columnNames.id}`)
+                    )
                 ),
                 [id],
                 (error, result) => {
                     if (error)
                         reject(error);
-                    if (result.rows.length > 0)
+                    else if (result.rowCount > 0)
                         resolve(result.rows[0].file_protocol_doc);
                     else
                         resolve(null);
