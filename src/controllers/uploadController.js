@@ -4,18 +4,17 @@ const findNewAssign = require('../utils/finder');
 const fs = require('fs');
 const Protocol = require('../models/protocol');
 const Errand = require('../models/errand');
+const path = require('path');
 
 exports.uploadProtocol = asyncHandler(async (req, res) => {
   const PROTOCOL_NAME_REGEX = /([Pp]roto[ck]ol|[Пп]ротокол)/;
-  const FILES_DIR = '/../public/files/';
-  const TEMP_DOWNDLOAD_DIR = FILES_DIR + 'temp/';
-  
-  fs.mkdir(__dirname + FILES_DIR + 'temp', (err) => {
+  const FILES_DIR = path.join(__dirname.replace('controllers', 'public/files'));
+  fs.mkdir(path.join(FILES_DIR, '/', 'temp'), (err) => {
     if (err)
       return console.error('FATAL: ' + err);
-  });
-
+    });
   _Await();
+  const TEMP_DOWNDLOAD_DIR = path.join(FILES_DIR, '/temp');
 
   if (!req.files || Object.keys(req.files).length === 0) {
     res.status(400).send('No files were uploaded.');
@@ -23,17 +22,18 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
   }
 
   let sampleFile = req.files.sampleFile;
-  let uploadPath = __dirname + TEMP_DOWNDLOAD_DIR + sampleFile.name;
+  //TEMP_DOWNDLOAD_DIR + sampleFile.name;
+  let uploadPath = path.join(TEMP_DOWNDLOAD_DIR, '/', sampleFile.name);
+  _Await();
   await sampleFile.mv(uploadPath);
 
   let newFilePath;
   if (PROTOCOL_NAME_REGEX.exec(uploadPath) != null) {
     newFilePath = _IntegrateTimeLableIntoFileName(
       _MakeTimeLable(),
-      uploadPath.replace('temp/', 'Protocols/')
+      uploadPath.replace('temp', 'Protocols')
     )
   }
-
 
   fs.rename(uploadPath, newFilePath, (err) => {
     if (err)
@@ -43,7 +43,7 @@ exports.uploadProtocol = asyncHandler(async (req, res) => {
   _Await();
 
   fs.rmdir(
-    uploadPath.replace('/' + sampleFile.name, ''),
+    TEMP_DOWNDLOAD_DIR,
     (err) => {
       if (err)
         console.error(err);
