@@ -5,8 +5,15 @@ const Protocol = require('../models/protocol');
 
 // Маршрут для отдачи файла PDF
 router.get('/', (req, res) => {
-  const filePath = path.join(Protocol.getLastProtocolPath); // Нужно как-то сказать по какому пути лежит нужный файл
-  res.sendFile(filePath);
+  Protocol.getLastProtocolId()
+    .then((protocolId) => {
+      Protocol.getProtocolPathByID(protocolId)
+        .then((protocolPath) => {
+          const filePath = path.join(protocolPath);
+          res.sendFile(filePath);
+        })
+    })
+    .catch()
 });
 
 module.exports = router;
