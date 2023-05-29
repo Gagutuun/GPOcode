@@ -6,7 +6,7 @@ const Protocol = require('../models/protocol');
 const Errand = require('../models/errand');
 const path = require('path');
 
-exports.uploadProtocol = asyncHandler(async (req, res) => {
+exports.uploadFile = asyncHandler(async (req, res) => {
   const PROTOCOL_NAME_REGEX = /([Pp]roto[ck]ol|[Пп]ротокол)/;
   const FILES_DIR = path.join(__dirname.replace('controllers', 'public/files'));
   fs.mkdir(path.join(FILES_DIR, '/', 'temp'), (err) => {
