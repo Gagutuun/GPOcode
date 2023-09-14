@@ -1,27 +1,29 @@
 const asyncHandler = require('express-async-handler'); 
+
 const pdfParser = require('../utils/pdfParser');
 const findNewAssign = require('../utils/finder');
+
 const fs = require('fs');
+
 const Protocol = require('../models/protocol');
 const Errand = require('../models/errand');
+
 const path = require('path');
 
-exports.uploadFile = asyncHandler(async (req, res) => {
-  // Regex для определния файла, как протокол
-  const PROTOCOL_NAME_REGEX = /([Pp]roto[ck]ol|[Пп]ротокол)/;
+// Путь до временной папки
+const TEMP_DIR_PATH = path.join(
+  path.join(__dirname.replace('controllers', 'public/files')),
+  '/',
+  'temp'  );
 
-  // Путь до папки с файлами
-  const FILES_DIR_PATH = path.join(__dirname.replace('controllers', 'public/files'));
+let debugInfo = new String();
+
+
+exports.uploadFile = asyncHandler(async (req, res) => {
+  debugInfo = "";
 
   // Создание временной папки
-  fs.mkdir(path.join(FILES_DIR_PATH, '/', 'temp'), (err) => {
-    if (err)
-      return console.error('FATAL: ' + err);
-    });
-  _Await();
-
-  // Путь до временной папки
-  const TEMP_DIR_PATH = path.join(FILES_DIR_PATH, '/temp');
+  fs.mkdirSync(TEMP_DIR_PATH);
 
   // Проверка на то, что файл пришел на сервер
   if (!req.files || Object.keys(req.files).length === 0) {
@@ -33,46 +35,40 @@ exports.uploadFile = asyncHandler(async (req, res) => {
   let sampleFile = req.files.sampleFile;
   // Путь, по которому будет загружен файл
   let uploadPath = path.join(TEMP_DIR_PATH, '/', sampleFile.name);
-  _Await();
 
   // Перемещение файла по пути загрузки
   await sampleFile.mv(uploadPath);
 
   // Новый путь, по которому будет хранится файл
-  let newFilePath;
-  // Проверка на то, что файл является Протоколом
-  if (PROTOCOL_NAME_REGEX.exec(uploadPath) != null) {
-    // Если да, то
-    // Новый путь будет в папке Protocols, а к имени файла будет приписана временная метка (Время, в которое был загружен файл. Нужно для индивидуальности имени)
-    newFilePath = _IntegrateTimeLableIntoFileName(
-      _MakeTimeLable(),
-      uploadPath.replace('temp', 'Protocols')
-    )
-  }
+  let newFilePath = (/([Pp]roto[ck]ol|[Пп]ротокол)/.exec(uploadPath) != null) 
+    ? _IntegrateTimeLableIntoFileName(
+        _MakeTimeLable(),
+        uploadPath.replace('temp', 'Protocols'))
+    : null;
+
+  console.log("newFilePAth = " + newFilePath);
 
   // Перемещение файла по новому пути, по факту переименовывание файла
-  fs.rename(uploadPath, newFilePath, (err) => {
-    if (err)
-      console.error(err);
-  });
-  _Await();
+  fs.renameSync(uploadPath, newFilePath);
 
   // Удаление временной папки
-  fs.rmdir(
-    TEMP_DIR_PATH,
-    (err) => {
-      if (err)
-        console.error(err);
-    }
-  )
+  fs.rmdirSync(TEMP_DIR_PATH)
 
+  await _parseAndSavePDF(newFilePath);
+
+  // Рендерим страницу с результатом работы алгоритма
+  res.render('result', { title: 'GPO_test', text: pdfData , result: errandArray});
+  })
+
+async function _parseAndSavePDF(filePath) {
   // Парсим pdf
-  const pdfData = await pdfParser.parsePDF(newFilePath);
+  console.log("filePath = " + filePath);
+  const pdfData = await pdfParser.parsePDF(filePath);
   // Из всего текста документа получаем интересующий контент, формируя из него массив
   const errandArray = findNewAssign(pdfData);
 
   // Отправляем запрос к бд на добавление нового протокола
-  Protocol.addNewProtocol(newFilePath);
+  Protocol.addNewProtocol(filePath);
 
   // Получаем id, последнего добавленного Протокола
   const idProtocol = await Protocol.getLastProtocolId();
@@ -84,10 +80,7 @@ exports.uploadFile = asyncHandler(async (req, res) => {
     const assignID = 1;
     Errand.addNewErrand(errand.errandText, errand.deadline, idProtocol, assignID);
   })
-
-  // Рендерим страницу с результатом работы алгоритма
-  res.render('result', { title: 'GPO_test', text: pdfData , result: errandArray});
-  })
+}
 
 function _MakeTimeLable() {
   let timeLable = new Date(Date.now()).toLocaleString("ru");
@@ -98,11 +91,4 @@ function _MakeTimeLable() {
 function _IntegrateTimeLableIntoFileName(timeLable, fileName) {
   const FILE_EXTENSION = ".pdf";
   return fileName.replace(FILE_EXTENSION, "_" + timeLable) + FILE_EXTENSION;
-}
-
-function _Await() {
-  const offset = 100
-  const startDate = Date.now();
-  while(Date.now() - startDate < offset)
-    ;
 }
