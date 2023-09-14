@@ -1,8 +1,6 @@
 const db = require('../config/dbConfig');
 const queryBuilder = require('../utils/queryBuilder');
 
-
-
 class User {
   static tableName = 'public."Employee"';
   static columnNames = {
@@ -23,7 +21,6 @@ class User {
       db.query(
         queryBuilder.makeSelectQuery(
           this.tableName,
-          null,
           {
             whereExpression: queryBuilder.makeSubexpression(
               queryBuilder.WHERE,
@@ -57,7 +54,6 @@ class User {
       db.query(
         queryBuilder.makeSelectQuery(
           this.tableName,
-          null,
           {
             whereExpression: queryBuilder.makeSubexpression(
               queryBuilder.WHERE,

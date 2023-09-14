@@ -22,19 +22,23 @@ class Protocol {
      * @param {string} protocolPath - Путь до протокола 
      */
     static addNewProtocol(protocolPath/*, protocolDate, protocolNumber*/) {
-        db.query(
-            queryBuilder.makeInsertQuery(
-                this.tableName,
-                this.columnNames.file_protocol_doc
-            ),
-            [protocolPath],
-            (err, res) => {
-                if (err)
-                    console.error(err);
-                else
-                    console.log("Добавлен новый протокол");
-            }
-        )
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeInsertQuery(
+                    this.tableName,
+                    new Array(this.columnNames.file_protocol_doc)
+                ),
+                [protocolPath],
+                (err, res) => {
+                    if (err)
+                        reject(err);
+                    else if (res.rowCount > 0)
+                        resolve();
+                    else
+                        reject();
+                }
+            )
+        })
     }
 
     /**
@@ -46,8 +50,8 @@ class Protocol {
             db.query(
                 queryBuilder.makeSelectQuery(
                     this.tableName,
-                    this.columnNames.id,
                     {
+                        columnNames: new Array(this.columnNames.id),
                         orderByExpression: queryBuilder.makeSubexpression(
                             queryBuilder.ORDER_BY,
                             queryBuilder.makeLogicExpression(
@@ -57,14 +61,16 @@ class Protocol {
                         ),
                         limit: queryBuilder.makeSubexpression(
                             queryBuilder.LIMIT,
-                            1
+                            "1"
                         )
                     }
                 ),
                 [],
                 (error, result) => {
-                    if (error)
-                        reject(error);
+                    if (error) {
+                            console.error(`[ERROR] ${error}`)
+                            reject(error);
+                        }
                     else if (result.rowCount > 0)
                         resolve(result.rows[0].id);
                     else
@@ -84,8 +90,8 @@ class Protocol {
             db.query(
                 queryBuilder.makeSelectQuery(
                     this.tableName,
-                    this.columnNames.file_protocol_doc,
                     {
+                        columnNames: new Array(this.columnNames.file_protocol_doc),
                         whereExpression: queryBuilder.makeSubexpression(
                             queryBuilder.WHERE,
                             queryBuilder.equals(this.columnNames.id)

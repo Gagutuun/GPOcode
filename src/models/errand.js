@@ -73,7 +73,6 @@ class Errand {
             db.query(
                 queryBuilder.makeSelectQuery(
                     this.tableName,
-                    null,
                     {
                         whereExpression: queryBuilder.makeSubexpression(
                             queryBuilder.WHERE,
@@ -105,11 +104,11 @@ class Errand {
             db.query(
                 queryBuilder.makeSelectQuery(
                     this.tableName,
-                    new Array(
-                        this.columnNames.id,
-                        this.columnNames.text_errand
-                    ),
                     {
+                        columnNames: new Array(
+                            this.columnNames.id,
+                            this.columnNames.text_errand
+                        ),
                         whereExpression: queryBuilder.makeSubexpression(
                             queryBuilder.WHERE,
                             queryBuilder.equals(this.columnNames.id_protocol)
@@ -137,7 +136,6 @@ class Errand {
             db.query(
                 queryBuilder.makeSelectQuery(
                     this.tableName,
-                    null,
                     {
                         whereExpression: queryBuilder.makeSubexpression(
                             queryBuilder.WHERE,

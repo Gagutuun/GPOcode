@@ -3,130 +3,162 @@ const REG_EX_CONDITION = /\d/
 const REG_EX_WHERE_CONDITION = /[$]/
 // Все функции этого модуля Возвращают строковый sql запрос
 class QuerryBuilder {
+    /**
+     * Ключевое слово для WHERE подвыражения
+     */
     static WHERE = "WHERE";
+    /**
+     * Ключевое слово для GROUP BY подвыражения
+     */
     static GROUP_BY = "GROUP BY";
+    /**
+     * Ключевое слово для ORDER BY подвыражения
+     */
     static ORDER_BY = "ORDER BY";
+    /**
+     * Ключевое слово для LIMIT подвыражения
+     */
     static LIMIT = "LIMIT";
 
+    /**
+     * Логическое И в SQL 
+     */
     static AND = "AND";
+    /**
+     * Логическое ИЛИ в SQL 
+     */
     static OR = "OR";
+    /**
+     * Логическое НЕ в SQL 
+     */
     static NOT = "NOT";
+    /**
+     * DESC оператор SQL 
+     */
     static DESC = "DESC";
 
-    // Функции для составления условий
+    /**
+     * Cоздает шаблон равенства колонки со значением
+     * @param {string} columnName - Название колонки
+     * @returns Строка шаблон вида "columnName = $"
+     */
     static equals(columnName) {
         return `${columnName} = $`;
     }
+    /**
+     * Создает шаблон, по которому значение в колонке больше предложенного значения
+     * @param {string} columnName - Название колонки
+     * @returns Строка шаблон вида "columnName > $"
+     */
     static bigger(columnName) {
         return `${columnName} > $`;
     }
+    /**
+     * Создает шаблон, по которому значение в колонке меньше предложенного значения
+     * @param {string} columnName - Название колонки
+     * @returns Строка шаблон вида "columnName < $"
+     */
     static smaller(columnName) {
         return `${columnName} < $`;
     }
+    /**
+     * Создает шаблон, по которому значение в колонке не равно предложенному значению
+     * @param {string} columnName - Название колонки
+     * @returns Строка шаблон вида "columnName != $"
+     */
     static notEquals(columnName) {
         return `${columnName} != $`;
     }
+    /**
+     * Создает шаблон, по которому значение в колонке меньше либо равно предложенного значения
+     * @param {string} columnName - Название колонки
+     * @returns Строка шаблон вида "columnName <= $"
+     */
     static notBigger(columnName) {
         return `${columnName} <= $`;
     }
+    /**
+     * Создает шаблон, по которому значение в колонке больше либо равно предложенного значения
+     * @param {string} columnName - Название колонки
+     * @returns Строка шаблон вида "columnName >= $"
+     */
     static notSmaller(columnName) {
         return `${columnName} >= $`;
     }
 
-    // функция makeInsertQuery() принимает:
-    //     имя таблицы (tableName),
-    //     массив имен столбцов таблицы (columnNames),
-    //     число аргументов (значений, записей), которое будет добавлено в таблицу (nArgs)
-    static makeInsertQuery(tableName, columnNames, nArgs) {
+    /**
+     * Создает строку, содержащую INSERT SQL запрос
+     * @param {string} tableName - Имя таблицы 
+     * @param {string[]} columnNames - Имя колонок
+     * @returns Строка с INSERT запросом
+     */
+    static makeInsertQuery(tableName, columnNames) {
         let sqlQuery = `INSERT INTO ${tableName} (`;
-        columnNames.forEach(columnName => {
-            if (sqlQuery != `INSERT INTO ${tableName} (`)
-                sqlQuery += `, `;
-            sqlQuery += columnName;
-        });
+        sqlQuery += columnNames.toString().replaceAll(",", ", ");
         sqlQuery += `) VALUES (`;
-        for (let i = 0; i < nArgs; i++) {
-            sqlQuery += `$${i + 1}, `;
-        }
-        sqlQuery = sqlQuery.slice(0, sqlQuery.lastIndexOf(', ')) + ')';
+        for (let i = 1; i <= columnNames.length; i++)
+            sqlQuery += `$${i}${i == columnNames.length ? ")" : ", "}`;
         return sqlQuery;
     }
-    // функция makeSelectQuery() принимает:
-    //     массив имен столбцов (),
-    //     имя таблицы (),
-    //     условие отбора записей (),
-    //     условие группировки (),
-    //     условие сортировки ().
-    // P.S. Все условия пишутся БЕЗ ключевых sql слов (WHERE, GROUP BY, ORDER BY)
-    // P.P.S. Функция не проверялась на деле, возможно нужны правки
-    static makeSelectQuery(
-        columnNames,
-        tableName,
-        whereExpression,
-        groupByExpression,
-        orderByExpression,
-        limit
-    ) {
+    /**
+     * Создает строку, содержащую INSERT SQL запрос
+     * @param {string} tableName 
+     * @param {{
+     * columnNames: string[]
+     * whereExpression: string
+     * groupByExpression: string
+     * orderByExpression: string
+     * limit: string
+     * }} args - аргументы запроса
+     * @returns 
+     */
+    static makeSelectQuery(tableName, args = {
+        columnNames: this.columnNames,
+        whereExpression: this.whereExpression || null,
+        groupByExpression: this.groupByExpression || null,
+        orderByExpression: this.orderByExpression || null,
+        limit: this.limit || null
+    }) {
         let sqlQuery = `SELECT `;
-        if (columnNames === null)
-            sqlQuery += `*`;
-        else {
-            columnNames.forEach(columnName => {
-                if (sqlQuery != `SELECT `)
-                    sqlQuery += `, `;
-                sqlQuery += `${columnName}`;
-            })
-        }
+        sqlQuery += args.columnNames === null || args.columnNames === undefined ? "*" : args.columnNames.toString().replaceAll(",", ", ");
         sqlQuery += ` FROM ${tableName}`;
-        if (whereExpression != null)
-            sqlQuery += ` ${whereExpression}`;
-        if (groupByExpression != null)
-            sqlQuery += ` ${groupByExpression}`;
-        if (orderByExpression != null)
-            sqlQuery += ` ${orderByExpression}`;
-        if (limit != null && limit != 0)
-            sqlQuery += ` ${limit}`;
+        sqlQuery += args.whereExpression != null ? " " + args.whereExpression : "";
+        sqlQuery += args.groupByExpression != null ? " " + args.groupByExpression : "";
+        sqlQuery += args.orderByExpression != null ? " " + args.orderByExpression : "";
+        sqlQuery += args.limit != null ? " " + args.limit : "";
+        let i = 1;
+        for(let index = sqlQuery.indexOf("$"); index != -1; index = sqlQuery.indexOf("$", index + 2))
+            sqlQuery = sqlQuery.slice(0, index + 1) + (i++) + sqlQuery.slice(index + 1);
         return sqlQuery;
     }
 
-    // Создает подвыражение для запросов. P.S. соединяет все пробелами
-    // Пример использования:
-    // makeSubexpression(
-    //     QuerryBuilder.WHERE,
-    //     "Условие 1",
-    //     QuerryBuilder.AND,
-    //     "Условие 2"
-    // )
-    // Код выдаст следующее выражение: WHERE Условие 1 AND Условие 2
-    //
-    // Новый способ:
-    // makeSubexpression(
-    //     QuerryBuilder.WHERE,
-    //     //на выбор есть ряд функций
-    //     QuerryBuilder.equals("имя_1"),
-    //     QuerryBuilder.AND,
-    //     QuerryBuilder.notEquals("имя_2")
-    // )
-    // Код выдаст строку: WHERE имя_1 = $1 AND имя_2 != $2
-    static makeSubexpression() {
-        let subexpression = ``;
-        let countArgs = 1;
-        for (let i = 0; i < arguments.length; i++) {
-            if (subexpression != ``)
-                subexpression += ` `;
-            if (i % 2 == 1)
-                if (REG_EX_CONDITION.exec(arguments[i]) && REG_EX_CONDITION.exec(arguments[i]).index)
-                    subexpression += `${arguments[i]}`;
-                else {
-                    if (REG_EX_WHERE_CONDITION.exec(arguments[i]))
-                        subexpression += `${arguments[i]}${countArgs++}`
-                    else
-                        subexpression += arguments[i];
-                }
-            else
-                subexpression += arguments[i];
-        }
-        return subexpression;
+    /**
+     * Создает подвыражение для уточнения запросов
+     * @param {string} subexpressionKeyWord - Ключевое слово подзапроса
+     * @param {string} logicExpression - Логическое выражение, приминимое в данном подвыражение
+     * @returns Строка, содержащая подвыражение
+     */
+    static makeSubexpression(subexpressionKeyWord, logicExpression) {
+        return `${subexpressionKeyWord} ${logicExpression}`;
+    }
+
+    /**
+     * Создает выражение для установки свойства LIMIT
+     * @param {*} limit - ограничение к установке
+     */
+    static makeLimitExpression(limit) {
+        return 
+    }
+
+    /**
+     * Создает логическое выражение
+     * @param {string} logicOperator - Логический оператор
+     * @param {string} firstExpressionPart - Первая часть логического выражения
+     * @param {string} secondExpressionPart - Вторая часть логического выражения
+     * @returns Строка с логическим выражением
+     */
+    static makeLogicExpression(logicOperator, firstExpressionPart, secondExpressionPart) {
+        return `${firstExpressionPart != null || firstExpressionPart != undefined ? firstExpressionPart + " " : ""}${logicOperator}${secondExpressionPart != null || secondExpressionPart != undefined ? " " + secondExpressionPart : ""}`;
     }
 
 }
