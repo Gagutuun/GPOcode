@@ -141,15 +141,7 @@ class QuerryBuilder {
     static makeSubexpression(subexpressionKeyWord, logicExpression) {
         return `${subexpressionKeyWord} ${logicExpression}`;
     }
-
-    /**
-     * Создает выражение для установки свойства LIMIT
-     * @param {*} limit - ограничение к установке
-     */
-    static makeLimitExpression(limit) {
-        return 
-    }
-
+    
     /**
      * Создает логическое выражение
      * @param {string} logicOperator - Логический оператор
