@@ -46,39 +46,43 @@ exports.uploadFile = asyncHandler(async (req, res) => {
         uploadPath.replace('temp', 'Protocols'))
     : null;
 
-  console.log("newFilePAth = " + newFilePath);
-
   // Перемещение файла по новому пути, по факту переименовывание файла
   fs.renameSync(uploadPath, newFilePath);
 
   // Удаление временной папки
   fs.rmdirSync(TEMP_DIR_PATH)
 
-  await _parseAndSavePDF(newFilePath);
+  const resultsOfParsing = await _parseAndSavePDF(newFilePath);
 
   // Рендерим страницу с результатом работы алгоритма
-  res.render('result', { title: 'GPO_test', text: pdfData , result: errandArray});
+  res.render('result', { title: 'GPO_test', text: resultsOfParsing.pdfData , result: resultsOfParsing.errandArray});
   })
 
 async function _parseAndSavePDF(filePath) {
-  // Парсим pdf
-  console.log("filePath = " + filePath);
-  const pdfData = await pdfParser.parsePDF(filePath);
-  // Из всего текста документа получаем интересующий контент, формируя из него массив
-  const errandArray = findNewAssign(pdfData);
+  return new Promise(async (resolve, reject) => {
+    // Парсим pdf
+    const pdfData = await pdfParser.parsePDF(filePath);
+    // Из всего текста документа получаем интересующий контент, формируя из него массив
+    const errandArray = findNewAssign(pdfData);
 
-  // Отправляем запрос к бд на добавление нового протокола
-  Protocol.addNewProtocol(filePath);
+    // Отправляем запрос к бд на добавление нового протокола
+    await Protocol.addNewProtocol(filePath);
 
-  // Получаем id, последнего добавленного Протокола
-  const idProtocol = await Protocol.getLastProtocolId();
+    // Получаем id, последнего добавленного Протокола
+    const idProtocol = await Protocol.getLastProtocolId();
   
-  // Идем по каждому элементу массива, отправляя запрос к бд на добавление новых записей в Errand
-  errandArray.forEach(errand => {
+    // Идем по каждому элементу массива, отправляя запрос к бд на добавление новых записей в Errand
+    errandArray.forEach(errand => {
     // Т.к. сейчас непонятно кому давать поручение, assignID = 1
     // const assignID = await User.getIdByName(errand.asgnName);
     const assignID = 1;
     Errand.addNewErrand(errand.errandText, errand.deadline, idProtocol, assignID);
+    resolve({
+      pdfData: pdfData,
+      errandArray: errandArray
+    })
+  })
+
   })
 }
 
