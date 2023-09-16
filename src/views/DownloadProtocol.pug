@@ -1,8 +1,10 @@
-link(rel="stylesheet", href="style/styleDownloadProtocol.css")
+extends layout
 
-.main-content
-  img.gazpromlogo(src="img/gazpromlogo.png")
-  form
-    .form-group
-      input(type="file", accept=".pdf", class="btn")
-      input(type="submit", value="Загрузить", class="btn loading")
+block content
+  .main-content
+    img.gazpromlogo(src="img/gazpromlogo.png")
+    form
+      .form-group
+        input(type="file", accept=".pdf", class="btn")
+        input(type="submit", value="Загрузить", class="btn loading")
+        input(type='date', name='DateOfUpload', required='')

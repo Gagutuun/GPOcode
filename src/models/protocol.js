@@ -47,7 +47,7 @@ class Protocol {
                 (error, result) => {
                     if (error)
                         reject(error);
-                    else if (result.rowCount > 0)
+                    else if (result.rows.length > 0)
                         resolve(result.rows[0].id);
                     else
                         resolve(null);
@@ -68,7 +68,7 @@ class Protocol {
                 (error, result) => {
                     if (error)
                         reject(error);
-                    else if (result.rowCount > 0)
+                    if (result.rows.length > 0)
                         resolve(result.rows[0].file_protocol_doc);
                     else
                         resolve(null);
