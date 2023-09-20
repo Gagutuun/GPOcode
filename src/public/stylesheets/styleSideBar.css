@@ -1,0 +1,173 @@
+*{
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.mainContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 280px;
+    max-width: 300px;
+    background-color: rgba(0, 121, 194, 1);
+    transition: width 0.3s;
+}
+
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media only screen and (max-width: 1100px) {
+    .sidebar {
+        width: 70px;
+    }
+
+    .menu li a .menu-text,
+    .menu-person li a .person-name {
+        display: none;
+    }
+
+    .menu li .menu-text {
+        font-size: 0;
+    }
+
+    .btn-bell {
+        display: none;
+    }
+}
+
+.menu-person {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 15px;
+    margin-bottom: 50px;
+}
+
+.menu-person li {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 40px;
+    margin-left: 5px;
+}
+
+.menu-person li a {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+}
+
+.menu-person li a .menu-text {
+    margin-left: 10px;
+    font-size: 1.3rem;
+}
+
+.person-name {
+    margin-left: 10px;
+    font-size: 1.3rem;
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tooltipPerson {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border-radius: 5px;
+    text-align: center;
+    padding: 5px;
+    z-index: 999;
+}
+
+.block:hover .tooltipPerson {
+    display: block;
+}
+
+.btn-img {
+    border-radius: 100px;
+}
+
+.btn-bell {
+    padding: 0px;
+    margin-left: auto;
+    margin-right: 5px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu li {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 50px;
+    margin-left: 10px;
+    margin-bottom: 30px;
+}
+
+.menu li a {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+    width: 100%;
+}
+
+.menu li a .menu-text {
+    margin-left: 10px;
+    font-size: 1.3rem;
+}
+
+.menu li.feedback {
+    margin-top: 100px;
+}
+
+.menu .active {
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 20px 0px 00px 20px;
+}
+
+.menu .active a {
+    color: rgba(0, 121, 194, 1);
+}
+
+.menu .active .btn-download{
+    content: url('../images/SidebarImg/downloadActive.svg');
+}
+
+.menu .active .btn-errand{
+    content: url('../images/SidebarImg/errandActive.svg');
+}
+
+.menu .active .btn-report-protocol{
+    content: url('../images/SidebarImg/generalReportActive.svg');
+}
+
+.menu .active .btn-exit{
+    content: url('../images/SidebarImg/exitActive.svg');
+}
+
+.menu .active .btn-feedback{
+    content: url('../images/SidebarImg/feedbackActive.svg');
+}
