@@ -16,7 +16,13 @@ class Errand {
         id_protocol: 'id_protocol' // Нужно получить из запроса к протоколу
     };
 
-    // Добавляем новое поручение
+    /**
+     * Добавляет новое поручение в базу данных
+     * @param {string} errandText 
+     * @param {string} deadline 
+     * @param {int} idProtocol 
+     * @param {int} idResponsible 
+     */
     static addNewErrand(errandText, deadline, idProtocol, idResponsible) {
         // Выполняем запрос к таблице сотрудников на получение id ответсенного.
         // const idResponsible = 1; // запрос к users
@@ -29,8 +35,7 @@ class Errand {
                         this.columnNames.id_protocol,
                         this.columnNames.id_responsible,
                         this.columnNames.text_errand
-                    ),
-                    4
+                    )
                 ),
                 [true, idProtocol, idResponsible, errandText],
                 (error, result) => {
@@ -48,8 +53,7 @@ class Errand {
                         this.columnNames.id_responsible,
                         this.columnNames.scheduled_due_date,
                         this.columnNames.text_errand
-                    ),
-                    5
+                    )
                 ),
                 [false, idProtocol, idResponsible, deadline, errandText],
                 (error, result) => {
@@ -59,17 +63,22 @@ class Errand {
             )
     }
     
-    // Возвращает полную информацию о поручении по его id
+    /**
+     * Возвращает полную информацию о поручении по его id
+     * @param {int} idErrand - ID поручения
+     * @returns 
+     */
     static getErrandByID(idErrand) {
         return new Promise((resolve, reject) => {
             db.query(
                 queryBuilder.makeSelectQuery(
-                    null,
                     this.tableName,
-                    queryBuilder.makeSubexpression(
-                        queryBuilder.WHERE,
-                        "id = $1"
-                    )
+                    {
+                        whereExpression: queryBuilder.makeSubexpression(
+                            queryBuilder.WHERE,
+                            queryBuilder.equals(this.columnNames.id)
+                        )
+                    }
                 ),
                 [idErrand],
                 (err, res) => {
@@ -83,6 +92,89 @@ class Errand {
                 }
             )
         })
+    }
+
+    /**
+     * Возвращает массив поручений с информацией: id, text_errand - по id протокола
+     * @param {int} idProtocol - ID протокола
+     * @returns Массив ID и текстов поручений
+     */
+    static getAllErrandsOfProtocol(idProtocol) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeSelectQuery(
+                    this.tableName,
+                    {
+                        columnNames: new Array(
+                            this.columnNames.id,
+                            this.columnNames.text_errand
+                        ),
+                        whereExpression: queryBuilder.makeSubexpression(
+                            queryBuilder.WHERE,
+                            queryBuilder.equals(this.columnNames.id_protocol)
+                        )
+                    }
+                ),
+                [idProtocol],
+                (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else if (res.rowCount > 0) {
+                        resolve(res.rows);
+                    } else {
+                        resolve(null);
+                    }
+                }
+            )
+        })
+    }
+
+    // Возвращает массив поручение, к которым приложили отчет
+    // P.S. Как оказалось, поле status это string, а не boolean 😥
+    static getFinishedErrands() {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeSelectQuery(
+                    this.tableName,
+                    {
+                        whereExpression: queryBuilder.makeSubexpression(
+                            queryBuilder.WHERE,
+                            queryBuilder.equals(this.columnNames.status)
+                        )
+                    }
+                ),
+                ['done'],
+                (err, res) => {
+                    if(err)
+                        reject(err);
+                    else if(res.rowCount > 0){
+                        resolve(res.rows);
+                    }
+                    else
+                        resolve(null);
+                }
+            );
+        });
+    }
+
+    // Возвращает все поручения
+    static getAllErrands() {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeSelectQuery(
+                    this.tableName
+                ),
+                [],
+                (err, res) => {
+                    if (err)
+                        reject(err);
+                    else if (res.rowCount > 0)
+                        resolve(res.rows);
+                    else
+                        resolve(null);
+                }
+            );
+        });
     }
 }
 

@@ -1,8 +1,6 @@
 const db = require('../config/dbConfig');
 const queryBuilder = require('../utils/queryBuilder');
 
-
-
 class User {
   static tableName = 'public."Employee"';
   static columnNames = {
@@ -11,7 +9,7 @@ class User {
     name: 'name',
     patronymic: 'patronymic',
     login: 'login',
-    ssword: 'password',
+    password: 'password',
     position: 'position',
     role: 'role',
     category: 'category',
@@ -22,14 +20,17 @@ class User {
     return new Promise((resolve, reject) => {
       db.query(
         queryBuilder.makeSelectQuery(
-          null,
           this.tableName,
-          queryBuilder.makeSubexpression(
-            queryBuilder.WHERE,
-            "login = $1",
-            queryBuilder.AND,
-            "password = $2"
-          )
+          {
+            whereExpression: queryBuilder.makeSubexpression(
+              queryBuilder.WHERE,
+              queryBuilder.makeLogicExpression(
+                queryBuilder.AND,
+                queryBuilder.equals(this.columnNames.login),
+                queryBuilder.equals(this.columnNames.password)
+              )
+            )
+          }
         ),
         [login, password],
         (error, result) => {
@@ -52,9 +53,13 @@ class User {
     return new Promise((resolve, reject) => {
       db.query(
         queryBuilder.makeSelectQuery(
-          null,
           this.tableName,
-          queryBuilder.makeSubexpression(queryBuilder.WHERE, "id = $1"),
+          {
+            whereExpression: queryBuilder.makeSubexpression(
+              queryBuilder.WHERE,
+              queryBuilder.equals(this.columnNames.id)
+            )
+          }
         ),
         [id],
         (error, result) => {
