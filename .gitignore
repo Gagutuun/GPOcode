@@ -1,2 +1,6 @@
 /node_modules
 /officeDist
+*.pdf
+package-lock.json
+/src/public/files/
+.env

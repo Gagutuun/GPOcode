@@ -3,7 +3,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.get('/', function (req, res, next) {
+router.get('/', authMiddleware.isAuthenticated ,function (req, res, next) {
   res.render('main', { title: 'GPO_test' });
 });
 
