@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  script(async='' src='/scripts/scriptReportProtocol.js')
+  script(async='', src='/scripts/scriptReportProtocol.js')
   .contentReportProtocol
     .search-container
       img(src='images/ErradnsImg/search.svg' alt='Поиск')
@@ -17,56 +17,27 @@ block content
             th.col-var-2 Срок сдачи
             th.col-var-1
         tbody
-          tr
-            td.col-var-1
-              input.checkbox-order-selection(type='checkbox')
-            td.col-var-2 Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по прогаммам развития цифровой грамотности.
-            td.col-var-2 Фамилия имя отчество
-            td.col-var-2 27.02.2022
-            td.col-var-2 27.02.2022
-            td.col-var-1
-              button.expand-button ᐯ
-            // ⌄      ᐯ
-          tr
-            td.col-var-1
-              input.checkbox-order-selection(type='checkbox')
-            td.col-var-2 Длинный текст, который не поместиться
-            td.col-var-2 Фамилия имя отчество
-            td.col-var-2 27.02.2022
-            td.col-var-2 Постоянно
-            td.col-var-1
-              button.expand-button ᐯ
-            // ⌃      ᐱ
-      input.formProtocol(type='submit' value='Сформировать протокол')
-    .links-header
-      span Архив протоколов
-      hr.header-separator
-    .links-grid-ReportProtocol
-      a.event-link-ReportProtocol(href='#')
-        span.event-title-ReportProtocol Отчёт от
-        span.date-ReportProtocol 27.02.2022
-        span.number-ReportProtocol № 15
-      a.event-link-ReportProtocol(href='#')
-        span.event-title-ReportProtocol Отчёт от
-        span.date-ReportProtocol 27.02.2022
-        span.number-ReportProtocol № 16
-      a.event-link-ReportProtocol(href='#')
-        span.event-title-ReportProtocol Отчёт от
-        span.date-ReportProtocol 27.02.2022
-        span.number-ReportProtocol № 17
-      a.event-link-ReportProtocol(href='#')
-        span.event-title-ReportProtocol Отчёт от
-        span.date-ReportProtocol 27.02.2022
-        span.number-ReportProtocol № 18
-      a.event-link-ReportProtocol(href='#')
-        span.event-title-ReportProtocol Отчёт от
-        span.date-ReportProtocol 27.02.2022
-        span.number-ReportProtocol № 19
-      a.event-link-ReportProtocol(href='#')
-        span.event-title-ReportProtocol Отчёт от
-        span.date-ReportProtocol 27.02.2022
-        span.number-ReportProtocol № 20
-      a.event-link-ReportProtocol(href='#')
-        span.event-title-ReportProtocol Отчёт от
-        span.date-ReportProtocol 27.02.2022
-        span.number-ReportProtocol № 21
+          each errand in errands
+            tr
+              td.col-var-1
+                input.checkbox-order-selection(type='checkbox')
+              td.col-var-2= errand.text_errand
+              td.col-var-2= errand.responsible
+              td.col-var-2= errand.actual_date
+              td.col-var-2
+                if errand.constantly
+                  | Постоянное выполнение
+                else
+                  | Срок сдачи: #{errand.scheduled_due_date}
+              td.col-var-1
+                button.expand-button ᐯ
+    input.formProtocol(type='submit' value='Сформировать протокол')
+  //- .links-header
+  //-   span Архив протоколов
+  //-   hr.header-separator
+  //- .links-grid-ReportProtocol
+  //-   each report in reports
+  //-     a.event-link-ReportProtocol(href=`/report/${report.id}`)
+  //-       span.event-title-ReportProtocol Отчёт от
+  //-       span.date-ReportProtocol= report.date
+  //-       span.number-ReportProtocol № #{report.id} // Отображаем номер протокола

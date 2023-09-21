@@ -2,13 +2,10 @@ const asyncHandler = require('express-async-handler');
 
 const pdfParser = require('../utils/pdfParser');
 const findNewAssign = require('../utils/finder');
-
-const fs = require('fs');
-
 const Protocol = require('../models/protocol');
-const Errand = require('../models/errand');
-
 const path = require('path');
+const fs = require('fs');
+const Errand = require('../models/errand');
 
 // Путь до временной папки
 const TEMP_DIR_PATH = path.join(
@@ -16,12 +13,7 @@ const TEMP_DIR_PATH = path.join(
   '/',
   'temp'  );
 
-let debugInfo = new String();
-
-
 exports.uploadFile = asyncHandler(async (req, res) => {
-  debugInfo = "";
-
   // Создание временной папки
   fs.mkdirSync(TEMP_DIR_PATH);
 

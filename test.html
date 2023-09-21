@@ -1,80 +1,84 @@
-<table border="1">
-    <thead>
-      <tr>
-        <th>№ по протоколу</th>
-        <th>Поручение</th>
-        <th>Ответственный / Срок / Пояснения</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-    <td rowspan="2">1</td>
-        <td>Поручение 1</td>
-        <td rowspan="1">
-          Ответственные - заместители генерального директора, Исайкин А.Г. <br>
-          Срок исполнения - постоянно
-        </td>
-      </tr>
-      <tr>
-        
-      </tr>
-      <tr>
-        <td></td>
-        <td>
-        Отчет на 15.11.2021 (дата отчета) Краткий отчет по поручению 1 для Директум
-        </td>
-        <td>Развернутые ответы от подразделений по поручениям. <br>
-            Могут быть разные исполнители в разных пунктах. От 1 до 10 исполнителей. <br>
-            ООТиЗ: отчет <br>
-            ОКиТО: отчет <br>
-            КИ: отчет <br>
-            СК: отчет <br>
-            МС: отчет <br>
-            ОСР: отчет</td>
-      </tr>
-    </tbody>
-  </table>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PdfViewer</title>
+    <!-- загрузка библиотеки pdf.js -->
+    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+</head>
+<body>
+  <form>
+    <input type="file" id="pdf-file-input" accept="application/pdf">
+    <button type="submit">Load PDF</button>
+  </form>
+  <div>
+    <!-- контейнер для отображения PDF-файла -->
+    <canvas id="pdf-canvas"></canvas>
+  </div>
+  <button id="previous-page">Previous</button>
+  <button id="next-page">Next</button>
+  <script>
+    const canvas = document.getElementById('pdf-canvas');
+    const prev = document.getElementById('previous-page');
+    const next = document.getElementById('next-page');
+    const fileInput = document.getElementById('pdf-file-input');
 
-extends layout
+    let pdfDoc = null,
+        pageNum = 1,
+        pageRendering = false,
+        pageNumPending = null;
 
-block content
-  .content
-    .logo
-      a.button(href='/')
-        img(src='../images/logo.png')
-    .item
-      h1 Документ успешно загружен!
-    .item
-      form
-        h3 Текст, содержащийся в документе:
-        p= text
-    .item
-      form
-        h3 Результат работы алгоритма:
-        each element in result
-          p #{element}
-    .item
-      canvas#pdfViewer
-
-    
-    script.
-      var url = 'https://edu.tusur.ru/publications/9287/download';
-      var pdfjsLib = window['pdfjs-dist/build/pdf'];
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
-      var loadingTask = pdfjsLib.getDocument(url);
-      loadingTask.promise.then(function(pdf) {
-        var pageNumber = 1;
-        pdf.getPage(pageNumber).then(function(page) {
-          var scale = 1.5;
-          var viewport = page.getViewport({scale: scale});
-          var canvas = document.getElementById('pdfViewer');
-          var context = canvas.getContext('2d');
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-          var renderContext = {
-            canvasContext: context,
-            viewport: viewport
-          };
-          page.render(renderContext);
+    function renderPage(num) {
+      pageRendering = true;
+      pdfDoc.getPage(num).then(function(page) {
+        const viewport = page.getViewport({scale:1.5});
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        const renderCtx = canvas.getContext('2d');
+        const renderTask = page.render({canvasContext: renderCtx, viewport: viewport});
+        renderTask.promise.then(function() {
+          pageRendering = false;
+          if (pageNumPending !== null) {
+            renderPage(pageNumPending);
+            pageNumPending = null;
+          }
         });
       });
+      document.getElementById('page-num').textContent = num;
+    }
+
+    function queueRenderPage(num) {
+      if (pageRendering) {
+        pageNumPending = num;
+      } else {
+        renderPage(num);
+      }
+    }
+
+    prev.addEventListener('click', function() {
+      if (pageNum <= 1) {
+        return;
+      }
+      pageNum--;
+      queueRenderPage(pageNum);
+    });
+
+    next.addEventListener('click', function() {
+      if (pageNum >= pdfDoc.numPages) {
+        return;
+      }
+      pageNum++;
+      queueRenderPage(pageNum);
+    });
+
+    // загрузка PDF-файла и отображение его на странице
+    fileInput.addEventListener('input', function() {
+      const file = fileInput.files[0];
+      const fileURL = URL.createObjectURL(file);
+      pdfjsLib.getDocument(fileURL).then(function(pdfDoc_) {
+        pdfDoc = pdfDoc_;
+        renderPage(pageNum);
+      });
+    });
+  </script>
+</body>
+</html>
