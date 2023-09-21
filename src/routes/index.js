@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const mainRouter = require('./mainRouter');
 const uploadRouter = require('./uploadRouter');
+const LoadRouter = require('./LoadRouter');
 const authRouter = require('./authRouter');
 const testRouter = require('./testRouter');
 const pdfRouter = require('./pdfRouter');
@@ -12,12 +12,12 @@ const feedback = require('./feedback');
 
 
 // Use routes
-router.use('/', mainRouter);
-router.use('/upload', uploadRouter);
+//router.use('/', mainRouter);
+router.use('/upload', LoadRouter);
 router.use('/auth', authRouter);
 router.use('/test', testRouter);
 router.use('/pdf', pdfRouter);
-router.use('/downloadProtocol', mainRouter);
+router.use('/uploadProtocol', uploadRouter);
 router.use('/errand', errands);
 router.use('/reportProtocol', reportProtocol);
 router.use('/feedback', feedback);

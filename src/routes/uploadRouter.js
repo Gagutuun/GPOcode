@@ -1,7 +1,11 @@
 const express = require('express');
-const router = express.Router();
-const uploadController = require('../controllers/uploadController');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-router.post('/', uploadController.uploadFile);
-console.log("Перешел на страницу");
+const router = express.Router();
+
+router.get('/', authMiddleware.isAuthenticated ,function (req, res, next) {
+  res.render('uploadProtocol', { title: 'GPO_test' });
+});
+
+
 module.exports = router;
