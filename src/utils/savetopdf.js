@@ -17,6 +17,9 @@ doc.addFileToVFS('MyFont.ttf', myFont);
 doc.addFont('MyFont.ttf', 'MyFont', 'normal');
 doc.setFont('MyFont');
 
+const introText =
+    'Перечень поручений и отчетов по протоколу производственного совещания при генеральном директоре по направлению деятельности заместителя генерального директора по управлению персоналом от 27.12.2021 № 20';
+
 const headers = ['№ по протоколу', 'Поручение', 'Ответственный / Срок / Пояснения'];
 
 // Выполните запрос к базе данных для получения данных о поручениях
@@ -56,26 +59,28 @@ const createTable = async () => {
   // Создаем массив данных для таблицы
   const tableData = [];
 
+  doc.text(introText, doc.internal.pageSize.width / 2, 10, { align: 'center', overwlow: 'linebreak', maxWidth:  280, fontSize: 12});
+
   // Заполняем массив данными
   errands.forEach((errand, index) => {
     // Формируем данные для каждой строки таблицы
     const row1 = [
-      { content: errand.text_errand.split('.').shift(), rowSpan: 2 }, // Объединяем две ячейки в столбце № по протоколу
-      errand.text_errand.split('.').slice(1).join('.').trim(), // Берем оставшуюся часть текста поручения
+      { content: errand.text_errand.split('.').shift() + '.', rowSpan: 2, styles: {halign: 'center'}}, // Объединяем две ячейки в столбце № по протоколу
+      {content: errand.text_errand.split('.').slice(1).join('.').trim(), styles: { fillColor: [222, 234, 246] }}// Берем оставшуюся часть текста поручения
     ];
 
     const row2 = [
     ];
 
     if (errand.constantly) {
-      row1.push('Ответственные - заместители генерального директора. Срок исполнения - постоянно');
+      row1.push({ content: 'Ответственные - заместители генерального директора.\nСрок исполнения - постоянно', styles: { fillColor: [222, 234, 246] } });
     } else {
-      row1.push(`Ответственные - заместители генерального директора. Срок исполнения - ${formatDate(errand.scheduled_due_date)}`);
+      row1.push({ content: `Ответственные - заместители генерального директора.\nСрок исполнения - ${formatDate(errand.scheduled_due_date)}`, styles: { fillColor: [222, 234, 246] } });
     }
 
     // Создайте переменные для краткого и развернутого отчетов, которые будут получены из базы данных
-    const briefReport = 'Краткий отчет для директум'; // Замените на данные из базы данных
-    const detailedReport = 'Развернутый отчет'; // Замените на данные из базы данных
+    const briefReport = 'Краткий отчет для директум.'; // Замените на данные из базы данных
+    const detailedReport = 'Развернутый отчет.Развернутый отчет.Развернутый отчет.Развернутый отчет.Развернутый отчет.Развернутый отчет.'; // Замените на данные из базы данных
 
     row2.push(briefReport);
     row2.push(detailedReport);
@@ -87,35 +92,25 @@ const createTable = async () => {
 
   // Определение параметров таблицы
   const tableOptions = {
-    startY: 20,
+    startY: 24,
     head: [headers],
     body: tableData,
     theme: 'grid',
     styles: {
       font: 'MyFont',
-      halign: 'center',
-      valign: 'middle',
+      //valign: 'middle',
       overflow: 'linebreak',
       cellWidth: 'auto',
-      fontSize: 14,
+      fontSize: 10,
       textColor: [0, 0, 0],
-      tableLineColor: [0, 0, 0],
+      lineColor: Color = 5,
+      lineWidth: border = 0.5,
     },
     headStyles: {
+      halign: 'center',
       fillColor: [255, 255, 255],
-    },
-    bodyStyles: {},
-    didDrawCell: (data) => {
-      if (data.row.index === 0) {
-        doc.setLineWidth(0.5);
-        doc.line(
-          data.cell.x,
-          data.cell.y + data.cell.height,
-          data.cell.x + data.cell.width,
-          data.cell.y + data.cell.height
-        );
-      }
-    },
+      fontStyle: 'bold',
+    }
   };
 
   // Создаем таблицу с помощью auto-table
