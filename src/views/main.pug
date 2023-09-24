@@ -9,17 +9,17 @@ block content
       form#uploadForm(ref='uploadForm', action='/upload', method='post', enctype='multipart/form-data')
         table.tableDownloadProtocol
           tr.trDownloadProtocol
-            td.btn.tdDownloadProtocol Выберите файл
+            td.tdDownloadProtocol Выберите файл
             td.tdDownloadProtocol
-              input(type="file", accept=".pdf", class="btn")
+              input.mainInput(type='file', name='sampleFile', accept=".pdf" required)
           tr.trDownloadProtocol
-            td.btn.tdDownloadProtocol Дата протокола
+            td.tdDownloadProtocol Дата протокола
             td.tdDownloadProtocol
-              input(type='date', name='DateOfUpload', required='' class="btn")
+              input.mainInput(type='date', name='DateOfUpload', required)
           tr.trDownloadProtocol
-            td.btn.tdDownloadProtocol Номер протокола
+            td.tdDownloadProtocol Номер протокола
             td.tdDownloadProtocol
-              input(type="text", placeholder="Введите номер протокола", class="btn", required)
+              input.mainInput(type="text", placeholder="Введите номер протокола", required)
           tr.trDownloadProtocol
             td(colspan="2").loading_col.tdDownloadProtocol
-              input(type="submit", value="Загрузить", class="btn loading")
+              input.mainInput.loading(type='submit', value='Загрузить')
