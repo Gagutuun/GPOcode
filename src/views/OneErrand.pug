@@ -1,0 +1,43 @@
+extends layout
+
+block content
+  .header
+    a.back-button(href="/errand")
+      span &#129044;
+    .statusErrand Активно
+    //- Добавить класс this-errand-has-been-completed, если поручение выполнено
+    .execution-date-Errand Срок исполнения – 27.04.2023
+  .contentErrand
+    p
+      | Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по 
+      | программам развития цифровой грамотности.
+      | Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по 
+      | программам развития цифровой грамотности.
+      | Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по 
+      | программам развития цифровой грамотности.
+  .responsibleErrand
+    span.labelResponsible Ответственный:
+    span.responsiblePerson Иванов И.И.
+    span.acceptedErrand Принял
+  span.text-at-the-top-of-reports Краткий отчёт по поручению
+  .short-report
+    .short-report-item
+      span.divisions-name Отчёт для Директум
+      input.edit-button-errand(type="submit", value="Редактировать")
+      span.date-report 23.03.2023, 10:24
+  span.text-at-the-top-of-reports Отчёты подразделений
+  .report-divisions
+    .short-report-item
+      span.divisions-name ООТиЗ
+      span Mr. Пушистые Штанишки
+      input.edit-button-errand(type="submit", value="Смотреть")
+      span.status-report-accepted Принято
+      //- Добавить в класс under-revision, если на доработке.
+      span.date-report 23.03.2023, 10:24
+    .short-report-item
+      span.divisions-name ОКиТО
+      span Васильев И. В.
+      input.edit-button-errand(type="submit", value="Смотреть")
+      span.status-report-accepted.under-revision На доработке
+      //- Добавить в класс under-revision, если на доработке.
+      span.date-report 23.03.2023, 10:24
