@@ -5,6 +5,19 @@ block content
     img.gazpromlogo(src="img/gazpromlogo.png")
     form
       .form-group
-        input(type="file", accept=".pdf", class="btn")
-        input(type="submit", value="Загрузить", class="btn loading")
-        input(type='date', name='DateOfUpload', required='')
+        table.tableDownloadProtocol
+          tr.trDownloadProtocol
+            td.tdDownloadProtocol Выберите файл
+            td.tdDownloadProtocol
+              input.mainInput(type='file', name='sampleFile', accept=".pdf" required)
+          tr.trDownloadProtocol
+            td.tdDownloadProtocol Дата протокола
+            td.tdDownloadProtocol
+              input.mainInput(type='date', name='DateOfUpload', required)
+          tr.trDownloadProtocol
+            td.tdDownloadProtocol Номер протокола
+            td.tdDownloadProtocol
+              input.mainInput(type="text", placeholder="Введите номер протокола", required)
+          tr.trDownloadProtocol
+            td(colspan="2").loading_col.tdDownloadProtocol
+              input.mainInput.loading(type='submit', value='Загрузить')
