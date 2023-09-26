@@ -29,7 +29,7 @@ router.get('/', async (req, res, next) => {
       // Другие поля, которые нужно отформатировать
     }));
 
-    res.render('errand', { title: 'GPO_test', errands: formattedErrands });
+    res.render('errand', { title: 'Поручения', errands: formattedErrands });
   } catch (error) {
     console.error('Ошибка при получении поручений из базы данных:', error);
     next(error);

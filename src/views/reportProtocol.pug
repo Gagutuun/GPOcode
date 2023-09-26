@@ -5,39 +5,25 @@ block content
   .contentReportProtocol
     .search-container
       img(src='images/ErradnsImg/search.svg' alt='Поиск')
-      input(type='text' placeholder='Поиск')
+      input#search-input(type='text', placeholder='Поиск')
     .table-container
-      table.table-ReportProtocol
-        thead
-          tr
-            th.col-var-1
-            th.col-var-2 Текст поручения
-            th.col-var-2 Ответственные
-            th.col-var-2 Получено
-            th.col-var-2 Срок сдачи
-            th.col-var-1
-        tbody
-          each errand in errands
-            tr
-              td.col-var-1
-                input.checkbox-order-selection(type='checkbox')
-              td.col-var-2= errand.text_errand
-              td.col-var-2= errand.responsible
-              td.col-var-2= errand.actual_date
-              td.col-var-2
-                if errand.constantly
-                  | Постоянное выполнение
-                else
-                  | Срок сдачи: #{errand.scheduled_due_date}
-              td.col-var-1
-                button.expand-button ᐯ
-    input.formProtocol(type='submit' value='Сформировать протокол')
-  //- .links-header
-  //-   span Архив протоколов
-  //-   hr.header-separator
-  //- .links-grid-ReportProtocol
-  //-   each report in reports
-  //-     a.event-link-ReportProtocol(href=`/report/${report.id}`)
-  //-       span.event-title-ReportProtocol Отчёт от
-  //-       span.date-ReportProtocol= report.date
-  //-       span.number-ReportProtocol № #{report.id} // Отображаем номер протокола
+  .links-header
+    span Активные протоколы
+    hr.header-separator
+  .links-grid-ReportProtocol
+    each report in reports
+      a.event-link-ReportProtocol(href=`/report/number${report.protocol_number}`)
+        span.event-title-ReportProtocol Протокол от
+        span.date-ReportProtocol= report.date
+        span.number-ReportProtocol № #{report.protocol_number}
+        
+  .ArchiveProtocols
+    .links-header
+      span Архивные протоколы
+      hr.header-separator
+    .links-grid-ReportProtocol
+      each report in reports
+        a.event-link-ReportProtocol(href=`/report/number${report.protocol_number}`)
+          span.event-title-ReportProtocol Протокол от
+          span.date-ReportProtocol= report.date
+          span.number-ReportProtocol № #{report.protocol_number}
