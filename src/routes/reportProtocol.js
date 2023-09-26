@@ -18,22 +18,22 @@ function formatDate(date) {
 
 router.get('/', async (req, res, next) => {
   try {
-    // Запрос к базе данных для получения поручений
-    const query = 'SELECT * FROM public."Errand"';
+    // Запрос к базе данных для получения списка протоколов
+    const query = 'SELECT * FROM public."Protocol"';
     const { rows } = await pool.query(query);
 
-    // Проходим по полученным поручениям и форматируем даты
-    const formattedErrands = rows.map(errand => ({
-      ...errand,
-      scheduled_due_date: formatDate(errand.scheduled_due_date),
+    // Проходим по полученным протоколам и форматируем даты
+    const formattedReports = rows.map(report => ({
+      ...report,
+      date: formatDate(report.protocol_date), // Форматируйте дату по вашим требованиям
       // Другие поля, которые нужно отформатировать
     }));
 
     // Здесь вы можете выполнить дополнительные действия по обработке данных, если это необходимо
 
-    res.render('reportProtocol', { title: 'GPO_test', errands: formattedErrands });
+    res.render('reportProtocol', { title: 'Отчеты по протоколам', reports: formattedReports });
   } catch (error) {
-    console.error('Ошибка при получении поручений из базы данных:', error);
+    console.error('Ошибка при получении протоколов из базы данных:', error);
     next(error);
   }
 });

@@ -147,7 +147,7 @@ input[type="checkbox"]:checked:before {
 .event-link-ReportProtocol {
     display: block;
     width: 222px;
-    background-color: rgba(232, 232, 253, 1);
+    background-color: rgba(0, 121, 194, 1);
     border: 1px solid #d1d1d1;
     border-radius: 10px;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
@@ -159,7 +159,7 @@ input[type="checkbox"]:checked:before {
 
 .event-link-ReportProtocol span {
     font: 26px "Lucida Grande", Helvetica, Arial, sans-serif;
-    color: rgba(50, 49, 83, 1);
+    color: white;
     font-weight: bold;
 }
 
@@ -193,4 +193,8 @@ input[type="checkbox"]:checked:before {
     border: none;
     font: inherit;
     outline: inherit;
+}
+
+.ArchiveProtocols .links-grid-ReportProtocol a {
+    background-color: rgba(47, 47, 47, 1);
 }

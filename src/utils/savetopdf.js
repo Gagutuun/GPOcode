@@ -4,7 +4,7 @@ const MyFont = require(__dirname + '/fonts/font');
 const MyFontItalic = require(__dirname + '/fonts/times-new-roman-italique-italic')
 const MyFontBold = require(__dirname + '/fonts/times-new-roman-gras-bold')
 const QuerryBuilder = require('../utils/queryBuilder'); // Подключаем QuerryBuilder
-const pool = require('../config/dbconfig'); // Подключаем настройки подключения к базе данных
+const pool = require('../config/dbConfig'); // Подключаем настройки подключения к базе данных
 const fs = require('fs');
 
 // Create a new document
@@ -106,6 +106,8 @@ const createTable = async () => {
       font: 'MyFont',
       fontSize: 10,
       textColor: [0, 0, 0],
+      lineWidth: 0.5,
+      lineColor: [0,0,0],
     },
     headStyles: {
       halign: 'center',
