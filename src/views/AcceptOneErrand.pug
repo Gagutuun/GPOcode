@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  .header
+    a.back-button(href="/errand")
+      span &#129044;
+    .statusErrand Активно
+    //- Добавить класс this-errand-has-been-completed, если поручение выполнено
+    .execution-date-Errand Срок исполнения – 27.04.2023
+  .contentErrand
+    p
+      | Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по 
+      | программам развития цифровой грамотности.
+      | Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по 
+      | программам развития цифровой грамотности.
+      | Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по 
+      | программам развития цифровой грамотности.
+  .responsibleErrand
+    span.labelResponsible Ответственный:
+    span.responsiblePerson Иванов И.И.
+    span.acceptedErrand.waitingErrandAccept Ожидает
+  span.text-at-the-top-of-reports Подтверждение
+  .short-report
+    input(type="submit", value="Принять поручение к исполнению", class="accept-errand-btn")

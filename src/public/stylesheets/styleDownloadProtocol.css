@@ -9,7 +9,7 @@
     }
 }
 
-input[type=file]::file-selector-button, .loading{
+input[type=file]::file-selector-button, .loading, input[type=date], input[type="text"].mainInput{
     margin-right: 5px;
     border: none;
     background: rgba(0, 121, 194, 1);
@@ -20,22 +20,42 @@ input[type=file]::file-selector-button, .loading{
     transition: background .2s ease-in-out;
 }
 
-input[type=file]::file-selector-button:hover, .loading:hover{
+input[type=file]::file-selector-button:hover, .loading:hover, input[type=date]:hover, input[type="text"].mainInput:hover{
     background: #0d45a5;
 }
 
-input[type="date"] {
-    margin-top: 20px;
-    margin-right: 5px;
-    border: none;
-    background: rgba(0, 121, 194, 1);
-    padding: 10px 10px;
-    border-radius: 20px;
+input[type="text"].mainInput::placeholder {
     color: #fff;
-    cursor: pointer;
-    transition: background .2s ease-in-out;
-  }
-  
-  input[type="date"]:hover {
-    background: #0d45a5;
-  }
+}
+
+input[type="text"]{
+    width: 265px;
+}
+
+.loading{
+    width: 250px;
+}
+
+.tableDownloadProtocol {
+    border-collapse: collapse;
+}
+
+.tdDownloadProtocol {
+    border: 1px solid transparent;
+    padding: 8px;
+    text-align: left;
+}
+
+.trDownloadProtocol:last-child {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.loading_col{
+    text-align: center; vertical-align: middle;
+    padding-top: 50px;
+}
+
+.tdDownloadProtocol{
+    font-size: 20px;
+}

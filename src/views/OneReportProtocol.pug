@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  script(async='', src='/scripts/scriptReportProtocol.js')
+  .marginReportProtocol
+    span.text-at-the-top-of-reports Скачать отчёт по протоколу
+    .short-report
+      .short-report-item
+        span.divisions-name Отчёт по протоколу №233122
+        input.edit-button-errand(type="submit", value="Скачать")
+        span.date-report 23.03.2023, 10:24
+  .table-container
+    table.table-ReportProtocol
+      thead
+        tr
+          th.col-var-2 Текст поручения
+          th.col-var-2 Ответственные
+          th.col-var-2 Получено
+          th.col-var-2 Срок сдачи
+          th.col-var-1
+      tbody
+        tr
+          td.col-var-2
+          td.col-var-2 
+          td.col-var-2 
+          td.col-var-2
+          td.col-var-1
+            button.expand-button ᐯ
