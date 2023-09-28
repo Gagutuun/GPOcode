@@ -1,0 +1,46 @@
+.personName {
+    font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+    padding: 30px 50px 0 50px;
+    display: flex;
+    align-items: center;
+}
+  
+.image-person {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.personName p {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.table-person {
+    font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+    padding: 30px 50px 0 50px;
+    border-collapse: separate;
+}
+
+.table-person, th, td {
+    border: none;
+    padding-bottom: 20px;
+}
+
+.table-person tr td:first-child {
+    padding-right: 100px;
+}
+
+.table-person thead tr td {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.table-person tbody tr td {
+    font-size: 18px;
+}
+
+.table-person tbody tr td:first-child {
+    color: #0000008e;
+}

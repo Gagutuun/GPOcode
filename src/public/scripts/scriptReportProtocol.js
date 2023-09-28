@@ -1,50 +1,66 @@
-const buttons = document.querySelectorAll('.expand-button');
-const checkboxes = document.querySelectorAll('.checkbox-order-selection');
+// const buttons = document.querySelectorAll('.expand-button');
+// const checkboxes = document.querySelectorAll('.checkbox-order-selection');
+const searchInput = document.getElementById('search-input'); // Получение элемента по его ID
 
-// Обходим все чекбоксы и устанавливаем их состояние в соответствии с сохраненными данными
-checkboxes.forEach(checkbox => {
-  const rowIndex = Array.from(checkbox.closest('tr').parentNode.children).indexOf(checkbox.closest('tr'));
-  const storedCheckbox = localStorage.getItem(`checkbox${rowIndex}`);
-  if (storedCheckbox) {
-    checkbox.checked = storedCheckbox === 'true';
-  }
-  
-  // Добавляем обработчик события изменения состояния чекбокса
-  checkbox.addEventListener('change', () => {
-    const rowIndex = Array.from(checkbox.closest('tr').parentNode.children).indexOf(checkbox.closest('tr'));
-    localStorage.setItem(`checkbox${rowIndex}`, checkbox.checked);
+// Функция для фильтрации протоколов по поисковому запросу
+function filterReports(searchTerm) {
+  const reportLinks = document.querySelectorAll('.event-link-ReportProtocol');
+
+  reportLinks.forEach(link => {
+    const date = link.querySelector('.date-ReportProtocol').textContent.toLowerCase();
+    const number = link.querySelector('.number-ReportProtocol').textContent.toLowerCase();
+
+    if (date.includes(searchTerm.toLowerCase()) | number.includes(searchTerm.toLowerCase())) {
+      link.style.display = 'block';
+    } else {
+      link.style.display = 'none';
+    }
   });
+}
+
+searchInput.addEventListener('input', () => {
+  const searchTerm = searchInput.value.trim(); // Получение введенного текста из поля поиска
+  filterReports(searchTerm);
 });
 
-//Обработка нажатия на кнопку "Сверхнуть/Развернуть"
-buttons.forEach(button => {
-  button.addEventListener('click', () => {
-    const row = button.closest('tr');
-    row.classList.toggle('expanded');
+// buttons.forEach(button => {
+//   button.addEventListener('click', () => {
+//     buttons.forEach(btn => btn.classList.remove('active'));
+//     button.classList.add('active');
+//     if (button.classList.contains('expand-btn')) {
+//       // Логика для отображения/скрытия развернутых протоколов
+//     }
+//   });
+// });
 
-    // Получаем индекс строки
-    const rowIndex = Array.from(row.parentNode.children).indexOf(row);
-    let storedButton = localStorage.getItem('expandedButtons');
-    let expandedButtons = storedButton ? JSON.parse(storedButton) : [];
+// checkboxes.forEach(checkbox => {
+//   checkbox.addEventListener('change', () => {
+//     // Логика для сохранения состояния чекбоксов
+//   });
+// });
 
-    // Если строка уже сохранена, удаляем ее из массива
-    if (expandedButtons.includes(rowIndex)) {
-      const index = expandedButtons.indexOf(rowIndex);
-      expandedButtons.splice(index, 1);
-      button.textContent = 'ᐯ';
-    }
-    else {
-      expandedButtons.push(rowIndex);
-      button.textContent = 'ᐱ';
-    }
-    localStorage.setItem('expandedButtons', JSON.stringify(expandedButtons));
-  });
+// // Логика для сохранения и восстановления состояния чекбоксов и развернутых строк при загрузке страницы
 
-  const rowIndex = Array.from(button.closest('tr').parentNode.children).indexOf(button.closest('tr'));
-  let storedButton = localStorage.getItem('expandedButtons');
-  let expandedButtons = storedButton ? JSON.parse(storedButton) : [];
-  if (expandedButtons.includes(rowIndex)) {
-    button.closest('tr').classList.add('expanded');
-    button.textContent = 'ᐱ';
-  }
-});
+// const storedSearchTerm = localStorage.getItem('searchTerm');
+// if (storedSearchTerm) {
+//   searchInput.value = storedSearchTerm;
+//   filterReports(storedSearchTerm);
+// }
+
+// buttons.forEach(button => {
+//   const rowIndex = Array.from(button.closest('tr').parentNode.children).indexOf(button.closest('tr'));
+//   let storedButton = localStorage.getItem('expandedButtons');
+//   let expandedButtons = storedButton ? JSON.parse(storedButton) : [];
+//   if (expandedButtons.includes(rowIndex)) {
+//     button.closest('tr').classList.add('expanded');
+//     button.textContent = 'ᐱ';
+//   }
+// });
+
+// checkboxes.forEach(checkbox => {
+//   const rowIndex = Array.from(checkbox.closest('tr').parentNode.children).indexOf(checkbox.closest('tr'));
+//   const storedCheckbox = localStorage.getItem(`checkbox${rowIndex}`);
+//   if (storedCheckbox) {
+//     checkbox.checked = storedCheckbox === 'true';
+//   }
+// });

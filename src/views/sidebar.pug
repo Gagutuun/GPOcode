@@ -11,7 +11,7 @@ script(async, src="/scripts/scriptSidebar.js")
           img.btn-bell(src="../images/SidebarImg/bell.svg", width="30", height="30")
     ul.menu
       li.download-protocol
-        a.menu-link(href="/downloadProtocol")
+        a.menu-link(href="/uploadProtocol")
           img.btn-download(src="../images/SidebarImg/download.svg", width="30", height="30")
           span.menu-text Загрузка протокола
       li.errand
@@ -27,6 +27,6 @@ script(async, src="/scripts/scriptSidebar.js")
           img.btn-feedback(src="../images/SidebarImg/feedback.svg", width="30", height="30")
           span.menu-text Обратная связь
       li.exit
-        a.menu-link(href="/exit")
+        a.menu-link(href="/auth/login")
           img.btn-exit(src="../images/SidebarImg/exit.svg", width="30", height="30")
-          span.menu-text Exit
+          span.menu-text Выход

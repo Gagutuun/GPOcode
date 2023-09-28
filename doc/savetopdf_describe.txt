@@ -1,0 +1,45 @@
+Строки кода выполняют следующие действия:
+
+1. Подключение необходимых модулей и файлов:
+   - `require('jspdf')` - подключение модуля jsPDF.
+   - `require('jspdf-autotable')` - подключение модуля jsPDF Autotable.
+   - `require(__dirname + '/fonts/font')` - подключение файла шрифта MyFont.
+   - `require(__dirname + '/fonts/times-new-roman-italique-italic')` - подключение файла шрифта MyFontItalic.
+   - `require(__dirname + '/fonts/times-new-roman-gras-bold')` - подключение файла шрифта MyFontBold.
+   - `require('../utils/queryBuilder')` - подключение файла QuerryBuilder из папки utils.
+   - `require('../config/dbconfig')` - подключение файла настроек подключения к базе данных из папки config.
+   - `const fs = require('fs')` - подключение модуля fs (file system).
+
+2. Создание нового документа:
+   - `const doc = new jsPDF({ orientation: 'landscape' })` - создание нового документа jsPDF с ориентацией "landscape".
+
+3. Добавление шрифтов в jsPDF:
+   - `doc.addFileToVFS('MyFont.ttf', myFont)` - добавление файла шрифта MyFont в виртуальную файловую систему jsPDF.
+   - `doc.addFileToVFS('MyFontItalic.ttf', myFontItalic)` - добавление файла шрифта MyFontItalic в виртуальную файловую систему jsPDF.
+   - `doc.addFileToVFS('MyFontBold.ttf', myFontBold)` - добавление файла шрифта MyFontBold в виртуальную файловую систему jsPDF.
+   - `doc.addFont('MyFont.ttf', 'MyFont', 'normal')` - добавление шрифта MyFont с нормальным начертанием в jsPDF.
+   - `doc.addFont('MyFontItalic.ttf', 'MyFont', 'italic')` - добавление шрифта MyFont с курсивным начертанием в jsPDF.
+   - `doc.addFont('MyFontBold.ttf', 'MyFont', 'bold')` - добавление шрифта MyFont с жирным начертанием в jsPDF.
+   - `doc.setFont('MyFont', 'bold')` - установка шрифта MyFont с жирным начертанием для документа.
+   - `doc.setFontSize(15)` - установка размера шрифта 15 для документа.
+
+4. Создание переменной `introText` для текста введения.
+
+5. Создание массива заголовков `headers` для таблицы.
+
+6. Определение функции `getErrandsFromDatabase`, которая выполняет запрос к базе данных и возвращает данные о поручениях.
+
+7. Определение функции `formatDate`, которая форматирует дату в виде строки.
+
+8. Определение асинхронной функции `createTable`, которая выполняет следующие действия:
+   - Получает данные о поручениях с помощью функции `getErrandsFromDatabase`.
+   - Создает пустой массив `tableData` для данных таблицы.
+   - Вставляет текст введения с помощью метода `doc.text`.
+   - Для каждого поручения создает две строки (row1 и row2) и добавляет их в `tableData`.
+   - Задает настройки таблицы в переменной `tableOptions`.
+   - Создает таблицу с помощью метода `doc.autoTable`.
+   - Сохраняет документ в файл `table.pdf` с помощью метода `doc.save`.
+
+9. Выполнение функции `createTable` для создания таблицы в документе и сохранения его в файле.
+
+Остальные строки кода являются вспомогательными функциями и вызовами, связанными с выполнением запроса к базе данных, форматированием даты и генерацией таблицы.

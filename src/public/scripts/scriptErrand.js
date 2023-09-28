@@ -1,7 +1,7 @@
 const buttons = document.querySelectorAll('.buttons button');
 const activeErrands = document.querySelector('.ActiveErrands');
 const archiveErrands = document.querySelector('.ArchiveErrands');
-const searchInput = document.getElementById('search-input'); // Получение элемента по его ID
+const searchInput = document.getElementById('search-input');
 
 // Функция для фильтрации поручений по поисковому запросу
 function filterErrands(searchTerm) {
@@ -19,7 +19,7 @@ function filterErrands(searchTerm) {
 }
 
 searchInput.addEventListener('input', () => {
-  const searchTerm = searchInput.value.trim(); // Получение введенного текста из поля поиска
+  const searchTerm = searchInput.value.trim();
   filterErrands(searchTerm);
 });
 
@@ -32,14 +32,17 @@ buttons.forEach(button => {
     if (button.classList.contains('all-btn')) {
       activeErrands.style.display = 'block';
       archiveErrands.style.display = 'block';
+      tableContainer.classList.remove('table-view-selected'); // Добавлено
       localStorage.setItem('selectedButton', 'all-btn');
     } else if (button.classList.contains('active-btn')) {
       activeErrands.style.display = 'block';
       archiveErrands.style.display = 'none';
+      tableContainer.classList.remove('table-view-selected'); // Добавлено
       localStorage.setItem('selectedButton', 'active-btn');
     } else if (button.classList.contains('archive-btn')) {
       activeErrands.style.display = 'none';
       archiveErrands.style.display = 'block';
+      tableContainer.classList.remove('table-view-selected'); // Добавлено
       localStorage.setItem('selectedButton', 'archive-btn');
     }
   });
