@@ -36,4 +36,34 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+router.get('/:id', async (req, res, next) => {
+  try {
+    // Получите идентификатор поручения из параметров URL
+    const { id } = req.params;
+
+    // Запрос к базе данных для получения информации о конкретном поручении по идентификатору
+    const query = 'SELECT * FROM public."Errand" WHERE id = $1';
+    const { rows } = await pool.query(query, [id]);
+
+    if (rows.length === 0) {
+      // Обработайте случай, если поручение не найдено (можно отобразить ошибку 404)
+      res.status(404).render('errandNotFound', { title: 'Поручение не найдено' });
+      return;
+    }
+
+    // Форматируйте данные по поручению, как в примере в файле errands.js
+    const formattedErrand = {
+      ...rows[0],
+      scheduled_due_date: formatDate(rows[0].scheduled_due_date),
+      // Другие поля, которые нужно отформатировать
+    };
+
+    res.render('oneErrand', { title: 'Поручение', errand: formattedErrand });
+  } catch (error) {
+    console.error('Ошибка при получении информации о поручении из базы данных:', error);
+    next(error);
+  }
+});
+
+
 module.exports = router;

@@ -15,11 +15,11 @@ block content
           tr.trDownloadProtocol
             td.tdDownloadProtocol Дата протокола
             td.tdDownloadProtocol
-              input.mainInput(type='date', name='DateOfUpload', required)
+              input.mainInput(type='date', name='protocolDate', required)
           tr.trDownloadProtocol
             td.tdDownloadProtocol Номер протокола
             td.tdDownloadProtocol
-              input.mainInput(type="text", placeholder="Введите номер протокола", required)
+              input.mainInput(type="text", name='protocolNumber', placeholder="Введите номер протокола", required)
           tr.trDownloadProtocol
             td(colspan="2").loading_col.tdDownloadProtocol
               input.mainInput.loading(type='submit', value='Загрузить')

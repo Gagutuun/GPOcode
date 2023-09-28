@@ -12,7 +12,7 @@ block content
     hr.header-separator
   .links-grid-ReportProtocol
     each report in reports
-      a.event-link-ReportProtocol(href=`/report/number${report.protocol_number}`)
+      a.event-link-ReportProtocol(href=`/report/${report.protocol_number}`)
         span.event-title-ReportProtocol Протокол от
         span.date-ReportProtocol= report.date
         span.number-ReportProtocol № #{report.protocol_number}

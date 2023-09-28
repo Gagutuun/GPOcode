@@ -38,4 +38,34 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+router.get('/:protocolNumber', async (req, res, next) => {
+  try {
+    // Получите идентификатор протокола из параметров URL
+    const { protocolNumber } = req.params;
+
+    // Запрос к базе данных для получения информации о конкретном протоколе по номеру
+    const query = 'SELECT * FROM public."Protocol" WHERE protocol_number = $1';
+    const { rows } = await pool.query(query, [protocolNumber]);
+
+    if (rows.length === 0) {
+      // Обработайте случай, если протокол не найден (можно отобразить ошибку 404)
+      res.status(404).render('protocolNotFound', { title: 'Протокол не найден' });
+      return;
+    }
+
+    // Форматируйте данные по протоколу, как в примере в файле reportProtocol.js
+    const formattedReport = {
+      ...rows[0],
+      date: formatDate(rows[0].protocol_date), // Форматируйте дату по вашим требованиям
+      // Другие поля, которые нужно отформатировать
+    };
+
+    res.render('oneReportProtocol', { title: 'Отчет по протоколу', report: formattedReport });
+  } catch (error) {
+    console.error('Ошибка при получении информации о протоколе из базы данных:', error);
+    next(error);
+  }
+});
+
+
 module.exports = router;
