@@ -1,5 +1,8 @@
-// const buttons = document.querySelectorAll('.expand-button');
-// const checkboxes = document.querySelectorAll('.checkbox-order-selection');
+const expandButtons = document.querySelectorAll('button.expand-button');
+const checkboxes = document.querySelectorAll('.checkbox-order-selection');
+const buttons = document.querySelectorAll('.buttons button');
+const activeProtocols = document.querySelector('.ActiveProtocols');
+const archiveProtocols = document.querySelector('.ArchiveProtocols');
 const searchInput = document.getElementById('search-input'); // Получение элемента по его ID
 
 // Функция для фильтрации протоколов по поисковому запросу
@@ -18,49 +21,101 @@ function filterReports(searchTerm) {
   });
 }
 
-searchInput.addEventListener('input', () => {
-  const searchTerm = searchInput.value.trim(); // Получение введенного текста из поля поиска
-  filterReports(searchTerm);
-});
+if (searchInput) {
+  searchInput.addEventListener('input', () => {
+    const searchTerm = searchInput.value.trim(); // Получение введенного текста из поля поиска
+    filterReports(searchTerm);
+  });
+}
 
-// buttons.forEach(button => {
-//   button.addEventListener('click', () => {
-//     buttons.forEach(btn => btn.classList.remove('active'));
-//     button.classList.add('active');
-//     if (button.classList.contains('expand-btn')) {
-//       // Логика для отображения/скрытия развернутых протоколов
-//     }
-//   });
-// });
+if (checkboxes) {
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+      // Логика для сохранения состояния чекбоксов
+    });
+  });
 
-// checkboxes.forEach(checkbox => {
-//   checkbox.addEventListener('change', () => {
-//     // Логика для сохранения состояния чекбоксов
-//   });
-// });
+  checkboxes.forEach(checkbox => {
+    const rowIndex = Array.from(checkbox.closest('tr').parentNode.children).indexOf(checkbox.closest('tr'));
+    const storedCheckbox = localStorage.getItem(`checkbox${rowIndex}`);
+    if (storedCheckbox) {
+      checkbox.checked = storedCheckbox === 'true';
+    }
+  });
+  
+}
 
-// // Логика для сохранения и восстановления состояния чекбоксов и развернутых строк при загрузке страницы
+//Логика для сохранения и восстановления состояния чекбоксов и развернутых строк при загрузке страницы
 
-// const storedSearchTerm = localStorage.getItem('searchTerm');
-// if (storedSearchTerm) {
-//   searchInput.value = storedSearchTerm;
-//   filterReports(storedSearchTerm);
-// }
+const storedSearchTerm = localStorage.getItem('searchTerm');
+if (storedSearchTerm) {
+  searchInput.value = storedSearchTerm;
+  filterReports(storedSearchTerm);
+}
 
-// buttons.forEach(button => {
-//   const rowIndex = Array.from(button.closest('tr').parentNode.children).indexOf(button.closest('tr'));
-//   let storedButton = localStorage.getItem('expandedButtons');
-//   let expandedButtons = storedButton ? JSON.parse(storedButton) : [];
-//   if (expandedButtons.includes(rowIndex)) {
-//     button.closest('tr').classList.add('expanded');
-//     button.textContent = 'ᐱ';
-//   }
-// });
+if (buttons) {
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      if (button.classList.contains('active-btn')) {
+        activeProtocols.style.display = 'block';
+        archiveProtocols.style.display = 'none';
+        tableContainer.classList.remove('table-view-selected'); // Добавлено
+        localStorage.setItem('selectedButton', 'active-btn');
+      } else if (button.classList.contains('archive-btn')) {
+        activeProtocols.style.display = 'none';
+        archiveProtocols.style.display = 'block';
+        tableContainer.classList.remove('table-view-selected'); // Добавлено
+        localStorage.setItem('selectedButton', 'archive-btn');
+      }
+    });
+  });
+}
 
-// checkboxes.forEach(checkbox => {
-//   const rowIndex = Array.from(checkbox.closest('tr').parentNode.children).indexOf(checkbox.closest('tr'));
-//   const storedCheckbox = localStorage.getItem(`checkbox${rowIndex}`);
-//   if (storedCheckbox) {
-//     checkbox.checked = storedCheckbox === 'true';
-//   }
-// });
+const activeBtnElement = document.querySelector('.active-btn');
+const selectedButton = localStorage.getItem('selectedButton');
+if (selectedButton) {
+  buttons.forEach(btn => {
+    if (btn.classList.contains(selectedButton)) {
+      btn.click();
+    }
+  });
+} else if (activeBtnElement) {
+    document.querySelector('.active-btn').click();
+}
+
+if (expandButtons) {
+  expandButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const row = button.closest('tr'); // Находим ближайшую строку
+      row.classList.toggle('expanded'); // Переключаем класс expanded
+
+      // Изменяем текст кнопки в зависимости от состояния строки
+      if (row.classList.contains('expanded')) {
+        button.textContent = 'ᐱ'; // Если строка развернута, изменяем текст на "ᐯ"
+      } else {
+        button.textContent = 'ᐯ'; // Если строка свернута, изменяем текст на "ᐱ"
+      }
+
+      // Сохраняем состояние строк в локальном хранилище
+      const expandedRows = Array.from(document.querySelectorAll('tr.expanded')).map(row => row.rowIndex);
+      localStorage.setItem('expandedRows', JSON.stringify(expandedRows));
+    });
+  });
+}
+// Восстанавливаем состояние строк при загрузке страницы
+const storedExpandedRows = localStorage.getItem('expandedRows');
+if (storedExpandedRows) {
+  const expandedRows = JSON.parse(storedExpandedRows);
+  expandedRows.forEach(rowIndex => {
+    const row = document.querySelectorAll('tr')[rowIndex];
+    if (row) {
+      row.classList.add('expanded');
+      const expandButton = row.querySelector('button.expand-button');
+      if (expandButton) {
+        expandButton.textContent = 'ᐯ'; // Изменяем текст кнопки, если строка развернута
+      }
+    }
+  });
+}

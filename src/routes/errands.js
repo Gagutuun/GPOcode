@@ -36,4 +36,40 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+router.get('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    
+    // Запрос к базе данных для получения информации о конкретном поручении с данными об ответственном сотруднике
+    const query = `
+      SELECT e.*, errand.*
+      FROM public."Errand" AS errand
+      INNER JOIN public."Employee" AS e ON errand.id_responsible = e.id
+      WHERE errand.id = $1
+    `;
+    const { rows } = await pool.query(query, [id]);
+    
+    if (rows.length === 0) {
+      // Обработайте случай, если поручение не найдено (можно отобразить ошибку 404)
+      res.status(404).render('errandNotFound', { title: 'Поручение не найдено' });
+      return;
+    }
+
+    // Форматируйте данные по поручению, включая даты
+    const formattedErrand = {
+      ...rows[0],
+      scheduled_due_date: formatDate(rows[0].scheduled_due_date),
+      // Другие поля, которые нужно отформатировать
+    };
+
+    // Передайте данные о поручении и ответственном сотруднике на страницу OneErrand.pug
+    res.render('OneErrand', { title: 'Поручение', errand: formattedErrand });
+  } catch (error) {
+    console.error('Ошибка при получении информации о поручении из базы данных:', error);
+    next(error);
+  }
+});
+
+
+
 module.exports = router;

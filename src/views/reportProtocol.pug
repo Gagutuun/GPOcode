@@ -6,24 +6,29 @@ block content
     .search-container
       img(src='images/ErradnsImg/search.svg' alt='Поиск')
       input#search-input(type='text', placeholder='Поиск')
+    .modes
+      .buttons
+        button.active-btn Активные
+        button.archive-btn Архив
     .table-container
-  .links-header
-    span Активные протоколы
-    hr.header-separator
-  .links-grid-ReportProtocol
-    each report in reports
-      a.event-link-ReportProtocol(href=`/report/number${report.protocol_number}`)
-        span.event-title-ReportProtocol Протокол от
-        span.date-ReportProtocol= report.date
-        span.number-ReportProtocol № #{report.protocol_number}
+  .ActiveProtocols  
+    .links-header
+      span Активные протоколы
+      hr.header-separator
+    .links-grid-ReportProtocol
+      each report in activeReports
+        a.event-link-ReportProtocol(href=`/reportProtocol/${report.protocol_number}`)
+          span.event-title-ReportProtocol Протокол от
+          span.date-ReportProtocol= report.date
+          span.number-ReportProtocol № #{report.protocol_number}
         
   .ArchiveProtocols
     .links-header
       span Архивные протоколы
       hr.header-separator
     .links-grid-ReportProtocol
-      each report in reports
-        a.event-link-ReportProtocol(href=`/report/number${report.protocol_number}`)
+      each report in archiveReports
+        a.event-link-ReportProtocol(href=`/reportProtocol/${report.protocol_number}`)
           span.event-title-ReportProtocol Протокол от
           span.date-ReportProtocol= report.date
           span.number-ReportProtocol № #{report.protocol_number}

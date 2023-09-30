@@ -30,6 +30,11 @@
     table-layout: fixed;
 }
 
+.table-ReportProtocol th {
+    background-color: rgba(0, 121, 194, 1);
+    color: white;
+}
+
 .table-ReportProtocol th,
 .table-ReportProtocol td {
     border: 1px solid rgba(0, 0, 0, 0.103);
@@ -99,7 +104,6 @@ input[type="checkbox"]:checked:before {
 }
 
 .formProtocol {
-    margin-top: 30px;
     font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
     margin-right: 5px;
     border: none;

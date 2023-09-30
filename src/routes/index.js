@@ -9,6 +9,7 @@ const pdfRouter = require('./pdfRouter');
 const errands = require('./errands');
 const reportProtocol = require('./reportProtocol');
 const feedback = require('./feedback');
+const profile = require('./personRouter');
 
 
 // Use routes
@@ -20,6 +21,7 @@ router.use('/uploadProtocol', uploadRouter);
 router.use('/errand', errands);
 router.use('/reportProtocol', reportProtocol);
 router.use('/feedback', feedback);
+router.use('/profile', profile);
 
 
 module.exports = router;
