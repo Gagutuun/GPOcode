@@ -6,5 +6,4 @@ const uploadController = require('../controllers/uploadController');
 router.use(express.urlencoded({ extended: true }));
 
 router.post('/', uploadController.uploadFile);
-console.log("Перешел на страницу");
 module.exports = router;

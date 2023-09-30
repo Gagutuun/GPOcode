@@ -14,16 +14,17 @@ const TEMP_DIR_PATH = path.join(
   'temp'  );
 
   exports.uploadFile = asyncHandler(async (req, res) => {
-    // Создание временной папки
-    fs.mkdirSync(TEMP_DIR_PATH);
-  
-    const { protocolDate, protocolNumber } = req.body;
   
     // Проверка на то, что файл пришел на сервер
     if (!req.files || Object.keys(req.files).length === 0) {
       res.status(400).send('No files were uploaded.');
       return;
     }
+
+    const { protocolDate, protocolNumber } = req.body;
+
+    // Создание временной папки
+    fs.mkdirSync(TEMP_DIR_PATH);
   
     // Объект, хронящий информацию о загруженном файле
     let sampleFile = req.files.sampleFile;
@@ -34,11 +35,8 @@ const TEMP_DIR_PATH = path.join(
     await sampleFile.mv(uploadPath);
   
     // Новый путь, по которому будет хранится файл
-    let newFilePath = (/([Pp]roto[ck]ol|[Пп]ротокол)/.exec(uploadPath) != null) 
-      ? _IntegrateTimeLableIntoFileName(
-          _MakeTimeLable(),
-          uploadPath.replace('temp', 'Protocols'))
-      : null;
+    let newFilePath = uploadPath.replace("temp", "Protocols")
+                                .replace(".pdf", `_${protocolDate}_${protocolNumber}.pdf`);
   
     // Перемещение файла по новому пути, по факту переименовывание файла
     fs.renameSync(uploadPath, newFilePath);
@@ -46,13 +44,13 @@ const TEMP_DIR_PATH = path.join(
     // Удаление временной папки
     fs.rmdirSync(TEMP_DIR_PATH)
   
-    const resultsOfParsing = await _parseAndSavePDF(newFilePath, protocolDate, protocolNumber); // Передайте дату и номер протокола
+    const resultsOfParsing = await _parseAndSavePDF(newFilePath, protocolDate, protocolNumber);
   
     // Рендерим страницу с результатом работы алгоритма
     res.render('result', { title: 'GPO_test', text: resultsOfParsing.pdfData , result: resultsOfParsing.errandArray});
   });
   
-  async function _parseAndSavePDF(filePath, protocolDate, protocolNumber) { // Добавьте дату и номер протокола как аргументы
+  async function _parseAndSavePDF(filePath, protocolDate, protocolNumber) {
     return new Promise(async (resolve, reject) => {
       // Парсим pdf
       const pdfData = await pdfParser.parsePDF(filePath);
@@ -79,14 +77,3 @@ const TEMP_DIR_PATH = path.join(
       });
     });
   }
-
-function _MakeTimeLable() {
-  let timeLable = new Date(Date.now()).toLocaleString("ru");
-  timeLable = timeLable.replaceAll('.', '_').replaceAll(':', '-').replace(', ', '_');
-  return timeLable;
-}
-
-function _IntegrateTimeLableIntoFileName(timeLable, fileName) {
-  const FILE_EXTENSION = ".pdf";
-  return fileName.replace(FILE_EXTENSION, "_" + timeLable) + FILE_EXTENSION;
-}
