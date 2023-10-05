@@ -17,6 +17,7 @@ script(async, src="/scripts/scriptSidebar.js")
                       td.first-column-context-menu(rowspan="2")
                         p.truncate-text
                           | Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по программам развития цифровой грамотности.
+                      //- Когда уведомление не прочитано, добавлять класс red-circle-active
                       td.second-column-context-menu
                         .red-circle.red-circle-active
                     tr
@@ -26,8 +27,9 @@ script(async, src="/scripts/scriptSidebar.js")
                       td.first-column-context-menu.first-column-date
                         | Срок исполнения: 27.02.2022
                       td.second-column-context-menu
+                //- Когда ещё нет уведомлений выводить вот это
                 .no-notifications
-                  span У Вас нет активных уведомлений
+                  span Вам ещё не приходили уведомления
     ul.menu
       li.download-protocol
         a.menu-link(href="/downloadProtocol")
