@@ -49,14 +49,14 @@
 }
 
 .table-ReportProtocol .col-var-1 {
-    width: 8.33%;
+    width: 5%;
 }
 
 .table-ReportProtocol .col-var-2 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 16.66%;
+    width: 30%;
 }
 
 .table-ReportProtocol th, .table-ReportProtocol td{
