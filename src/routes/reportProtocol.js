@@ -70,11 +70,26 @@ router.get('/:protocolNumber', async (req, res, next) => {
 
     // Запрос к базе данных для получения информации о конкретном протоколе и связанных с ним поручениях
     const query = `
-      SELECT p.*, e.*, emp.*
-      FROM public."Protocol" AS p
-      INNER JOIN public."Errand" AS e ON p.id = e.id_protocol
-      INNER JOIN public."Employee" AS emp ON e.id_responsible = emp.id
-      WHERE p.protocol_number = $1;    
+        SELECT
+        p.*,
+        e.text_errand,
+        e.actual_date,
+        e.scheduled_due_date,
+        e.status,
+        e.constantly,
+        ARRAY_AGG(DISTINCT CONCAT(emp.surname, ' ', emp.name, ' ', emp.patronymic)) AS responsible_employees
+      FROM
+        public."Protocol" AS p
+      LEFT JOIN
+        public."Errand" AS e ON p.id = e.id_protocol
+      LEFT JOIN
+        public."ErrandEmployee" AS ee ON e.id = ee.id_errand
+      LEFT JOIN
+        public."Employee" AS emp ON ee.id_employee = emp.id
+      WHERE
+        p.protocol_number = $1
+      GROUP BY
+        p.id, e.id;
     `;
     const { rows } = await pool.query(query, [protocolNumber]);
 

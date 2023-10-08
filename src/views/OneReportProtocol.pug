@@ -21,12 +21,14 @@ block content
           tr
             if !protocol[0].general_report_file_doc
               th.col-var-1
+                button.select_all Выбрать все
             th.col-var-2 Текст поручения
             th.col-var-2 Ответственные
             th.col-var-2 Получено
             th.col-var-2 Срок сдачи
             th.col-var-2 Статус
             th.col-var-1
+              button.expand_all ᐯ
         tbody
           each item in protocol
             tr
@@ -34,7 +36,7 @@ block content
                 td.col-var-1
                   input.checkbox-order-selection(type='checkbox')
               td.col-var-2 #{item.text_errand}
-              td.col-var-2 #{item.surname} #{item.name} #{item.patronymic}
+              td.col-var-2 #{item.responsible_employees}
               td.col-var-2 #{item.date}
               td.col-var-2 
                     if item.constantly
