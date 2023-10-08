@@ -21,14 +21,18 @@ class Protocol {
      * Добавляет новый протокол в бд
      * @param {string} protocolPath - Путь до протокола 
      */
-    static addNewProtocol(protocolPath/*, protocolDate, protocolNumber*/) {
+    static addNewProtocol(protocolPath, protocolDate, protocolNumber) {
         return new Promise((resolve, reject) => {
             db.query(
                 queryBuilder.makeInsertQuery(
                     this.tableName,
-                    new Array(this.columnNames.file_protocol_doc)
+                    [
+                        this.columnNames.file_protocol_doc,
+                        this.columnNames.protocol_date,
+                        this.columnNames.protocol_number
+                    ]
                 ),
-                [protocolPath],
+                [protocolPath, protocolDate, protocolNumber],
                 (err, res) => {
                     if (err)
                         reject(err);

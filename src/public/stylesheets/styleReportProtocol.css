@@ -28,6 +28,12 @@
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
+    transition: all 1s ease-in-out;
+}
+
+.table-ReportProtocol th {
+    background-color: rgba(0, 121, 194, 1);
+    color: white;
 }
 
 .table-ReportProtocol th,
@@ -42,6 +48,8 @@
     white-space: normal;
     overflow: hidden;
     text-overflow: clip;
+    transition: all 1s ease-in-out;
+
 }
 
 .table-ReportProtocol button {
@@ -50,6 +58,7 @@
 
 .table-ReportProtocol .col-var-1 {
     width: 8.33%;
+    transition: all 0.15s ease-in-out;
 }
 
 .table-ReportProtocol .col-var-2 {
@@ -57,10 +66,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
     width: 16.66%;
+    transition: all 0.15s ease-in-out;
 }
 
 .table-ReportProtocol th, .table-ReportProtocol td{
     font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+    transition: all 1s ease-in-out;
 }
 
 input[type="checkbox"] {
@@ -99,7 +110,6 @@ input[type="checkbox"]:checked:before {
 }
 
 .formProtocol {
-    margin-top: 30px;
     font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
     margin-right: 5px;
     border: none;
@@ -147,7 +157,7 @@ input[type="checkbox"]:checked:before {
 .event-link-ReportProtocol {
     display: block;
     width: 222px;
-    background-color: rgba(232, 232, 253, 1);
+    background-color: rgba(0, 121, 194, 1);
     border: 1px solid #d1d1d1;
     border-radius: 10px;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
@@ -159,7 +169,7 @@ input[type="checkbox"]:checked:before {
 
 .event-link-ReportProtocol span {
     font: 26px "Lucida Grande", Helvetica, Arial, sans-serif;
-    color: rgba(50, 49, 83, 1);
+    color: white;
     font-weight: bold;
 }
 
@@ -193,4 +203,35 @@ input[type="checkbox"]:checked:before {
     border: none;
     font: inherit;
     outline: inherit;
+    transition: all 0.15s ease-in-out;
+}
+
+.ArchiveProtocols .links-grid-ReportProtocol a {
+    background-color: rgba(47, 47, 47, 1);
+}
+
+.expand_all {
+    justify-content: center;
+    text-align: center;
+    transform: scale(1.0);
+    font-weight: 900;
+    background: none;
+    border: none;
+    font: inherit;
+    outline: inherit;
+    color: white;
+    transition: all 0.15s ease-in-out;
+}
+
+.select_all {
+    justify-content: center;
+    text-align: center;
+    transform: scale(1.0);
+    font-weight: 900;
+    background: none;
+    border: none;
+    font: inherit;
+    outline: inherit;
+    color: white;
+    transition: all 0.15s ease-in-out;
 }

@@ -27,6 +27,7 @@ body {
 .screen-1 .logo {
   margin-top: -1em;
   transform: scale(0.9);
+  text-align: center;
 }
 .screen-1 .forma {
   display: flex;

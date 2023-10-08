@@ -1,79 +1,124 @@
 const { jsPDF } = require('jspdf');
 require('jspdf-autotable');
-const CONSTANTS = require(__dirname + '/font');
-
-
+const MyFont = require(__dirname + '/fonts/font');
+const MyFontItalic = require(__dirname + '/fonts/times-new-roman-italique-italic')
+const MyFontBold = require(__dirname + '/fonts/times-new-roman-gras-bold')
+const QuerryBuilder = require('../utils/queryBuilder'); // Подключаем QuerryBuilder
+const pool = require('../config/dbConfig'); // Подключаем настройки подключения к базе данных
 const fs = require('fs');
-// Создаем новый документ
+
+// Create a new document
 const doc = new jsPDF({
-  orientation: "landscape",
+  orientation: 'landscape',
 });
 
-const myFont = CONSTANTS.font  // load the *.ttf font file as binary string
+const myFont = MyFont.font;
+const myFontItalic = MyFontItalic.font;
+const myFontBold = MyFontBold.font;
 
-// add the font to jsPDF
-doc.addFileToVFS("MyFont.ttf", myFont);
-doc.addFont("MyFont.ttf", "MyFont", "normal");
-doc.setFont("MyFont");
+// Add the fonts to jsPDF
+doc.addFileToVFS('MyFont.ttf', myFont);
+doc.addFileToVFS('MyFontItalic.ttf', myFontItalic);
+doc.addFileToVFS('MyFontBold.ttf', myFontBold);
 
-// определение заголовков столбцов таблицы
-const headers = [
-  '№ по протоколу',
-  'Поручение',
-  'Ответственный / Срок / Пояснения'
-];
+doc.addFont('MyFont.ttf', 'MyFont', 'normal');
+doc.addFont('MyFontItalic.ttf', 'MyFont', 'italic');
+doc.addFont('MyFontBold.ttf', 'MyFont', 'bold');
+doc.setFont('MyFont', 'bold');
+doc.setFontSize(15);
 
-// определение данных таблицы
-const data = [
-  [
-    {rowSpan: 2, content: '1.'},
-    'Поручение 1',
-    'Ответственные - заместители генерального директора, Исайкин А.Г. Срок исполнения - постоянно'
-  ],
-  [
-    'Отчет на 15.11.2021 (дата отчета) Краткий отчет по поручению 1 для Директум',
-    'Развернутые ответы от подразделений по поручениям. Могут быть разные исполнители в разных пунктах. От 1 до 10 исполнителей. ООТиЗ: отчет ОКиТО: отчет КИ: отчет СК: отчет МС: отчет ОСР: отчет'
-  ]
-];
+const introText =
+  'Перечень поручений и отчетов по протоколу производственного совещания при генеральном директоре по направлению деятельности заместителя генерального директора по управлению персоналом от 27.12.2021 № 20';
 
+const headers = ['№ по протоколу', 'Поручение', 'Ответственный / Срок / Пояснения'];
 
+// Execute the database query to get the errands data
+const getErrandsFromDatabase = async () => {
+  try {
+    const query = QuerryBuilder.makeSelectQuery('public."Errand"', {
+      columnNames: ['id', 'text_errand', 'id_responsible', 'scheduled_due_date', 'constantly'],
+      // Add other query parameters if needed
+    });
 
-const createTable = (headers, data) => {
-// определение параметров таблицы
-const tableOptions = {
-  startY: 10,
-  head: [headers],
-  body: data,
-  theme: 'grid',
-  styles: {
-    font: "MyFont",
-    halign: 'center',
-    valign: 'middle',
-    overflow: 'linebreak', // добавляем этот стиль для переноса текста
-    cellWidth: 'auto',
-    fontSize: 14,
-    textColor: [0,0,0],
-    tableLineColor: [0,0,0]
-  },
-  headStyles: {
-    fillColor: [255,255,255]
-  },
-  bodyStyles: {
+    const { rows } = await pool.query(query);
 
-  },
-  didDrawCell: (data) => {
-    // отрисовка линий между заголовками и данными таблицы
-    if (data.row.index === 0) {
-      doc.setLineWidth(0,5);
-      doc.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height);
-    }
+    return rows;
+  } catch (error) {
+    console.error('An error occurred while getting the errands data from the database:', error);
+    throw error;
   }
 };
-// создание таблицы с помощью auto-table
-doc.autoTable(tableOptions);
+
+function formatDate(date) {
+  if (!date) {
+    return '';
+  }
+
+  const options = {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  };
+
+  return date.toLocaleDateString('ru-RU', options);
+}
+
+const createTable = async () => {
+  const errands = await getErrandsFromDatabase();
+
+  const tableData = [];
+
+  doc.text(introText, doc.internal.pageSize.width / 2, 10, {
+    align: 'center',
+    maxWidth: 280,
+  });
+
+  errands.forEach((errand, index) => {
+    const row1 = [
+      { content: errand.text_errand.split('.').shift() + '.', rowSpan: 2, styles: { halign: 'center' } },
+      { content: errand.text_errand.split('.').slice(1).join('.').trim(), styles: { fillColor: [222, 234, 246] } }
+    ];
+
+    const row2 = [];
+
+    if (errand.constantly) {
+      row1.push({ content: 'Ответственные - заместители генерального директора.\nСрок исполнения - постоянно', styles: { fillColor: [222, 234, 246] } });
+    } else {
+      row1.push({ content: `Ответственные - заместители генерального директора.\nСрок исполнения - ${formatDate(errand.scheduled_due_date)}`, styles: { fillColor: [222, 234, 246] } });
+    }
+
+    const briefReport = 'Краткий отчет для директум.';
+    const detailedReport = 'Развернутый отчет.Развернутый отчет.Развернутый отчет.Развернутый отчет.Развернутый отчет.Развернутый отчет.';
+
+    row2.push(briefReport);
+    row2.push(detailedReport);
+
+    tableData.push(row1);
+    tableData.push(row2);
+  });
+
+  const tableOptions = {
+    startY: 24,
+    head: [headers],
+    body: tableData,
+    theme: 'grid',
+    styles: {
+      font: 'MyFont',
+      fontSize: 10,
+      textColor: [0, 0, 0],
+      lineWidth: 0.5,
+      lineColor: [0,0,0],
+    },
+    headStyles: {
+      halign: 'center',
+      fillColor: [255, 255, 255],
+      fontStyle: 'bold',
+    }
+  };
+
+  doc.autoTable(tableOptions);
+
+  doc.save('table.pdf');
 };
 
-createTable(headers, data);
-
-// сохранение документа
-doc.save('table.pdf');
+createTable();

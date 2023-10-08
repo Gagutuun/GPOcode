@@ -96,7 +96,6 @@ body {
         justify-content: center;
         margin: 20px 55px;
     }
-
 }
 
 .links-grid {
@@ -155,6 +154,7 @@ body {
     margin-bottom: 18px;
     text-decoration: none;
 }
+
 .event-link .event-dates-container span {
     font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -186,7 +186,6 @@ body {
 }
 
 .ActiveErrands .event-dates-container {
-
     background-color: rgba(0, 0, 0, 0.2);
 }
 

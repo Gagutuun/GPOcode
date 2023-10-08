@@ -1,26 +1,27 @@
 const express = require('express');
 const router = express.Router();
 
-const mainRouter = require('./mainRouter');
+const helloRouter = require('./helloRouter');
 const uploadRouter = require('./uploadRouter');
+const LoadRouter = require('./LoadRouter');
 const authRouter = require('./authRouter');
-const testRouter = require('./testRouter');
 const pdfRouter = require('./pdfRouter');
 const errands = require('./errands');
 const reportProtocol = require('./reportProtocol');
 const feedback = require('./feedback');
+const profile = require('./personRouter');
 
 
 // Use routes
-router.use('/', mainRouter);
-router.use('/upload', uploadRouter);
+router.use('/', helloRouter);
+router.use('/upload', LoadRouter);
 router.use('/auth', authRouter);
-router.use('/test', testRouter);
 router.use('/pdf', pdfRouter);
-router.use('/downloadProtocol', mainRouter);
+router.use('/uploadProtocol', uploadRouter);
 router.use('/errand', errands);
 router.use('/reportProtocol', reportProtocol);
 router.use('/feedback', feedback);
+router.use('/profile', profile);
 
 
 module.exports = router;

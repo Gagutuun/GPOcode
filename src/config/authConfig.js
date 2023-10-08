@@ -12,7 +12,7 @@ passport.use(
       try {
         const user = await User.findByLoginAndPassword(username, password)
         if (!user) {
-          return done(null, false, { message: 'Incorrect username or password.' });
+          return done(null, false, { message: 'Неправильное имя пользователя или пароль!' });
         }
         return done(null, user);
       } catch(err) {
