@@ -100,6 +100,15 @@ class QuerryBuilder {
             sqlQuery += `$${i}${i == columnNames.length ? ")" : ", "}`;
         return sqlQuery;
     }
+
+    static makeInsertQuery(tableName, args = {
+        columnNames: this.columnNames,
+        whereExpression: this.whereExpression || "",
+    }) {
+        let sqlQuery = this.makeInsertQuery(tableName, args.columnNames);
+        sqlQuery += args.whereExpression;
+        return sqlQuery;
+    }
     /**
      * Создает строку, содержащую INSERT SQL запрос
      * @param {string} tableName 
