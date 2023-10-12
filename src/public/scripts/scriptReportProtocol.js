@@ -51,7 +51,7 @@ buttons.forEach(button => {
 
 // Получаем ссылку на элементы
 const editableText = document.querySelector('.editable-text');
-const editButton = document.getElementById('edit-button-responsible');
+const editButton = document.querySelectorAll('.edit-errand-report-change');
 
 // Флаг для отслеживания режима редактирования
 let isEditing = false;
@@ -74,8 +74,9 @@ function toggleEdit() {
   isEditing = !isEditing;
 }
 
-// Добавляем обработчик события на клик по кнопке "Изменить"
-editButton.addEventListener('click', toggleEdit);
+editButton.forEach(element => {
+  element.addEventListener('click', toggleEdit);
+});// Добавляем обработчик события на клик по кнопке "Изменить"
 
 // Функция для мигания рамкой
 function flashBorder() {

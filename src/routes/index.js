@@ -14,7 +14,7 @@ const feedback = require('./feedback');
 // Use routes
 router.use('/', mainRouter);
 router.use('/upload', uploadRouter);
-router.use('/auth', authRouter);
+// router.use('/auth', authRouter);
 router.use('/test', testRouter);
 router.use('/pdf', pdfRouter);
 router.use('/downloadProtocol', mainRouter);
