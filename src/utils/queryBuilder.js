@@ -101,13 +101,15 @@ class QuerryBuilder {
         return sqlQuery;
     }
 
-    static makeInsertQuery(tableName, args = {
-        columnNames: this.columnNames,
-        whereExpression: this.whereExpression || "",
-    }) {
-        let sqlQuery = this.makeInsertQuery(tableName, args.columnNames);
-        sqlQuery += args.whereExpression;
-        return sqlQuery;
+    /**
+     * Расширеный генератор INSERT запроса
+     * @param {string} tableName 
+     * @param {string[]} columnNames 
+     * @param {string} whereExpression 
+     * @returns 
+     */
+    static makeExtendedInsertQuery(tableName, columnNames, whereExpression) {
+        return QuerryBuilder.makeInsertQuery(tableName, columnNames) + whereExpression;
     }
     /**
      * Создает строку, содержащую INSERT SQL запрос

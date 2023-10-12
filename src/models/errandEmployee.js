@@ -37,7 +37,6 @@ class ErrandEmployee {
                     this.columnNames.id_employee.name
                 ]
             );
-            console.log(`[DEBUG] sqlQuery = ${sqlQuery}`);
             db.query(
                 sqlQuery,
                 [id_errand, id_employee],
@@ -46,7 +45,6 @@ class ErrandEmployee {
                         reject(err);
                         return;
                     }
-                    console.log(`[DEBUG] res = {\n${res}\n}`);
                     if (res.rowCount > 0) {
                         resolve(res);
                         return;
@@ -99,7 +97,7 @@ class ErrandEmployee {
                 return;
             }
             db.query(
-                queryBuilder.makeInsertQuery(
+                queryBuilder.makeExtendedInsertQuery(
                     ErrandEmployee.tableName,
                     [ErrandEmployee.columnNames.report.name],
                     queryBuilder.makeSubexpression(
