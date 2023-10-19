@@ -1,4 +1,3 @@
-const os = require('os');
 const { exec } = require('child_process');
 const iconv = require('iconv-lite');
 
@@ -23,11 +22,3 @@ function getUserInfo(username) {
 }
 
 module.exports = { getUserInfo };
-
-getUserInfo(os.userInfo().username)
-    .then((res) => {
-        console.log(res);
-    })
-    .catch((err) => {
-        console.error(err);
-    })
