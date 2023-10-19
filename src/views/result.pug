@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  script(async='', src='/scripts/scriptReportProtocol.js')
+  script(async='', src='/scripts/scriptEditResponsibleErrand.js')
   script(async='', src="https://code.jquery.com/jquery-3.6.0.min.js")
   .content
     .logo
@@ -21,73 +21,22 @@ block content
         thead
           tr
             th.col-var-1
-            th.col-var-2 Текст поручения
-            th.col-var-2 Ответственные
-            th.col-var-2 Срок сдачи
-            th.col-var-2
-            th.col-var-1
+            th.col-var-3 Текст поручения
+            th.col-var-3 Ответственные
+            th.col-var-3 Срок сдачи
+            th.col-var-3
         tbody
-            //- each element in result
+          each element in result
             tr
               //- if element.successfullyLoaded
               td.col-var-1.greatdoc ✔
               //- else
               //-   td.col-var-1.notgreatdoc !
-              td.col-var-2 #{element.errandText}
-              td.col-var-2
-                span(class="editable-text" id="task-text")
+              td.col-var-3 #{element.errandText}
+              td.col-var-3
+                span(class="editable-text" id=`task-text-${idCounter++}`)
                   #{element.asgnName}
-              td.col-var-2 #{element.deadline}
-              td.col-var-2
-                input.edit-errand-report-change(type="submit", value="Изменить" id="edit-button-responsible")
-              td.col-var-1
-                button.expand-button ᐯ
+              td.col-var-3 #{element.deadline}
+              td.col-var-3
+                input.edit-errand-report-change(type="button", value="Изменить")
     input.formProtocol(type='submit' value='Отправить')
-    script.
-      // Получение ссылки на PDF файл на сервере
-      var url = '/pdf';
-      // Получение canvas элемента
-      var canvas = document.getElementById('pdf-canvas');
-      // Получение элементов управления
-      var pageNumInput = document.getElementById('page-num');
-      var prevPageBtn = document.getElementById('prev-page');
-      var nextPageBtn = document.getElementById('next-page');
-      // Обработчик изменения значения в input
-      pageNumInput.addEventListener('change', function() {
-        var pageNum = parseInt(this.value);
-        renderPage(pageNum);
-      });
-      // Обработчик кнопки "Назад"
-      prevPageBtn.addEventListener('click', function() {
-        var pageNum = parseInt(pageNumInput.value);
-        if (pageNum <= 1) {
-          return;
-        }
-        pageNum--;
-        pageNumInput.value = pageNum;
-        renderPage(pageNum);
-      });
-      // Обработчик кнопки "Вперед"
-      nextPageBtn.addEventListener('click', function() {
-        var pageNum = parseInt(pageNumInput.value);
-        if (pageNum >= pdf.numPages) {
-          return;
-        }
-        pageNum++;
-        pageNumInput.value = pageNum;
-        renderPage(pageNum);
-      });
-      // Загрузка PDF файла и его отображение на canvas элементе
-      var pdf = null;
-      pdfjsLib.getDocument(url).promise.then(function(pdfDoc) {
-        pdf = pdfDoc;
-        renderPage(1);
-      });
-      function renderPage(pageNum) {
-        pdf.getPage(pageNum).then(function(page) {
-          var viewport = page.getViewport({ scale: 1.0 });
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-          page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport });
-        });
-      }
