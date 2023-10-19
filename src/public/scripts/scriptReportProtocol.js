@@ -48,6 +48,7 @@ buttons.forEach(button => {
     button.textContent = 'ᐱ';
   }
 });
+<<<<<<< HEAD
 
 // Получаем ссылку на элементы
 const editableText = document.querySelector('.editable-text');
@@ -94,3 +95,5 @@ function flashBorder() {
     }
   }, 1000); // Интервал мигания: 1 секунда
 }
+=======
+>>>>>>> 9207db51cd3dd7e2520b639377f53c6f5999b1ed

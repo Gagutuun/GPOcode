@@ -1,9 +1,7 @@
-- var idCounter = 1
-
 extends layout
 
 block content
-  script(async='', src='/scripts/scriptReportProtocol.js')
+  script(async='', src='/scripts/scriptEditResponsibleErrand.js')
   script(async='', src="https://code.jquery.com/jquery-3.6.0.min.js")
   .content
     .logo
@@ -23,11 +21,10 @@ block content
         thead
           tr
             th.col-var-1
-            th.col-var-2 Текст поручения
-            th.col-var-2 Ответственные
-            th.col-var-2 Срок сдачи
-            th.col-var-2
-            th.col-var-1
+            th.col-var-3 Текст поручения
+            th.col-var-3 Ответственные
+            th.col-var-3 Срок сдачи
+            th.col-var-3
         tbody
           each element in result
             tr
@@ -35,13 +32,11 @@ block content
               td.col-var-1.greatdoc ✔
               //- else
               //-   td.col-var-1.notgreatdoc !
-              td.col-var-2 #{element.errandText}
-              td.col-var-2
+              td.col-var-3 #{element.errandText}
+              td.col-var-3
                 span(class="editable-text" id=`task-text-${idCounter++}`)
                   #{element.asgnName}
-              td.col-var-2 #{element.deadline}
-              td.col-var-2
+              td.col-var-3 #{element.deadline}
+              td.col-var-3
                 input.edit-errand-report-change(type="button", value="Изменить")
-              td.col-var-1
-                button.expand-button ᐯ
     input.formProtocol(type='submit' value='Отправить')

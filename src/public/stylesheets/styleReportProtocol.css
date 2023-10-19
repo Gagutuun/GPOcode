@@ -59,7 +59,16 @@
     width: 30%;
 }
 
-.table-ReportProtocol th, .table-ReportProtocol td{
+.table-ReportProtocol .col-var-3 {
+    max-width: 100%;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow: hidden;
+    width: 30%;
+}
+
+.table-ReportProtocol th,
+.table-ReportProtocol td {
     font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
