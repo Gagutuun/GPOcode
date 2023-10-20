@@ -1,6 +1,8 @@
 extends layout
 
 block content
+  script(async='', src='/scripts/scriptReportProtocol.js')
+  script(async='', src="https://code.jquery.com/jquery-3.6.0.min.js")
   .content
     .logo
       a.button(href='/')
@@ -9,18 +11,38 @@ block content
       h1 Документ успешно загружен!
     .item
       form
-        h3 Текст, содержащийся в документе:
-        canvas#pdf-canvas
-        div.page-nav
-          input#page-num(type='number', min='1', max='100', value='1')
-          button#prev-page(type='button') <
-          button#next-page(type='button') >
+        h3.greatdoc Все исполнители успешно найдены. Проверьте правильность работы алгоритма и нажмите кнопку “Отправить”.
+        //- При неудачной загрузке добавить notgreatdoc и текст: При создании протокола произошла ошибка. Некоторый(е) из ответственные не были найдены.
     .item
       form
         h3 Результат работы алгоритма:
-        each element in result
-          p #{element.errandText}, #{element.asgnName}, #{element.deadline}
-
+    .table-container
+      table.table-ReportProtocol
+        thead
+          tr
+            th.col-var-1
+            th.col-var-2 Текст поручения
+            th.col-var-2 Ответственные
+            th.col-var-2 Срок сдачи
+            th.col-var-2
+            th.col-var-1
+        tbody
+            //- each element in result
+            tr
+              //- if element.successfullyLoaded
+              td.col-var-1.greatdoc ✔
+              //- else
+              //-   td.col-var-1.notgreatdoc !
+              td.col-var-2 #{element.errandText}
+              td.col-var-2
+                span(class="editable-text" id="task-text")
+                  #{element.asgnName}
+              td.col-var-2 #{element.deadline}
+              td.col-var-2
+                input.edit-errand-report-change(type="submit", value="Изменить" id="edit-button-responsible")
+              td.col-var-1
+                button.expand-button ᐯ
+    input.formProtocol(type='submit' value='Отправить')
     script.
       // Получение ссылки на PDF файл на сервере
       var url = '/pdf';

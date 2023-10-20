@@ -1,1 +1,2 @@
-await Promise.resolve(console.log("Inkoop")) // Inkoop
+var os = require('os');
+console.log(os.userInfo());
