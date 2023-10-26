@@ -60,17 +60,6 @@ async function _parseAndSavePDF(filePath, protocolDate, protocolNumber) {
     // Отправляем запрос к бд на добавление нового протокола
     await Protocol.addNewProtocol(filePath, protocolDate, protocolNumber);
 
-    // Получаем id, последнего добавленного Протокола
-    const idProtocol = await Protocol.getLastProtocolId();
-
-    // Идем по каждому элементу массива, отправляя запрос к бд на добавление новых записей в Errand
-    errandArray.forEach(errand => {
-      // Т.к. сейчас непонятно кому давать поручение, assignID = 1
-      // const assignID = await User.getIdByName(errand.asgnName);
-      const assignID = 1;
-      Errand.addNewErrand(errand.errandText, errand.deadline, idProtocol, assignID);
-    });
-
     resolve({
       pdfData: pdfData,
       errandArray: errandArray
