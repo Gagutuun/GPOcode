@@ -13,5 +13,5 @@ module.exports = asyncHandler(async (req, res) => {
         Errand.addNewErrand(errand.errandText, errand.deadline, idProtocol, assignID);
     });
 
-    res.render('PAGE_NAME');
+    // res.render('PAGE_NAME');
 })
