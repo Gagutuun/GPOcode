@@ -17,6 +17,8 @@ class Errand {
         id_protocol: 'id_protocol' // Нужно получить из запроса к протоколу
     };
 
+    static activeStatus = "Активный";
+
     /**
      * Добавляет новое поручение в базу данных
      * @param {string} errandText 
@@ -33,12 +35,13 @@ class Errand {
                         this.columnNames.constantly,
                         this.columnNames.id_protocol,
                         this.columnNames.scheduled_due_date,
-                        this.columnNames.text_errand
+                        this.columnNames.text_errand,
+                        this.columnNames.status
                     )
                 ),
                 deadline === "постоянно"
-                    ? [true, idProtocol, null, errandText]
-                    : [false, idProtocol, deadline, errandText],
+                    ? [true, idProtocol, null, errandText, this.activeStatus]
+                    : [false, idProtocol, deadline, errandText, this.activeStatus],
                 async (error) => {
                     if (error) {
                             reject(error);
