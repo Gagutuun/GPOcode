@@ -1,6 +1,7 @@
 // Модель поручения
 const db = require('../config/dbConfig');
 const queryBuilder = require('../utils/queryBuilder');
+const errandEmployee = require('./errandEmployee.js');
 
 class Errand {
     static tableName = 'public."Errand"';
@@ -23,26 +24,8 @@ class Errand {
      * @param {int} idProtocol 
      * @param {int} idResponsible 
      */
-    static addNewErrand(errandText, deadline, idProtocol) {
-        // Выполняем запрос к таблице сотрудников на получение id ответсенного.
-        // const idResponsible = 1; // запрос к users
-        if (deadline === "постоянно")
-            db.query(
-                queryBuilder.makeInsertQuery(
-                    this.tableName,
-                    new Array(
-                        this.columnNames.constantly,
-                        this.columnNames.id_protocol,
-                        this.columnNames.text_errand
-                    )
-                ),
-                [true, idProtocol, errandText],
-                (error, result) => {
-                    if (error)
-                        console.error(error);
-                }
-            )
-        else
+    static addNewErrand(errandText, deadline, idProtocol, idResponsible) {
+        return new Promise(async (resolve, reject) => {
             db.query(
                 queryBuilder.makeInsertQuery(
                     this.tableName,
@@ -53,14 +36,63 @@ class Errand {
                         this.columnNames.text_errand
                     )
                 ),
-                [false, idProtocol, deadline, errandText],
-                (error, result) => {
-                    if (error)
-                        console.log(error);
+                deadline === "постоянно"
+                    ? [true, idProtocol, null, errandText]
+                    : [false, idProtocol, deadline, errandText],
+                async (error) => {
+                    if (error) {
+                            reject(error);
+                            return;
+                    }
+                    const idErrand = await Errand.getLastAddedErrandId();
+                    errandEmployee.addRow(idErrand, idResponsible)
+                        .then(() => {
+                            resolve();
+                        })
+                        .catch((error) => {
+                            reject(error);
+                        })
                 }
             )
+        })
     }
-    
+
+    static getLastAddedErrandId() {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeSelectQuery(
+                    this.tableName,
+                    {
+                        columnNames: [this.columnNames.id],
+                        orderByExpression: queryBuilder.makeSubexpression(
+                            queryBuilder.ORDER_BY,
+                            queryBuilder.makeLogicExpression(
+                                queryBuilder.DESC,
+                                this.columnNames.id
+                            )
+                        ),
+                        limit: queryBuilder.makeSubexpression(
+                            queryBuilder.LIMIT,
+                            "1"
+                        )
+                    }
+                ),
+                [],
+                (error, result) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    if (result.rowCount > 0) {
+                        resolve(result.rows[0].id);
+                        return;
+                    }
+                    reject("Unknown error");
+                }
+            );
+        })
+    }
+
     /**
      * Возвращает полную информацию о поручении по его id
      * @param {int} idErrand - ID поручения
@@ -143,9 +175,9 @@ class Errand {
                 ),
                 ['done'],
                 (err, res) => {
-                    if(err)
+                    if (err)
                         reject(err);
-                    else if(res.rowCount > 0){
+                    else if (res.rowCount > 0) {
                         resolve(res.rows);
                     }
                     else
@@ -177,3 +209,4 @@ class Errand {
 }
 
 module.exports = Errand;
+

@@ -100,6 +100,17 @@ class QuerryBuilder {
             sqlQuery += `$${i}${i == columnNames.length ? ")" : ", "}`;
         return sqlQuery;
     }
+
+    /**
+     * Расширеный генератор INSERT запроса
+     * @param {string} tableName 
+     * @param {string[]} columnNames 
+     * @param {string} whereExpression 
+     * @returns 
+     */
+    static makeExtendedInsertQuery(tableName, columnNames, whereExpression) {
+        return QuerryBuilder.makeInsertQuery(tableName, columnNames) + whereExpression;
+    }
     /**
      * Создает строку, содержащую INSERT SQL запрос
      * @param {string} tableName 
