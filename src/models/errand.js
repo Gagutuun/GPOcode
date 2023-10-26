@@ -23,7 +23,7 @@ class Errand {
      * @param {int} idProtocol 
      * @param {int} idResponsible 
      */
-    static addNewErrand(errandText, deadline, idProtocol, idResponsible) {
+    static addNewErrand(errandText, deadline, idProtocol) {
         // Выполняем запрос к таблице сотрудников на получение id ответсенного.
         // const idResponsible = 1; // запрос к users
         if (deadline === "постоянно")
@@ -33,11 +33,10 @@ class Errand {
                     new Array(
                         this.columnNames.constantly,
                         this.columnNames.id_protocol,
-                        this.columnNames.id_responsible,
                         this.columnNames.text_errand
                     )
                 ),
-                [true, idProtocol, idResponsible, errandText],
+                [true, idProtocol, errandText],
                 (error, result) => {
                     if (error)
                         console.error(error);
@@ -50,12 +49,11 @@ class Errand {
                     new Array(
                         this.columnNames.constantly,
                         this.columnNames.id_protocol,
-                        this.columnNames.id_responsible,
                         this.columnNames.scheduled_due_date,
                         this.columnNames.text_errand
                     )
                 ),
-                [false, idProtocol, idResponsible, deadline, errandText],
+                [false, idProtocol, deadline, errandText],
                 (error, result) => {
                     if (error)
                         console.log(error);
