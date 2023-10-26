@@ -26,9 +26,11 @@ class Protocol {
             db.query(
                 queryBuilder.makeInsertQuery(
                     this.tableName,
-                    new Array(this.columnNames.file_protocol_doc,
-                              this.columnNames.protocol_date,
-                              this.columnNames.protocol_number)
+                    [
+                        this.columnNames.file_protocol_doc,
+                        this.columnNames.protocol_date,
+                        this.columnNames.protocol_number
+                    ]
                 ),
                 [protocolPath, protocolDate, protocolNumber],
                 (err, res) => {

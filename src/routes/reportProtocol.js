@@ -18,12 +18,31 @@ function formatDate(date) {
 
 router.get('/', async (req, res, next) => {
   try {
-    // Запрос к базе данных для получения списка протоколов
-    const query = 'SELECT * FROM public."Protocol"';
-    const { rows } = await pool.query(query);
+    // Запрос к базе данных для получения списка активных протоколов, где general_report_file_doc пустое
+    const activeQuery = `
+      SELECT * FROM public."Protocol"
+      WHERE general_report_file_doc IS NULL
+      ORDER BY protocol_date DESC; -- Сортировка по дате в убывающем порядке
+    `;
+    const { rows: activeReports } = await pool.query(activeQuery);
 
-    // Проходим по полученным протоколам и форматируем даты
-    const formattedReports = rows.map(report => ({
+    // Запрос к базе данных для получения списка архивных протоколов, где general_report_file_doc не пустое
+    const archiveQuery = `
+      SELECT * FROM public."Protocol"
+      WHERE general_report_file_doc IS NOT NULL
+      ORDER BY protocol_date DESC; -- Сортировка по дате в убывающем порядке
+    `;
+    const { rows: archiveReports } = await pool.query(archiveQuery);
+
+    // Проходим по полученным протоколам и форматируем даты для активных протоколов
+    const formattedActiveReports = activeReports.map(report => ({
+      ...report,
+      date: formatDate(report.protocol_date), // Форматируйте дату по вашим требованиям
+      // Другие поля, которые нужно отформатировать
+    }));
+
+    // Проходим по полученным протоколам и форматируем даты для архивных протоколов
+    const formattedArchiveReports = archiveReports.map(report => ({
       ...report,
       date: formatDate(report.protocol_date), // Форматируйте дату по вашим требованиям
       // Другие поля, которые нужно отформатировать
@@ -31,20 +50,47 @@ router.get('/', async (req, res, next) => {
 
     // Здесь вы можете выполнить дополнительные действия по обработке данных, если это необходимо
 
-    res.render('reportProtocol', { title: 'Отчеты по протоколам', reports: formattedReports });
+    res.render('reportProtocol', {
+      title: 'Отчеты по протоколам',
+      activeReports: formattedActiveReports,
+      archiveReports: formattedArchiveReports,
+    });
   } catch (error) {
     console.error('Ошибка при получении протоколов из базы данных:', error);
     next(error);
   }
 });
 
+
+
 router.get('/:protocolNumber', async (req, res, next) => {
   try {
     // Получите идентификатор протокола из параметров URL
     const { protocolNumber } = req.params;
 
-    // Запрос к базе данных для получения информации о конкретном протоколе по номеру
-    const query = 'SELECT * FROM public."Protocol" WHERE protocol_number = $1';
+    // Запрос к базе данных для получения информации о конкретном протоколе и связанных с ним поручениях
+    const query = `
+        SELECT
+        p.*,
+        e.text_errand,
+        e.actual_date,
+        e.scheduled_due_date,
+        e.status,
+        e.constantly,
+        ARRAY_AGG(DISTINCT CONCAT(emp.surname, ' ', emp.name, ' ', emp.patronymic)) AS responsible_employees
+      FROM
+        public."Protocol" AS p
+      LEFT JOIN
+        public."Errand" AS e ON p.id = e.id_protocol
+      LEFT JOIN
+        public."ErrandEmployee" AS ee ON e.id = ee.id_errand
+      LEFT JOIN
+        public."Employee" AS emp ON ee.id_employee = emp.id
+      WHERE
+        p.protocol_number = $1
+      GROUP BY
+        p.id, e.id;
+    `;
     const { rows } = await pool.query(query, [protocolNumber]);
 
     if (rows.length === 0) {
@@ -53,19 +99,27 @@ router.get('/:protocolNumber', async (req, res, next) => {
       return;
     }
 
-    // Форматируйте данные по протоколу, как в примере в файле reportProtocol.js
-    const formattedReport = {
-      ...rows[0],
-      date: formatDate(rows[0].protocol_date), // Форматируйте дату по вашим требованиям
-      // Другие поля, которые нужно отформатировать
-    };
+    const formattedProtocols = [];
 
-    res.render('oneReportProtocol', { title: 'Отчет по протоколу', report: formattedReport });
+    // Переберите полученные строки (протоколы) и добавьте их в массив formattedProtocols
+    for (const row of rows) {
+      formattedProtocols.push({
+        ...row, // Сохраняем все поля объекта
+        date: formatDate(row.protocol_date),
+        scheduled_due_date: formatDate(row.scheduled_due_date), // Форматируем дату
+        protocol_date: formatDate(row.protocol_date)
+      });
+    }
+
+    console.log(formattedProtocols);
+
+    res.render('OneReportProtocol', { title: 'Отчет по протоколу', protocol: formattedProtocols });
   } catch (error) {
     console.error('Ошибка при получении информации о протоколе из базы данных:', error);
     next(error);
   }
 });
+
 
 
 module.exports = router;

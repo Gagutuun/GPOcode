@@ -2,27 +2,47 @@ extends layout
 
 block content
   script(async='', src='/scripts/scriptReportProtocol.js')
-  .marginReportProtocol
-    span.text-at-the-top-of-reports Скачать отчёт по протоколу
-    .short-report
-      .short-report-item
-        span.divisions-name Отчёт по протоколу №233122
-        input.edit-button-errand(type="submit", value="Скачать")
-        span.date-report 23.03.2023, 10:24
+  if !protocol[0].general_report_file_doc
+    .marginReportProtocol
+      .short-report
+        .short-report-item
+          input.formProtocol(type="submit" value="Сформировать протокол")
+  else
+    .marginReportProtocol
+      span.text-at-the-top-of-reports Скачать отчёт по протоколу
+      .short-report
+        .short-report-item
+          span.divisions-name Отчёт по протоколу №#{protocol[0].protocol_number}
+          input.edit-button-errand(type="submit" value="Скачать")
+          span.date-report= protocol[0].date
   .table-container
     table.table-ReportProtocol
-      thead
-        tr
-          th.col-var-2 Текст поручения
-          th.col-var-2 Ответственные
-          th.col-var-2 Получено
-          th.col-var-2 Срок сдачи
-          th.col-var-1
-      tbody
-        tr
-          td.col-var-2
-          td.col-var-2 
-          td.col-var-2 
-          td.col-var-2
-          td.col-var-1
-            button.expand-button ᐯ
+        thead
+          tr
+            if !protocol[0].general_report_file_doc
+              th.col-var-1
+                button.select_all Выбрать все
+            th.col-var-2 Текст поручения
+            th.col-var-2 Ответственные
+            th.col-var-2 Получено
+            th.col-var-2 Срок сдачи
+            th.col-var-2 Статус
+            th.col-var-1
+              button.expand_all ᐯ
+        tbody
+          each item in protocol
+            tr
+              if !protocol[0].general_report_file_doc
+                td.col-var-1
+                  input.checkbox-order-selection(type='checkbox')
+              td.col-var-2 #{item.text_errand}
+              td.col-var-2 #{item.responsible_employees}
+              td.col-var-2 #{item.date}
+              td.col-var-2 
+                    if item.constantly
+                      | Постоянно
+                    else
+                      | #{item.scheduled_due_date}
+              td.col-var-2 #{item.status}
+              td.col-var-1
+                button.expand-button ᐯ
