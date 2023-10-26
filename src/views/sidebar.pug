@@ -1,6 +1,6 @@
 script(async, src="/scripts/scriptSidebar.js")
 .mainContainer
-  .sidebar
+  .sidebar(id="sidebar-id")
     ul.menu-person
       li.person
         a.block(href="/profile", target="myFrame", id="home")
@@ -31,22 +31,24 @@ script(async, src="/scripts/scriptSidebar.js")
                 .no-notifications
                   span Вам ещё не приходили уведомления
     ul.menu
-      li.download-protocol
-        a.menu-link(href="/uploadProtocol")
+      li.download-protocol(id="download-protocol-id")
+        a.menu-link(href="/downloadProtocol")
           img.btn-download(src="../images/SidebarImg/download.svg", width="30", height="30")
           span.menu-text Загрузка протокола
-      li.errand
+      li.errand(id="errand-id")
         a.menu-link(href="/errand")
           img.btn-errand(src="../images/SidebarImg/errand.svg", width="30", height="30")
           span.menu-text Поручения
-      li.report-protocol
+      li.report-protocol(id="report-protocol-id")
         a.menu-link(href="/reportProtocol")
           img.btn-report-protocol(src="../images/SidebarImg/generalReport.svg", width="30", height="30")
           span.menu-text Отчёты по протоколам
-      li.feedback
+      li.feedback(id="feedback-id")
         a.menu-link(href="/feedback")
           img.btn-feedback(src="../images/SidebarImg/feedback.svg", width="30", height="30")
           span.menu-text Обратная связь
+      li.exit(id="exit-id")
+        a.menu-link(href="/exit")
       li.exit
         a.menu-link(href="/auth/login")
           img.btn-exit(src="../images/SidebarImg/exit.svg", width="30", height="30")

@@ -123,7 +123,7 @@ if (storedExpandedRows) {
 
 // Получаем ссылку на элементы
 const editableText = document.querySelector('.editable-text');
-const editButton = document.getElementById('edit-button-responsible');
+const editButton = document.querySelectorAll('.edit-errand-report-change');
 
 // Флаг для отслеживания режима редактирования
 let isEditing = false;
@@ -146,8 +146,9 @@ function toggleEdit() {
   isEditing = !isEditing;
 }
 
-// Добавляем обработчик события на клик по кнопке "Изменить"
-editButton.addEventListener('click', toggleEdit);
+editButton.forEach(element => {
+  element.addEventListener('click', toggleEdit);
+});// Добавляем обработчик события на клик по кнопке "Изменить"
 
 // Функция для мигания рамкой
 function flashBorder() {
@@ -165,3 +166,5 @@ function flashBorder() {
     }
   }, 1000); // Интервал мигания: 1 секунда
 }
+=======
+>>>>>>> 9207db51cd3dd7e2520b639377f53c6f5999b1ed
