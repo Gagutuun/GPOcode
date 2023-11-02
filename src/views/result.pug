@@ -35,7 +35,10 @@ block content
               td.col-var-3 #{element.errandText}
               td.col-var-3
                 span(class="editable-text" id=`task-text-${idCounter++}`)
-                  #{element.asgnName}
+                   each assignee in element.asgnName
+                    | #{assignee}
+                    if assignee != element.asgnName[element.asgnName.length - 1]
+                      | , 
               td.col-var-3 #{element.deadline}
               td.col-var-3
                 input.edit-errand-report-change(type="button", value="Изменить")
