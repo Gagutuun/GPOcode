@@ -10,6 +10,7 @@ const errands = require('./errands');
 const reportProtocol = require('./reportProtocol');
 const feedback = require('./feedback');
 const profile = require('./personRouter');
+const reportReview = require('./reportReviewRouter')
 
 
 // Use routes
@@ -22,6 +23,7 @@ router.use('/errand', errands);
 router.use('/reportProtocol', reportProtocol);
 router.use('/feedback', feedback);
 router.use('/profile', profile);
+router.use('/review-report', reportReview);
 
 
 module.exports = router;

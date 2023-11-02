@@ -120,6 +120,19 @@ router.get('/:protocolNumber', async (req, res, next) => {
   }
 });
 
+router.post('/generate-report', (req, res) => {
+
+  const selectedRows = req.body;
+
+  // Запрос к БД за выбранными данными
+
+  // Сохранить данные в session
+  req.session.reportData = selectedRows;
+  
+  res.sendStatus(200);
+
+});
+
 
 
 module.exports = router;

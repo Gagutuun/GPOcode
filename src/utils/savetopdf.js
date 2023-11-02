@@ -39,7 +39,7 @@ const getErrandsFromDatabase = async (protocolNumber) => {
       WHERE P.protocol_number = $1
     `;
 
-    const { rows } = await pool.query(query, [4442444]);
+    const { rows } = await pool.query(query, [00000001]);
 
     return rows;
   } catch (error) {
@@ -48,18 +48,18 @@ const getErrandsFromDatabase = async (protocolNumber) => {
   }
 };
 
-const getNameSubdivison = async () => {
-  try {
-    const query = `SELECT short_name FROM "Subdivision"`;
+// const getNameSubdivison = async () => {
+//   try {
+//     const query = `SELECT short_name FROM "Subdivision"`;
 
-    const { rows } = await pool.query(query);
+//     const { rows } = await pool.query(query);
 
-    return rows;
-  } catch (error) {
-    console.error('An error occurred while getting the errands data from the database:', error);
-    throw error;
-  }
-}
+//     return rows;
+//   } catch (error) {
+//     console.error('An error occurred while getting the errands data from the database:', error);
+//     throw error;
+//   }
+// }
 
 function formatDate(date) {
   if (!date) {
@@ -77,15 +77,15 @@ function formatDate(date) {
 
 const createTable = async () => {
   const errands = await getErrandsFromDatabase();
-  const names = await getNameSubdivison();
+  // const names = await getNameSubdivison();
   const introText =
   'Перечень поручений и отчетов по протоколу производственного совещания при генеральном директоре по направлению деятельности заместителя генерального директора по управлению персоналом от ' + formatDate(errands[0].protocol_date) +'\n№ ' + errands[0].protocol_number;
 
   const headers = ['№ по протоколу', 'Поручение', 'Ответственный / Срок / Пояснения'];
   const tableData = [];
 
-  const headersEvent = ['Подразделение', 'Работы по плану', 'Отчет о выполнении'];
-  const eventTableData = [];
+  // const headersEvent = ['Подразделение', 'Работы по плану', 'Отчет о выполнении'];
+  // const eventTableData = [];
 
   doc.text(introText, doc.internal.pageSize.width / 2, 15, {
     align: 'center',
@@ -117,13 +117,13 @@ const createTable = async () => {
     tableData.push(row2);
   });
 
-  names.forEach((nameSub, index) => {
-    const row1 = [
-      {content: nameSub.short_name},
-    ]
+  // names.forEach((nameSub, index) => {
+  //   const row1 = [
+  //     {content: nameSub.short_name},
+  //   ]
 
-    tableData.push(row1);
-  });
+  //   tableData.push(row1);
+  // });
 
   const tableOptions = {
     startY: 35,

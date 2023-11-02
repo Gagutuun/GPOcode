@@ -3,6 +3,7 @@ extends layout
 block content
   script(async='', src='/scripts/scriptEditResponsibleErrand.js')
   script(async='', src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script(async='', src='/scripts/scriptConfrim.js')
   .content
     .logo
       a.button(href='/')
@@ -39,4 +40,6 @@ block content
               td.col-var-3 #{element.deadline}
               td.col-var-3
                 input.edit-errand-report-change(type="button", value="Изменить")
-    input.formProtocol(type='submit' value='Отправить')
+    form#confirmForm(action='/confirm', method='post')
+      input.formProtocol(type='submit', value='Подтвердить')
+

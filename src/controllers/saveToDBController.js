@@ -3,6 +3,10 @@ const Protocol = require('../models/protocol');
 const Errand = require('../models/errand');
 
 module.exports = asyncHandler(async (req, res) => {
+    const protocolDate = req.body.protocolDate; // Получите дату протокола из формы
+    const protocolNumber = req.body.protocolNumber; // Получите номер протокола из формы
+    const errandData = req.body.errandData; // Получите данные поручений, которые были отредактированы на странице предпросмотра
+    
     // Получаем id, последнего добавленного Протокола
     const idProtocol = await Protocol.getLastProtocolId();
 

@@ -166,3 +166,15 @@ function flashBorder() {
     }
   }, 1000); // Интервал мигания: 1 секунда
 }
+
+document.querySelector('.formProtocol').addEventListener('click', () => {
+  // Собрать данные о выделенных чекбоксах
+  const selectedRows = [];
+  checkboxes.forEach(checkbox => {
+    if (checkbox.checked) {
+      selectedRows.push(checkbox.dataset.row);
+      console.log(selectedRows.push(checkbox.dataset.row));
+    }
+  });
+
+});
