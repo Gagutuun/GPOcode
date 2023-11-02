@@ -119,3 +119,50 @@ if (storedExpandedRows) {
     }
   });
 }
+
+
+// Получаем ссылку на элементы
+const editableText = document.querySelector('.editable-text');
+const editButton = document.querySelectorAll('.edit-errand-report-change');
+
+// Флаг для отслеживания режима редактирования
+let isEditing = false;
+
+// Функция для включения/выключения режима редактирования
+function toggleEdit() {
+  if (isEditing) {
+    // В режиме редактирования - сохраняем изменения
+    editableText.contentEditable = false;
+    editButton.value = 'Изменить';
+    // Здесь можно добавить код для сохранения изменений на сервере
+  } else {
+    // Включаем режим редактирования
+    editableText.contentEditable = true;
+    editButton.value = 'Сохранить';
+    // Мигание рамкой
+    flashBorder();
+  }
+  // Инвертируем флаг
+  isEditing = !isEditing;
+}
+
+editButton.forEach(element => {
+  element.addEventListener('click', toggleEdit);
+});// Добавляем обработчик события на клик по кнопке "Изменить"
+
+// Функция для мигания рамкой
+function flashBorder() {
+  let count = 0;
+  const interval = setInterval(() => {
+    if (count >= 3) {
+      clearInterval(interval); // Остановить мигание после 2 раз
+      editableText.style.border = 'none'; // Убрать рамку после мигания
+    } else {
+      editableText.style.border = '2px solid grey'; // Установить рамку
+      setTimeout(() => {
+        editableText.style.border = 'none'; // Убрать рамку через некоторое время
+      }, 500);
+      count++;
+    }
+  }, 1000); // Интервал мигания: 1 секунда
+}

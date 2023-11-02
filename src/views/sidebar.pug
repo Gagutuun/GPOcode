@@ -1,31 +1,54 @@
 script(async, src="/scripts/scriptSidebar.js")
 .mainContainer
-  .sidebar
+  .sidebar(id="sidebar-id")
     ul.menu-person
       li.person
-        a.block(href="Person.html", target="myFrame", id="home")
-          img.btn-img(src="../images/SidebarImg/3d-saul-saul-goodman.gif", width="40", height="40")
-          span.person-name Saul Goodman
-          span.tooltipPerson Saul Goodman
-        a.notifications(href="notifications.html", target="myFrame")
-          img.btn-bell(src="../images/SidebarImg/bell.svg", width="30", height="30")
+        a.block(href="/profile", target="myFrame", id="home")
+          img.btn-img(src="../images/SidebarImg/person.png", width="40", height="40")
+          span.person-name Оладжувон-Нгози И.И.
+          span.tooltipPerson Оладжувон-Нгози И.И.
+        .bell-container
+          img.btn-bell(id="bell-btn", src="../images/SidebarImg/bell.svg", width="30", height="30")
+          .context-menu(id="context-menu")
+              .scrollable-menu
+                a.context-menu-item(href="/")
+                  table.context-menu-table
+                    tr
+                      td.first-column-context-menu(rowspan="2")
+                        p.truncate-text
+                          | Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по программам развития цифровой грамотности.
+                      //- Когда уведомление не прочитано, добавлять класс red-circle-active
+                      td.second-column-context-menu
+                        .red-circle.red-circle-active
+                    tr
+                      td.arroww-td
+                        .arroww >
+                    tr
+                      td.first-column-context-menu.first-column-date
+                        | Срок исполнения: 27.02.2022
+                      td.second-column-context-menu
+                //- Когда ещё нет уведомлений выводить вот это
+                .no-notifications
+                  span Вам ещё не приходили уведомления
     ul.menu
-      li.download-protocol
+      li.download-protocol(id="download-protocol-id")
         a.menu-link(href="/uploadProtocol")
           img.btn-download(src="../images/SidebarImg/download.svg", width="30", height="30")
           span.menu-text Загрузка протокола
-      li.errand
+      li.errand(id="errand-id")
         a.menu-link(href="/errand")
           img.btn-errand(src="../images/SidebarImg/errand.svg", width="30", height="30")
           span.menu-text Поручения
-      li.report-protocol
+      li.report-protocol(id="report-protocol-id")
         a.menu-link(href="/reportProtocol")
           img.btn-report-protocol(src="../images/SidebarImg/generalReport.svg", width="30", height="30")
           span.menu-text Отчёты по протоколам
-      li.feedback
+      li.feedback(id="feedback-id")
         a.menu-link(href="/feedback")
           img.btn-feedback(src="../images/SidebarImg/feedback.svg", width="30", height="30")
           span.menu-text Обратная связь
+      li.exit(id="exit-id")
+        a.menu-link(href="/exit")
       li.exit
         a.menu-link(href="/auth/login")
           img.btn-exit(src="../images/SidebarImg/exit.svg", width="30", height="30")

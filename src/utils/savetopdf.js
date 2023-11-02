@@ -27,18 +27,30 @@ doc.addFont('MyFontBold.ttf', 'MyFont', 'bold');
 doc.setFont('MyFont', 'bold');
 doc.setFontSize(15);
 
-const introText =
-  'Перечень поручений и отчетов по протоколу производственного совещания при генеральном директоре по направлению деятельности заместителя генерального директора по управлению персоналом от 27.12.2021 № 20';
-
-const headers = ['№ по протоколу', 'Поручение', 'Ответственный / Срок / Пояснения'];
-
 // Execute the database query to get the errands data
-const getErrandsFromDatabase = async () => {
+const getErrandsFromDatabase = async (protocolNumber) => {
   try {
-    const query = QuerryBuilder.makeSelectQuery('public."Errand"', {
-      columnNames: ['id', 'text_errand', 'id_responsible', 'scheduled_due_date', 'constantly'],
-      // Add other query parameters if needed
-    });
+    const query = `
+      SELECT *
+      FROM "Errand" E
+      INNER JOIN "ErrandEmployee" EE ON E.id = EE.id_errand
+      INNER JOIN "Protocol" P ON E.id_protocol = P.id
+      INNER JOIN "Employee" Em ON Em.id = EE.id_employee
+      WHERE P.protocol_number = $1
+    `;
+
+    const { rows } = await pool.query(query, [4442444]);
+
+    return rows;
+  } catch (error) {
+    console.error('An error occurred while getting the errands data from the database:', error);
+    throw error;
+  }
+};
+
+const getNameSubdivison = async () => {
+  try {
+    const query = `SELECT short_name FROM "Subdivision"`;
 
     const { rows } = await pool.query(query);
 
@@ -47,7 +59,7 @@ const getErrandsFromDatabase = async () => {
     console.error('An error occurred while getting the errands data from the database:', error);
     throw error;
   }
-};
+}
 
 function formatDate(date) {
   if (!date) {
@@ -65,15 +77,23 @@ function formatDate(date) {
 
 const createTable = async () => {
   const errands = await getErrandsFromDatabase();
+  const names = await getNameSubdivison();
+  const introText =
+  'Перечень поручений и отчетов по протоколу производственного совещания при генеральном директоре по направлению деятельности заместителя генерального директора по управлению персоналом от ' + formatDate(errands[0].protocol_date) +'\n№ ' + errands[0].protocol_number;
 
+  const headers = ['№ по протоколу', 'Поручение', 'Ответственный / Срок / Пояснения'];
   const tableData = [];
 
-  doc.text(introText, doc.internal.pageSize.width / 2, 10, {
+  const headersEvent = ['Подразделение', 'Работы по плану', 'Отчет о выполнении'];
+  const eventTableData = [];
+
+  doc.text(introText, doc.internal.pageSize.width / 2, 15, {
     align: 'center',
     maxWidth: 280,
   });
 
   errands.forEach((errand, index) => {
+    
     const row1 = [
       { content: errand.text_errand.split('.').shift() + '.', rowSpan: 2, styles: { halign: 'center' } },
       { content: errand.text_errand.split('.').slice(1).join('.').trim(), styles: { fillColor: [222, 234, 246] } }
@@ -82,13 +102,13 @@ const createTable = async () => {
     const row2 = [];
 
     if (errand.constantly) {
-      row1.push({ content: 'Ответственные - заместители генерального директора.\nСрок исполнения - постоянно', styles: { fillColor: [222, 234, 246] } });
+      row1.push({ content: 'Ответственные - '+ errand.surname.charAt(0) +'. '+ errand.name.charAt(0) +'. '+ errand.patronymic +'\nСрок исполнения - постоянно', styles: { fillColor: [222, 234, 246] } });
     } else {
-      row1.push({ content: `Ответственные - заместители генерального директора.\nСрок исполнения - ${formatDate(errand.scheduled_due_date)}`, styles: { fillColor: [222, 234, 246] } });
+      row1.push({ content: 'Ответственные - '+ errand.surname.charAt(0) +'. '+ errand.name.charAt(0) +'. '+ errand.patronymic +`\nСрок исполнения - ${formatDate(errand.scheduled_due_date)}`, styles: { fillColor: [222, 234, 246] } });
     }
 
-    const briefReport = 'Краткий отчет для директум.';
-    const detailedReport = 'Развернутый отчет.Развернутый отчет.Развернутый отчет.Развернутый отчет.Развернутый отчет.Развернутый отчет.';
+    const briefReport = errand.short_report_doc;
+    const detailedReport = errand.report;
 
     row2.push(briefReport);
     row2.push(detailedReport);
@@ -97,8 +117,16 @@ const createTable = async () => {
     tableData.push(row2);
   });
 
+  names.forEach((nameSub, index) => {
+    const row1 = [
+      {content: nameSub.short_name},
+    ]
+
+    tableData.push(row1);
+  });
+
   const tableOptions = {
-    startY: 24,
+    startY: 35,
     head: [headers],
     body: tableData,
     theme: 'grid',
@@ -113,12 +141,16 @@ const createTable = async () => {
       halign: 'center',
       fillColor: [255, 255, 255],
       fontStyle: 'bold',
+    },
+    columnStyles: {
+      1: { cellWidth: 100},
     }
   };
 
   doc.autoTable(tableOptions);
 
   doc.save('table.pdf');
+
 };
 
 createTable();
