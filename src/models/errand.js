@@ -1,7 +1,6 @@
 // Модель поручения
 const db = require('../config/dbConfig');
 const queryBuilder = require('../utils/queryBuilder');
-const errandEmployee = require('./errandEmployee.js');
 
 class Errand {
     static tableName = 'public."Errand"';
@@ -24,9 +23,8 @@ class Errand {
      * @param {string} errandText 
      * @param {string} deadline 
      * @param {int} idProtocol 
-     * @param {int} idResponsible 
      */
-    static addNewErrand(errandText, deadline, idProtocol, idResponsible) {
+    static addNewErrand(errandText, deadline, idProtocol) {
         return new Promise(async (resolve, reject) => {
             db.query(
                 queryBuilder.makeInsertQuery(
@@ -47,14 +45,6 @@ class Errand {
                             reject(error);
                             return;
                     }
-                    const idErrand = await Errand.getLastAddedErrandId();
-                    errandEmployee.addRow(idErrand, idResponsible)
-                        .then(() => {
-                            resolve();
-                        })
-                        .catch((error) => {
-                            reject(error);
-                        })
                 }
             )
         })

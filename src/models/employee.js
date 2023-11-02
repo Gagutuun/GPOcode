@@ -141,7 +141,7 @@ class Employee {
             resolve(result.rows);
             return;
           }
-          resolve(-1);
+          resolve([{ id: -1 }]);
           return;
         }
       )

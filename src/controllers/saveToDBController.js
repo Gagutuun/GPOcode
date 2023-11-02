@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const Protocol = require('../models/protocol');
 const Errand = require('../models/errand');
+const Employee = require('../models/employee');
+const ErrandEmployee = require('../models/errandEmployee');
 
 module.exports = asyncHandler(async (req, res) => {
     // Получаем id, последнего добавленного Протокола
@@ -9,8 +11,26 @@ module.exports = asyncHandler(async (req, res) => {
     // Идем по каждому элементу массива, отправляя запрос к бд на добавление новых записей в Errand
     req.errandArray.forEach(errand => {
         // Т.к. сейчас непонятно кому давать поручение, assignID = 1
-        const assignID = 1;
-        Errand.addNewErrand(errand.errandText, errand.deadline, idProtocol, assignID);
+        // const assignID = 1;
+        let assignID = [];
+        errand.asgnName.forEach(name => {
+            // TODO доделать логику
+            // TODO остановился на определении чего я пушу в массив (ЗГД или ФИО)
+            Employee.findByName(name)
+                .then(ids => {
+                    ids.forEach(id => {
+                        assignID.push(id.id);
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                })
+        });
+        Errand.addNewErrand(errand.errandText, errand.deadline, idProtocol);
+        const lastAddedErrandId = Errand.getLastAddedErrandId();
+        assignID.forEach(id => {
+            ErrandEmployee.addRow(lastAddedErrandId, id);
+        })
     });
 
     // res.render('PAGE_NAME');
