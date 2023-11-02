@@ -150,13 +150,3 @@ class Employee {
 }
 
 module.exports = Employee;
-
-Employee.findByName({ lastName: "Семенов", firstName: "А.", middleName: "Б.", shortForm: true })
-  .then((result) => {
-    console.log(result);
-    return;
-  })
-  .catch((error) => {
-    console.error(error);
-    return;
-  })
