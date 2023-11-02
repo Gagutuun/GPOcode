@@ -28,6 +28,7 @@
     margin-top: 20px;
     font-weight: 100;
     font: 20px "Lucida Grande", Helvetica, Arial, sans-serif;
+    
 }
 
 .feedback-form input,
@@ -66,4 +67,14 @@
     width: 100%;
     overflow-y: auto;
     resize: none;
+}
+
+#name{
+    width: 396px;
+    margin-left: 5px;
+}
+
+#subject{
+    width: 276px;
+    margin-left: 5px;
 }
