@@ -85,6 +85,9 @@ class QuerryBuilder {
     static notSmaller(columnName) {
         return `${columnName} >= $`;
     }
+    static like(columnName) {
+        return `${columnName} LIKE $`;
+    }
 
     /**
      * Создает строку, содержащую INSERT SQL запрос
