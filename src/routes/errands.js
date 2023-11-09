@@ -26,6 +26,7 @@ router.get('/', async (req, res, next) => {
     const formattedErrands = rows.map(errand => ({
       ...errand,
       scheduled_due_date: formatDate(errand.scheduled_due_date),
+      actual_date: formatDate(errand.actual_date),
       // Другие поля, которые нужно отформатировать
     }));
 
@@ -60,10 +61,9 @@ router.get('/:id', async (req, res, next) => {
     const formattedErrand = {
       ...rows[0],
       scheduled_due_date: formatDate(rows[0].scheduled_due_date),
+      actual_date: formatDate(rows[0].actual_date),
       // Другие поля, которые нужно отформатировать
     };
-
-    console.log({rows})
     // Передайте данные о поручении и ответственном сотруднике на страницу OneErrand.pug
     res.render('OneErrand', { title: 'Поручение', errand: formattedErrand });
   } catch (error) {

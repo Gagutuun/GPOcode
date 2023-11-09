@@ -39,8 +39,8 @@ const getErrandsFromDatabase = async (protocolNumber) => {
       WHERE P.protocol_number = $1
     `;
 
-    const { rows } = await pool.query(query, [00000001]);
-
+    const { rows } = await pool.query(query, [11]);
+    console.log(rows)
     return rows;
   } catch (error) {
     console.error('An error occurred while getting the errands data from the database:', error);
@@ -92,7 +92,43 @@ const createTable = async () => {
     maxWidth: 280,
   });
 
+  const groupedErrands = {};
+
   errands.forEach((errand, index) => {
+    const key = errand.id_errand;
+
+    if (!groupedErrands[key]) {
+      groupedErrands[key] = {
+        id: errand.id_errand,
+        text_errand: errand.text_errand,
+        constantly: errand.constantly,
+        short_report_doc: errand.short_report_doc,
+        scheduled_due_date: errand.scheduled_due_date,
+        actual_date: errand.actual_date,
+        status: errand.status,
+        id_protocol: errand.id_protocol,
+        report: [],
+        protocol_date: errand.protocol_date,
+        file_protocol_doc: errand.file_protocol_doc,
+        protocol_number: errand.protocol_number,
+        general_report_file_doc: errand.general_report_file_doc,
+        subdivision_short_name: [],
+        surname: [],
+        name: [],
+        patronymic: [],
+      };
+    }
+
+    groupedErrands[key].report.push(errand.report);
+    groupedErrands[key].subdivision_short_name.push(errand.subdivision_short_name);
+    groupedErrands[key].surname.push(errand.surname);
+    groupedErrands[key].name.push(errand.name);
+    groupedErrands[key].patronymic.push(errand.patronymic);
+  });
+
+  console.log(groupedErrands);
+
+  Object.values(groupedErrands).forEach((errand, i) => {
     
     const row1 = [
       { content: errand.text_errand.split('.').shift() + '.', rowSpan: 2, styles: { halign: 'center' } },
@@ -101,17 +137,54 @@ const createTable = async () => {
 
     const row2 = [];
 
+    const surnames = errand.surname;
+    const names = errand.name;
+    const patronymics = errand.patronymic;
+  
+    const formattedNames = surnames.map((surname, index) => {
+      const fullName = `${surname} ${names[index][0]}.${patronymics[index][0]}.`;
+      return fullName;
+    });
+  
+    const formattedNameString = formattedNames.join(', ');
+    
     if (errand.constantly) {
-      row1.push({ content: 'Ответственные - '+ errand.surname.charAt(0) +'. '+ errand.name.charAt(0) +'. '+ errand.patronymic +'\nСрок исполнения - постоянно', styles: { fillColor: [222, 234, 246] } });
+      row1.push({ content: 'Ответственные - '+ formattedNameString +'\nСрок исполнения - постоянно', styles: { fillColor: [222, 234, 246] } });
     } else {
-      row1.push({ content: 'Ответственные - '+ errand.surname.charAt(0) +'. '+ errand.name.charAt(0) +'. '+ errand.patronymic +`\nСрок исполнения - ${formatDate(errand.scheduled_due_date)}`, styles: { fillColor: [222, 234, 246] } });
+      row1.push({ content: 'Ответственные - '+ formattedNameString +`\nСрок исполнения - ${formatDate(errand.scheduled_due_date)}`, styles: { fillColor: [222, 234, 246] } });
     }
 
-    const briefReport = errand.short_report_doc;
-    const detailedReport = errand.report;
+    const currentDate = new Date();
+    const formattedDate = "Отчет на " + currentDate.toLocaleDateString(); // Преобразовать дату в строку
+    const cursivDate = { content: formattedDate, styles: { fontStyle: 'bold', textDecoration: 'underline' } };
+  
+    const briefReport = cursivDate.content + "\n\n" + errand.short_report_doc;
+    const detailedReports = {};
+
+    Object.values(groupedErrands).forEach((errand, i) => {
+      const subdivisionShortNames = errand.subdivision_short_name;
+      const reports = errand.report;
+    
+      subdivisionShortNames.forEach((subdivisionShortName, j) => {
+        const report = reports[j];
+        if (!detailedReports[subdivisionShortName]) {
+          detailedReports[subdivisionShortName] = [];
+        }
+        detailedReports[subdivisionShortName].push(report);
+      });
+    });
+    
+    const subdivisionShortNames = errand.subdivision_short_name;
+    const reports = errand.report;
+    
+    const formattedSubdivisionReports = subdivisionShortNames.map((subdivisionShortName, index) => {
+      return `${subdivisionShortName}: ${reports[index]}`;
+    });
+    
+    const formattedSubdivisionReportsString = formattedSubdivisionReports.join('\n\n');
 
     row2.push(briefReport);
-    row2.push(detailedReport);
+    row2.push(formattedSubdivisionReportsString);
 
     tableData.push(row1);
     tableData.push(row2);
@@ -132,7 +205,7 @@ const createTable = async () => {
     theme: 'grid',
     styles: {
       font: 'MyFont',
-      fontSize: 10,
+      fontSize: 11,
       textColor: [0, 0, 0],
       lineWidth: 0.5,
       lineColor: [0,0,0],
@@ -143,7 +216,8 @@ const createTable = async () => {
       fontStyle: 'bold',
     },
     columnStyles: {
-      1: { cellWidth: 100},
+      0: { cellWidth: 20},
+      1: { cellWidth: 70},
     }
   };
 

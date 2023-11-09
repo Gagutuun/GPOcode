@@ -4,8 +4,10 @@ block content
   .header
     a.back-button(href="/errand")
       span &#129044;
-    .statusErrand #{errand.status}
-    //- Добавить класс this-errand-has-been-completed, если поручение выполнено
+    if (errand.status === 'Завершено')
+      .statusErrand.this-errand-has-been-completed #{errand.status}
+    else
+      statusErrand #{errand.status}
     .execution-date-Errand Срок исполнения –
         if errand.constantly
           |  постоянно

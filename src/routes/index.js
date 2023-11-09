@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const saveToDB = require('../controllers/saveToDBController');
 
 const helloRouter = require('./helloRouter');
 const uploadRouter = require('./uploadRouter');
@@ -25,5 +26,7 @@ router.use('/feedback', feedback);
 router.use('/profile', profile);
 router.use('/review-report', reportReview);
 
+// Обработчик POST-запроса для /confirm
+router.post('/confirm', saveToDB.saveToDB);
 
 module.exports = router;
