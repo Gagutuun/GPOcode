@@ -1,32 +1,30 @@
 extends layout
 
 block content
-  script(async, src='scripts/scriptEditOneErrandToolbar.js')
+  script(async, src='/scripts/scriptEditOneErrandToolbar.js')
   .header
-    a.back-button(href="/errand")
+    a.back-button(href=`/errand/${errand.id}`)
         span &#129044;
     if (errand.status === 'Завершено')
       .statusErrand.this-errand-has-been-completed #{errand.status}
     else
       statusErrand #{errand.status}
-    .execution-date-Errand Срок исполнения – 27.04.2023
+    .execution-date-Errand Срок исполнения –
+        if errand.constantly
+          |  постоянно
+        else
+          |  #{errand.scheduled_due_date}
   .contentErrand
-    p
-      | Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по 
-      | программам развития цифровой грамотности.
-      | Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по 
-      | программам развития цифровой грамотности.
-      | Провести обучение управленческого персонала ООО «Газпром трансгаз Томск» по 
-      | программам развития цифровой грамотности.
+    p #{errand.text_errand}
   .responsibleErrand
     span.labelResponsible Ответственный:
-    span.responsiblePerson Иванов И.И.
+    span.responsiblePerson #{errand.surname.charAt(0)}. #{errand.name.charAt(0)}. #{errand.patronymic}
     span.acceptedErrand Принял
   span.text-at-the-top-of-reports Вы редактируете: Краткий отчёт по поручению
   .short-report
     .short-report-divisions
       //p Дата последнего редактирования: 23.03.2023, 10:24
-      textarea(rows="15", id="editorTextarea")
-      .sending-for-revision
-        input(type="submit", class="edit-errand-report", value="Сохранить")
-        input(type="submit", class="edit-errand-report", value="Отменить")
+      textarea(rows="15", id="editorTextarea") #{errand.short_report_doc}
+      .sending-for-revision 
+        button(type="button", class="edit-errand-report", onclick="saveReport()") Сохранить
+        a(href=`/errand/${errand.id}`, class="edit-errand-report") Отменить

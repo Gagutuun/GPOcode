@@ -1,5 +1,6 @@
 const expandButtons = document.querySelectorAll('button.expand-button');
 const checkboxes = document.querySelectorAll('.checkbox-order-selection');
+const formProtocolBtns = document.querySelectorAll('button.formProtocol');
 const buttons = document.querySelectorAll('.buttons button');
 const activeProtocols = document.querySelector('.ActiveProtocols');
 const archiveProtocols = document.querySelector('.ArchiveProtocols');
@@ -167,14 +168,17 @@ function flashBorder() {
   }, 1000); // Интервал мигания: 1 секунда
 }
 
-document.querySelector('.formProtocol').addEventListener('click', () => {
-  // Собрать данные о выделенных чекбоксах
-  const selectedRows = [];
-  checkboxes.forEach(checkbox => {
-    if (checkbox.checked) {
-      selectedRows.push(checkbox.dataset.row);
-      console.log(selectedRows.push(checkbox.dataset.row));
-    }
+formProtocolBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    // Собрать данные о выделенных чекбоксах
+    const selectedRows = [];
+    checkboxes.forEach(checkbox => {
+      if (checkbox.checked) {
+        selectedRows.push(checkbox.dataset.row);
+        console.log(selectedRows);
+        // Здесь добавьте логику для формирования отчета на основе выбранных поручений
+        // Можете использовать AJAX-запрос для отправки данных на сервер и получения отчета
+      }
+    });
   });
-
 });

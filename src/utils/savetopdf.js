@@ -116,6 +116,7 @@ const createTable = async () => {
         surname: [],
         name: [],
         patronymic: [],
+        perfomers_protocol: errand.perfomers_protocol,
       };
     }
 
@@ -136,22 +137,23 @@ const createTable = async () => {
     ];
 
     const row2 = [];
-
-    const surnames = errand.surname;
-    const names = errand.name;
-    const patronymics = errand.patronymic;
+    
+    // Этот код нужен для того, чтобы писать в ячейке тех отвественных, на кого назначено исполнение поручения
+    // const surnames = errand.surname;
+    // const names = errand.name;
+    // const patronymics = errand.patronymic;
   
-    const formattedNames = surnames.map((surname, index) => {
-      const fullName = `${surname} ${names[index][0]}.${patronymics[index][0]}.`;
-      return fullName;
-    });
+    // const formattedNames = surnames.map((surname, index) => {
+    //   const fullName = `${surname} ${names[index][0]}.${patronymics[index][0]}.`;
+    //   return fullName;
+    // });
   
-    const formattedNameString = formattedNames.join(', ');
+    // const formattedNameString = formattedNames.join(', ');
     
     if (errand.constantly) {
-      row1.push({ content: 'Ответственные - '+ formattedNameString +'\nСрок исполнения - постоянно', styles: { fillColor: [222, 234, 246] } });
+      row1.push({ content: 'Ответственные - '+ errand.perfomers_protocol +'\nСрок исполнения - постоянно', styles: { fillColor: [222, 234, 246] } });
     } else {
-      row1.push({ content: 'Ответственные - '+ formattedNameString +`\nСрок исполнения - ${formatDate(errand.scheduled_due_date)}`, styles: { fillColor: [222, 234, 246] } });
+      row1.push({ content: 'Ответственные - '+ errand.perfomers_protocol +`\nСрок исполнения - ${formatDate(errand.scheduled_due_date)}`, styles: { fillColor: [222, 234, 246] } });
     }
 
     const currentDate = new Date();

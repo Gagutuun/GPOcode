@@ -7,52 +7,37 @@ const ErrandEmployee = require('../models/errandEmployee');
 const ZGD = "заместители генерального директора";
 
 exports.saveToDB = asyncHandler(async (req, res) => {
-    try {
-        // Получаем id последнего добавленного Протокола
-        const idProtocol = await Protocol.getLastProtocolId();
-        console.log('Начало сохранения в базу данных');
 
-        const assignIDsPromises = [];
+  const protocolId = await Protocol.getLastProtocolId();
 
-        // Идем по каждому элементу массива, отправляя запрос к бд на добавление новых записей в Errand
-        for (const errand of req.body.errandArray) {
-            const assignID = [];
-            
-            for (const names of errand.asgnName) {
-                // TODO: Доделайте логику определения, что является ЗГД или ФИО
+  try {
 
-                for (const name of names) {
-                    console.log(name);
-                    const idPromise = Employee.findByName(parseName(name));
-                    assignIDsPromises.push(idPromise);
-                }
-            }
+    for (const errand of req.body.errandArray) {
 
-            const assignIDs = await Promise.all(assignIDsPromises);
-            assignIDs.forEach(ids => {
-                ids.forEach(id => {
-                    assignID.push(id.id);
-                });
-            });
+      const assignIDs = [];
 
-            console.log(assignID);
-
-            const lastAddedErrandId = await Errand.addNewErrand(errand.errandText, errand.deadline, idProtocol);
-
-            for (const id of assignID) {
-                await ErrandEmployee.addRow(lastAddedErrandId, id);
-            }
+      for (const name of errand.parsedAsgnName) {
+        const employee = await Employee.findByName(parseName(name));
+        if(employee) {
+          assignIDs.push(employee.id);
         }
+      }
 
-        console.log('Завершено сохранение в базу данных');
+      const errandId = await Errand.addNewErrand(errand.errandText, errand.deadline, protocolId);
 
-        // Возможно, вы хотите отправить какой-то ответ об успешном завершении
-        // res.send('Данные успешно сохранены в базу данных');
-    } catch (error) {
-        console.error('Произошла ошибка при сохранении в базу данных', error);
-        // Обработка ошибки
-        res.status(500).send('Произошла ошибка при сохранении в базу данных');
+      for(const id of assignIDs) {
+        await ErrandEmployee.addRow(errandId, id);  
+      }
+
     }
+
+    res.send('Данные успешно сохранены');
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Ошибка при сохранении данных'); 
+  }
+
 });
 
 

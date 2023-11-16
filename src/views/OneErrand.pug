@@ -23,7 +23,7 @@ block content
   .short-report
     .short-report-item
       span.divisions-name Отчёт для Директум
-      input.edit-button-errand(type="submit", value="Редактировать")
+      input.edit-button-errand(type="submit", value="Редактировать", onclick=`window.location.href='/errand/${errand.id}/edit'`)
       span.date-report 23.03.2023, 10:24
   span.text-at-the-top-of-reports Отчёты подразделений
   .report-divisions
