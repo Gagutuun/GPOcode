@@ -4,34 +4,98 @@ const Errand = require('../models/errand');
 const Employee = require('../models/employee');
 const ErrandEmployee = require('../models/errandEmployee');
 
-module.exports = asyncHandler(async (req, res) => {
-    // Получаем id, последнего добавленного Протокола
-    const idProtocol = await Protocol.getLastProtocolId();
+const ZGD = "заместители генерального директора";
 
-    // Идем по каждому элементу массива, отправляя запрос к бд на добавление новых записей в Errand
-    req.errandArray.forEach(errand => {
-        // Т.к. сейчас непонятно кому давать поручение, assignID = 1
-        // const assignID = 1;
-        let assignID = [];
-        errand.asgnName.forEach(name => {
-            // TODO доделать логику
-            // TODO остановился на определении чего я пушу в массив (ЗГД или ФИО)
-            Employee.findByName(name)
-                .then(ids => {
-                    ids.forEach(id => {
-                        assignID.push(id.id);
-                    });
-                })
-                .catch(error => {
-                    console.error(error);
-                })
-        });
-        Errand.addNewErrand(errand.errandText, errand.deadline, idProtocol);
-        const lastAddedErrandId = Errand.getLastAddedErrandId();
-        assignID.forEach(id => {
-            ErrandEmployee.addRow(lastAddedErrandId, id);
-        })
-    });
+exports.saveToDB = asyncHandler(async (req, res) => {
 
-    // res.render('PAGE_NAME');
-})
+  const protocolId = await Protocol.getLastProtocolId();
+
+  try {
+
+    for (const errand of req.body.errandArray) {
+
+      const assignIDs = [];
+
+      for (const name of errand.parsedAsgnName) {
+        const employee = await Employee.findByName(parseName(name));
+        if(employee) {
+          assignIDs.push(employee.id);
+        }
+      }
+
+      const errandId = await Errand.addNewErrand(errand.errandText, errand.deadline, protocolId);
+
+      for(const id of assignIDs) {
+        await ErrandEmployee.addRow(errandId, id);  
+      }
+
+    }
+
+    res.send('Данные успешно сохранены');
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Ошибка при сохранении данных'); 
+  }
+
+});
+
+
+// exports.saveToDB = asyncHandler(async (req, res) => {
+
+//     const idProtocol = await Protocol.getLastProtocolId();
+  
+//     const promises = [];
+//     console.log(req.body.errandArray)
+//     req.body.errandArray.forEach(errand => {
+  
+//       errand.parsedAsgnName.forEach(name => {
+//         promises.push(Employee.findByName(parseName(name)));
+//       });
+      
+//       const promiseAll = Promise.all(promises);
+  
+//       promiseAll.then(results => {
+  
+//         const assignIDs = [];
+  
+//         results.forEach(result => {
+//           assignIDs.push(result.id);
+//         });
+        
+//         return assignIDs;
+  
+//       })
+//       .then(async assignIDs => {
+  
+//         Errand.addNewErrand(errand.errandText, errand.deadline, idProtocol);
+//         const lastAddedErrandId = await Errand.getLastAddedErrandId();
+//         assignIDs.forEach(id => {
+//         ErrandEmployee.addRow(lastAddedErrandId, id);
+  
+//       })
+//       .catch(err => {
+//         console.log(err);
+//       });
+  
+//       // сброс массива промисов
+//       promises.length = 0;
+  
+//     });
+  
+//   });
+
+//   })
+
+function parseName(name) {
+    if (name.indexOf(ZGD))
+        return {ZGD: true}
+    let parsedName = name.split(" ");
+    let shortForm = false;
+    if (parsedName.length == 2) {
+        shortForm = true;
+        parsedName.push(parsedName[1].substring(parsedName[1].indexOf('.') + 1, parsedName[1].lastIndexOf('.') + 1));
+        parsedName[1] = parsedName[1].substring(0, parsedName[1].indexOf(parsedName[2]));
+    }
+    return { shortForm: shortForm, lastName: parsedName[0], firstName: parsedName[1], middleName: parsedName[2] };
+}

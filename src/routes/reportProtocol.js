@@ -72,6 +72,7 @@ router.get('/:protocolNumber', async (req, res, next) => {
     const query = `
         SELECT
         p.*,
+        e.id as errand_ID,
         e.text_errand,
         e.actual_date,
         e.scheduled_due_date,
@@ -92,7 +93,6 @@ router.get('/:protocolNumber', async (req, res, next) => {
         p.id, e.id;
     `;
     const { rows } = await pool.query(query, [protocolNumber]);
-
     if (rows.length === 0) {
       // Обработайте случай, если протокол не найден (можно отобразить ошибку 404)
       res.status(404).render('protocolNotFound', { title: 'Протокол не найден' });
@@ -111,13 +111,26 @@ router.get('/:protocolNumber', async (req, res, next) => {
       });
     }
 
-    console.log(formattedProtocols);
+    console.log(formattedProtocols)
 
     res.render('OneReportProtocol', { title: 'Отчет по протоколу', protocol: formattedProtocols });
   } catch (error) {
     console.error('Ошибка при получении информации о протоколе из базы данных:', error);
     next(error);
   }
+});
+
+router.post('/:protocolNumber/generate-report', (req, res) => {
+
+  const selectedRows = req.body;
+
+  // Запрос к БД за выбранными данными
+
+  // Сохранить данные в session
+  req.session.reportData = selectedRows;
+  
+  res.sendStatus(200);
+
 });
 
 

@@ -4,8 +4,10 @@ block content
   .header
     a.back-button(href="/errand")
       span &#129044;
-    .statusErrand #{errand.status}
-    //- Добавить класс this-errand-has-been-completed, если поручение выполнено
+    if (errand.status === 'Завершено')
+      .statusErrand.this-errand-has-been-completed #{errand.status}
+    else
+      statusErrand #{errand.status}
     .execution-date-Errand Срок исполнения –
         if errand.constantly
           |  постоянно
@@ -21,7 +23,7 @@ block content
   .short-report
     .short-report-item
       span.divisions-name Отчёт для Директум
-      input.edit-button-errand(type="submit", value="Редактировать")
+      input.edit-button-errand(type="submit", value="Редактировать", onclick=`window.location.href='/errand/${errand.id}/edit'`)
       span.date-report 23.03.2023, 10:24
   span.text-at-the-top-of-reports Отчёты подразделений
   .report-divisions
