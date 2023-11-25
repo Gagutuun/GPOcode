@@ -7,7 +7,7 @@ const ERRAND_NUMBER_REG_EX = /(^|\n)\d+[.]/g;
 /**
  * Регекс поиска ответсвенных(-ого), i - невосприимчив к регистру
  */
-const RESPONSIBLES_REG_EX = /ответственны. . /i;
+const RESPONSIBLES_REG_EX = /ответственны.[ ]?.[ ]?/i;
 /**
  * Регекс поиска ЗГД или Бакало, i - невосприимчив к регистру; u - использует unicode (чтобы \w работал); g - глобальный
  */
@@ -23,22 +23,30 @@ const DEADLINE_REG_EX = /((\d{1,2}\.){2}\d{4})|(постоянно)/i
  * @returns Массив структур, содержащих: текст поручения, его ответсвенных и дедлайн
  */
 function findNewErrands(protocolText) {
+    // Подготовка текста pdf для поиска поручений
     protocolText = _prepareText(protocolText);
+    // Итераторы на все поручения в тексте
     const errandNumbersIterator = protocolText.matchAll(ERRAND_NUMBER_REG_EX);
-    let currentValue = errandNumbersIterator.next();
-    let nextValue = !currentValue.done ? errandNumbersIterator.next() : null;
+    // Текущее значение итератора с номером поручения
+    let currentIterator = errandNumbersIterator.next();
+    let nextIterator = !currentIterator.done ? errandNumbersIterator.next() : null;
     let errands = [];
-    while (nextValue != null) {
-        let currentErrand = protocolText.substring(
-            protocolText.charAt(protocolText.indexOf(currentValue.value[0])) != '\n'
-                ? protocolText.indexOf(currentValue.value[0])
-                : protocolText.indexOf(currentValue.value[0]) + 1,
-            nextValue.done
+    let currentErrand;
+    do {
+        currentErrand = protocolText.substring(
+            protocolText.charAt(currentIterator.value.index) != '\n'
+                ? currentIterator.value.index
+                : currentIterator.value.index + 1,
+            nextIterator == null || nextIterator.done
                 ? undefined
-                : protocolText.indexOf(nextValue.value[0])
+                : nextIterator.value.index
         );
-
-        if (RIGHT_RESPONSIBLE_NAME_REG_EX.exec(currentErrand) != null)
+        if (/^\d+[.][\n]/.exec(currentErrand) != null) {
+            let incorrectNumber = /^\d+[.][\n]/.exec(currentErrand)[0];
+            currentErrand = currentErrand.replace(incorrectNumber, incorrectNumber.substring(0, incorrectNumber.indexOf('.') + 1));
+        }
+        console.log(currentErrand);
+        if (RIGHT_RESPONSIBLE_NAME_REG_EX.exec(currentErrand) != null) {
             errands.push({
                 errandText: currentErrand.substring(0, currentErrand.indexOf(`\n${RESPONSIBLES_REG_EX.exec(currentErrand)[0]}`)).trim(),
                 asgnName: currentErrand.match(RIGHT_RESPONSIBLE_NAME_REG_EX),
@@ -47,10 +55,11 @@ function findNewErrands(protocolText) {
                     return `{\n\terrandText: '${this.errandText}',\n\tasgnName: '${this.asgnName}',\n\tdeadline: '${this.deadline}'\n}`
                 }
             })
-
-        currentValue = nextValue;
-        nextValue = nextValue.done ? null : errandNumbersIterator.next();
-    }
+        }
+        console.log(errands[errands.length - 1].toString());
+        currentIterator = nextIterator;
+        nextIterator = nextIterator.done ? null : errandNumbersIterator.next();
+    } while (nextIterator != null);
     return errands;
 }
 
