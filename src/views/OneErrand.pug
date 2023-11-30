@@ -1,13 +1,18 @@
 extends layout
 
 block content
+  script(async='', src='/scripts/editStatusErrand.js')
   .header
     a.back-button(href="/errand")
       span &#129044;
     if (errand.status === 'Завершено')
-      .statusErrand.this-errand-has-been-completed #{errand.status}
+      .statusErrand.this-errand-has-been-completed
+        img.edit-icon-errand(src="../images/oneErrand/edit_icon2.svg", width="20", height="20", onclick="toggleErrandStatus(this)")
+        span.status-text #{errand.status}
     else
-      statusErrand #{errand.status}
+      .statusErrand
+        img.edit-icon-errand(src="../images/oneErrand/edit_icon1.svg", width="20", height="20", onclick="toggleErrandStatus(this)")
+        span.status-text #{errand.status}
     .execution-date-Errand Срок исполнения –
         if errand.constantly
           |  постоянно
@@ -25,6 +30,19 @@ block content
       span.divisions-name Отчёт для Директум
       input.edit-button-errand(type="submit", value="Редактировать", onclick=`window.location.href='/errand/${errand.id}/edit'`)
       span.date-report 23.03.2023, 10:24
+  .addPerformerContainer
+    button.addPerformer( onclick='openModal()' ) Добавить исполнителя
+    .modal-overlay
+      .modal-content
+        button.close-modal( onclick='closeModal()' ) ×
+        .two-search-fields
+          input.textSearch.rightMargin(type="text" placeholder="Введите подразделение" id="searchInput")
+          input.textSearch(type="text" placeholder="Введите исполнителя")
+        span.performer-message Отчёт от исполнителя:
+        textarea.assignmentReport(placeholder="Введите текст...")
+        .modal-window-buttons
+          button.addPerformer.rightMarginTwo Добавить
+          button.addPerformer( onclick='closeModal()' ) Отменить
   span.text-at-the-top-of-reports Отчёты подразделений
   .report-divisions
     .short-report-item

@@ -75,8 +75,7 @@ function formatDate(date) {
   return date.toLocaleDateString('ru-RU', options);
 }
 
-const createTable = async () => {
-  const errands = await getErrandsFromDatabase();
+const createTable = async (errands) => {
   // const names = await getNameSubdivison();
   const introText =
   'Перечень поручений и отчетов по протоколу производственного совещания при генеральном директоре по направлению деятельности заместителя генерального директора по управлению персоналом от ' + formatDate(errands[0].protocol_date) +'\n№ ' + errands[0].protocol_number;
@@ -225,8 +224,8 @@ const createTable = async () => {
 
   doc.autoTable(tableOptions);
 
-  doc.save('table.pdf');
+  doc.save('Общий_отчет_№' + errands[0].protocolNumber + '.pdf');
 
 };
 
-createTable();
+module.exports = {createTable};

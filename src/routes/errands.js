@@ -43,7 +43,7 @@ router.get('/:id', async (req, res, next) => {
     
     // Запрос к базе данных для получения информации о конкретном поручении с данными об ответственном сотруднике
     const query = `
-      SELECT e.*, errand.*
+      SELECT *
       FROM public."Employee" AS e
       INNER JOIN public."ErrandEmployee" AS ee ON e.id = ee.id_employee
       INNER JOIN public."Errand" AS errand ON ee.id_errand = errand.id
@@ -64,6 +64,7 @@ router.get('/:id', async (req, res, next) => {
       actual_date: formatDate(rows[0].actual_date),
       // Другие поля, которые нужно отформатировать
     };
+    console.log(formattedErrand);
     // Передайте данные о поручении и ответственном сотруднике на страницу OneErrand.pug
     res.render('OneErrand', { title: 'Поручение', errand: formattedErrand });
   } catch (error) {

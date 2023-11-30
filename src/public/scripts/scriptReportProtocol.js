@@ -6,6 +6,55 @@ const activeProtocols = document.querySelector('.ActiveProtocols');
 const archiveProtocols = document.querySelector('.ArchiveProtocols');
 const searchInput = document.getElementById('search-input'); // Получение элемента по его ID
 
+// Event listener for button click
+document.querySelector('.formProtocol').addEventListener('click', function () {
+  // Assuming you have data to send, modify this as needed
+  const dataToSend = {
+    // Add your data properties here
+    exampleProperty: 'exampleValue',
+    // ...
+  };
+
+  // Extracting protocolNumber from the current URL
+  const protocolNumber = window.location.pathname.match(/\d+/)[0];
+  console.log(protocolNumber);
+
+  // Sending data to the server using plain JavaScript AJAX
+  const xhr = new XMLHttpRequest();
+
+  // Define the type, URL, and whether the request should be asynchronous
+  xhr.open('POST', `/reportProtocol/${protocolNumber}/generate-report`, true);
+
+  // Set the request header to indicate the content type
+  xhr.setRequestHeader('Content-Type', 'application/json');
+
+  // Define the callback functions for success and error
+  xhr.onload = function () {
+    if (xhr.status >= 200 && xhr.status < 300) {
+      // Success response
+      swal({
+        title: "Success!",
+        text: "Report generated",
+        icon: "success",
+        button: "OK"
+      });
+    } else {
+      // Error response
+      console.error('Error generating report:', xhr.statusText);
+    }
+  };
+
+  // Handle network errors
+  xhr.onerror = function () {
+    console.error('Network error occurred while sending the request.');
+  };
+
+  // Convert the data to JSON and send the request
+  xhr.send(JSON.stringify(dataToSend));
+});
+
+
+
 // Функция для фильтрации протоколов по поисковому запросу
 function filterReports(searchTerm) {
   const reportLinks = document.querySelectorAll('.event-link-ReportProtocol');

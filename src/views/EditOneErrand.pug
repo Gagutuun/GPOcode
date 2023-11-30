@@ -6,9 +6,11 @@ block content
     a.back-button(href=`/errand/${errand.id}`)
         span &#129044;
     if (errand.status === 'Завершено')
-      .statusErrand.this-errand-has-been-completed #{errand.status}
+      .statusErrand.this-errand-has-been-completed
+        span.status-text #{errand.status}
     else
-      statusErrand #{errand.status}
+      .statusErrand
+        span.status-text #{errand.status}
     .execution-date-Errand Срок исполнения –
         if errand.constantly
           |  постоянно
@@ -26,5 +28,5 @@ block content
       //p Дата последнего редактирования: 23.03.2023, 10:24
       textarea(rows="15", id="editorTextarea") #{errand.short_report_doc}
       .sending-for-revision 
-        button(type="button", class="edit-errand-report", onclick="saveReport()") Сохранить
-        a(href=`/errand/${errand.id}`, class="edit-errand-report") Отменить
+        button.edit-errand-report(type="button", onclick="saveReport()") Сохранить
+        a.edit-errand-report(href=`/errand/${errand.id}`) Отменить

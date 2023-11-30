@@ -1,10 +1,10 @@
 extends layout
 
 block content
-  .content
-    .item.logo
-      img.mainImg(src='images/logo.png', alt='Логотип')
-    .item
-      h1 Здравствуйте, [имя]!
-      p
-        | Добро пожаловать на нашу веб-страницу. Мы рады видеть вас!
+  .logo
+    img.mainImg(src='../images/logo.png')
+  .welcome-container
+      p.welcome-text Здравствуй представитель ООО Газпром трансгаз Томск.
+      p.welcome-text Олег Владимирович, Вас приветствует система автоматизированного документооборота.
+      p.welcome-text Приятного пользования.
+      img.welcome-picture(src="../images/welcome.jpg", alt="Welcome Image")

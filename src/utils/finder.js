@@ -58,6 +58,8 @@ function findNewErrands(protocolText) {
         currentIterator = nextIterator;
         nextIterator = nextIterator.done ? null : errandNumbersIterator.next();
     } while (nextIterator != null);
+    console.log("DEBUG");
+    console.log(errands);
     return errands;
 }
 
