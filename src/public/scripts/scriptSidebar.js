@@ -1,5 +1,5 @@
 // Выбор активного элемента списка
-const map = {
+const hrefSidebarElementMap = {
     'upload': 'download-protocol-id',
     'uploadProtocol': 'download-protocol-id',
     'errand': 'errand-id',
@@ -7,7 +7,7 @@ const map = {
     'feedback': 'feedback-id'
 };
 window.addEventListener('load', () => {
-    document.getElementById(map[window.location.href.substring(window.location.href.lastIndexOf('/') + 1)]).classList.add('active');
+    document.getElementById(hrefSidebarElementMap[window.location.href.substring(window.location.href.lastIndexOf('/') + 1)]).classList.add('active');
 })
 
 // Контекстное меню уведомлений
