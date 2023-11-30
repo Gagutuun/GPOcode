@@ -1,53 +1,79 @@
-
+// Обновленный обработчик нажатия кнопки "Отправить"
 function confirmData() {
-    const tableRows = document.querySelectorAll('.table-ReportProtocol tbody tr');
-    const errandArray = [];
-    console.log(tableRows);
-    tableRows.forEach(row => {
-    console.log(`[DEBUG] иду по циклу формируя массив объектов`)
-          // Получение текста из ячейки с id 'errandText' в первой строке
+  const tableRows = document.querySelectorAll('.table-ReportProtocol tbody tr');
+  const errandArray = [];
+
+  tableRows.forEach(row => {
     const errandText = row.querySelector('#errandText').innerText;
-
-    // Получение текста из ячейки с id 'assignees' в первой строке
-    const assigneeElements = row.querySelector('#assignees span.editable-text');
-    const asgnName = assigneeElements.innerText;
-
-    console.log(`assigneeElements = ${assigneeElements}`);
-
-    const parsedAsgnName = asgnName.split(", ");
-    
-    // Array.from(assigneeElements).map(element => element.textContent);
-
-    // Получение текста из ячейки с id 'deadline' в первой строке
+    const assigneeElements = row.querySelectorAll('#assignees span.editable-text');
+    const parsedAsgnName = Array.from(assigneeElements).map(assignee => assignee.innerText);
     const deadline = row.querySelector('#deadline').innerText;
-  
-      errandArray.push({
-        errandText,
-        parsedAsgnName,
-        deadline
-      });
-    });
-    console.log(`DEBUG(scriptConfirm.js) ${errandArray}`);
-    
 
-    fetch('/confirm', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        errandArray
-      })
+    // Добавляем выбранный исполнитель (из выпадающего списка)
+    const selectedEmployeeId = row.querySelector('.employee-selector').value;
+
+    errandArray.push({
+      errandText,
+      parsedAsgnName,
+      deadline,
+      selectedEmployeeId // Добавляем выбранный исполнитель
+    });
+  });
+
+  fetch('/confirm', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      errandArray
     })
+  })
     .then(response => {
       // Обработка ответа от сервера, если необходимо
-      //window.location.href = '/errand'; // Перенаправление на страницу с сообщением об успешном подтверждении
-      alert('успех');
+      swal({
+        title: "Успех!",
+        text: "Протокол добавлен",
+        icon: "success",
+        button: "ОК"
+      });
+      window.location.href = '/errand'; // Перенаправление на страницу с сообщением об успешном подтверждении  
     })
     .catch(error => {
       console.error('Произошла ошибка при отправке данных на сервер', error);
-      alert('hui');
       // Обработка ошибки, если необходимо
     });
-  }
-  
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Находим кнопку "Добавить исполнителя"
+  var addEmployeeBtn = document.getElementById('addEmployeeBtn');
+
+  // Добавляем обработчик событий для клика
+  addEmployeeBtn.addEventListener('click', function () {
+    // Находим контейнер для списка
+    var selectContainer = document.querySelector('.select-container');
+
+    // Находим оригинальный список
+    var originalSelect = selectContainer.querySelector('select');
+
+    if (!originalSelect) {
+      // Если список не найден, выводим сообщение в консоль и выходим из функции
+      console.error('Оригинальный список не найден.');
+      return;
+    }
+
+    // Клонируем оригинальный список
+    var cloneSelect = originalSelect.cloneNode(true);
+
+    // Генерируем новый уникальный идентификатор для клонированного списка
+    var newId = 'employeeId_' + selectContainer.children.length;
+
+    // Меняем идентификатор клонированного списка
+    cloneSelect.setAttribute('name', newId);
+
+    // Добавляем клонированный список к контейнеру перед кнопкой
+    selectContainer.insertBefore(cloneSelect, addEmployeeBtn);
+  });
+});

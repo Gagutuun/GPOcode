@@ -6,12 +6,27 @@ const Protocol = require('../models/protocol');
 const path = require('path');
 const fs = require('fs');
 const Errand = require('../models/errand');
+const pool = require('../config/dbConfig');
 
 // Путь до временной папки
 const TEMP_DIR_PATH = path.join(
   path.join(__dirname.replace('controllers', 'public/files')),
   '/',
   'temp');
+
+  async function getEmployees() {
+    try {
+      const query = 'SELECT id, name, surname, patronymic, subdivision_short_name FROM public."Employee"';
+      const result = await pool.query(query);
+  
+      // Возвращаем массив объектов с данными о сотрудниках
+      console.log(result.rows);
+      return result.rows;
+    } catch (error) {
+      console.error('Ошибка при получении списка сотрудников:', error);
+      return [];
+    }
+  }
 
 exports.uploadFile = asyncHandler(async (req, res) => {
 
@@ -45,9 +60,10 @@ exports.uploadFile = asyncHandler(async (req, res) => {
   fs.rmdirSync(TEMP_DIR_PATH)
 
   const resultsOfParsing = await _parseAndSavePDF(newFilePath, protocolDate, protocolNumber);
+  const employees = await getEmployees();
 
   // Рендерим страницу с результатом работы алгоритма
-  res.render('result', { title: 'GPO_test', text: resultsOfParsing.pdfData, result: resultsOfParsing.errandArray });
+  res.render('result', { title: 'Страница предпросмотра', text: resultsOfParsing.pdfData, result: resultsOfParsing.errandArray, employees: employees});
 });
 
 async function _parseAndSavePDF(filePath, protocolDate, protocolNumber) {
@@ -56,13 +72,12 @@ async function _parseAndSavePDF(filePath, protocolDate, protocolNumber) {
     const pdfData = await pdfParser.parsePDF(filePath);
     // Из всего текста документа получаем интересующий контент, формируя из него массив
     const errandArray = findNewAssign(pdfData);
-
     // Отправляем запрос к бд на добавление нового протокола
     await Protocol.addNewProtocol(filePath, protocolDate, protocolNumber);
 
     resolve({
       pdfData: pdfData,
-      errandArray: errandArray
+      errandArray: errandArray,
     });
   });
 }

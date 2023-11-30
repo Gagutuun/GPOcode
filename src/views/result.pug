@@ -2,7 +2,6 @@ extends layout
 
 block content
   script(async='', src='/scripts/scriptEditResponsibleErrand.js')
-  script(async='', src="https://code.jquery.com/jquery-3.6.0.min.js")
   script(async='', src='/scripts/scriptConfrim.js')
   .content
     .logo
@@ -12,7 +11,7 @@ block content
       h1 Документ успешно загружен!
     .item
       form
-        h3.greatdoc Все исполнители успешно найдены. Проверьте правильность работы алгоритма и нажмите кнопку “Отправить”.
+        h3.greatdoc Все необходимые задачи успешно найдены. Проверьте правильность работы алгоритма и нажмите кнопку “Отправить”.
         //- При неудачной загрузке добавить notgreatdoc и текст: При создании протокола произошла ошибка. Некоторый(е) из ответственные не были найдены.
     .item
       form
@@ -21,15 +20,14 @@ block content
       table.table-ReportProtocol
         thead
           tr
-            th.col-var-1
             th.col-var-3 Текст поручения
             th.col-var-3 Ответственные
             th.col-var-3 Срок сдачи
+            th.col-var-3 Исполнитель
             th.col-var-3
         tbody
           each element in result
             tr
-              td.col-var-1.greatdoc
               td#errandText.col-var-3 #{element.errandText}
               td#assignees.col-var-3
                 span.editable-text
@@ -39,7 +37,13 @@ block content
                       | , 
               td#deadline.col-var-3 #{element.deadline}
               td.col-var-3
+                .select-container
+                  select.employee-selector(name='employeeId_0')
+                    each employee in employees
+                      option(value=employee.id)
+                        | #{employee.surname} #{employee.name} #{employee.patronymic} (#{employee.subdivision_short_name})
+                  button(type='button', id='addEmployeeBtn') Добавить исполнителя
+              td.col-var-3
                 input.edit-errand-report-change(type="button", value="Изменить")
 
     button.formProtocol(onclick='confirmData()') Отправить
-

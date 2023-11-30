@@ -43,7 +43,7 @@ router.get('/:id', async (req, res, next) => {
     
     // Запрос к базе данных для получения информации о конкретном поручении с данными об ответственном сотруднике
     const query = `
-      SELECT e.*, errand.*, e.*
+      SELECT *
       FROM public."Employee" AS e
       INNER JOIN public."ErrandEmployee" AS ee ON e.id = ee.id_employee
       INNER JOIN public."Errand" AS errand ON ee.id_errand = errand.id

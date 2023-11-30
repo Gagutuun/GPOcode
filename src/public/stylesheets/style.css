@@ -126,3 +126,36 @@ p {
 .editable-text {
   font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+
+/* Стили для выпадающего списка */
+.select-container {
+  position: relative;
+  display: inline-block;
+}
+
+.employee-selector {
+  width: 200px; /* Укажите ширину, которая подходит вам */
+  padding: 10px;
+  font-size: 14px;
+}
+
+/* Стили для стрелочки вниз */
+.select-arrow {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+/* Оформление опций в выпадающем списке */
+.employee-selector option {
+  padding: 10px;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+}
+
+/* Изменение стиля при наведении */
+.employee-selector option:hover {
+  background-color: #f0f0f0;
+}

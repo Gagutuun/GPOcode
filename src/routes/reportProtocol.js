@@ -1,6 +1,27 @@
 const express = require('express');
 const pool = require('../config/dbConfig');
 const router = express.Router();
+const { createTable } = require('../utils/savetopdf');
+
+const getErrandsFromDatabase = async (protocolNumber) => {
+  try {
+    const query = `
+      SELECT *
+      FROM "Errand" E
+      INNER JOIN "ErrandEmployee" EE ON E.id = EE.id_errand
+      INNER JOIN "Protocol" P ON E.id_protocol = P.id
+      INNER JOIN "Employee" Em ON Em.id = EE.id_employee
+      WHERE P.protocol_number = $1
+    `;
+
+    const { rows } = await pool.query(query, [protocolNumber]);
+    console.log(rows)
+    return rows;
+  } catch (error) {
+    console.error('An error occurred while getting the errands data from the database:', error);
+    throw error;
+  }
+};
 
 function formatDate(date) {
   if (!date) {
@@ -14,7 +35,7 @@ function formatDate(date) {
   };
 
   return date.toLocaleDateString('ru-RU', options);
-}
+};
 
 router.get('/', async (req, res, next) => {
   try {
@@ -120,17 +141,10 @@ router.get('/:protocolNumber', async (req, res, next) => {
   }
 });
 
-router.post('/:protocolNumber/generate-report', (req, res) => {
-
-  const selectedRows = req.body;
-
-  // Запрос к БД за выбранными данными
-
-  // Сохранить данные в session
-  req.session.reportData = selectedRows;
-  
-  res.sendStatus(200);
-
+router.post('/:protocolNumber/generate-report', async (req, res) => {
+    const protocolNumber = req.params.protocolNumber
+    const errands = await getErrandsFromDatabase(protocolNumber);
+    await createTable(errands);
 });
 
 

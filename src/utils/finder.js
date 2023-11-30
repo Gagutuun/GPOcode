@@ -56,10 +56,11 @@ function findNewErrands(protocolText) {
                 }
             })
         }
-        console.log(errands[errands.length - 1].toString());
         currentIterator = nextIterator;
         nextIterator = nextIterator.done ? null : errandNumbersIterator.next();
     } while (nextIterator != null);
+    console.log("DEBUG");
+    console.log(errands);
     return errands;
 }
 
