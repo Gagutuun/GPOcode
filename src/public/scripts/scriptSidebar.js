@@ -1,27 +1,13 @@
 // Выбор активного элемента списка
+const map = {
+    'upload': 'download-protocol-id',
+    'uploadProtocol': 'download-protocol-id',
+    'errand': 'errand-id',
+    'reportProtocol': 'report-protocol-id',
+    'feedback': 'feedback-id'
+};
 window.addEventListener('load', () => {
-    switch (window.location.href.substring(window.location.href.lastIndexOf('/') + 1)) {
-        case 'upload': {
-            document.getElementById('download-protocol-id').classList.add('active');
-            break;
-        }
-        case 'uploadProtocol': {
-            document.getElementById('download-protocol-id').classList.add('active');
-            break;
-        }
-        case 'errand': {
-            document.getElementById('errand-id').classList.add('active');
-            break;
-        }
-        case 'reportProtocol': {
-            document.getElementById('report-protocol-id').classList.add('active');
-            break;
-        }
-        case 'feedback': {
-            document.getElementById('feedback-id').classList.add('active');
-            break;
-        }
-    }
+    document.getElementById(map[window.location.href.substring(window.location.href.lastIndexOf('/') + 1)]).classList.add('active');
 })
 
 // Контекстное меню уведомлений
