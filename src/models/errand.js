@@ -17,6 +17,7 @@ class Errand {
     };
 
     static activeStatus = "Активный";
+    static complitedStatus = "Завершено";
 
     /**
      * Добавляет новое поручение в базу данных
@@ -199,6 +200,34 @@ class Errand {
             );
         });
     }
+
+    static changeStatus(idErrand, status) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeUpdateQuery(
+                    this.tableName,
+                    [this.columnNames.status],
+                    queryBuilder.makeSubexpression(
+                        queryBuilder.WHERE,
+                        queryBuilder.equals(this.columnNames.id)
+                    )
+                ),
+                [status, idErrand],
+                (err, result) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    if (result.rowCount > 0) {
+                        resolve();
+                        return;
+                    }
+                    reject("Не правильно стоставленный SQL запрос");
+                }
+            )
+        });
+    }
+
 }
 
 module.exports = Errand;
