@@ -6,8 +6,21 @@ const hrefSidebarElementMap = {
     'reportProtocol': 'report-protocol-id',
     'feedback': 'feedback-id'
 };
+
+function sidebarElementOnClick(id) {
+    document.getElementById(id).classList.add('choosen')
+}
+
 window.addEventListener('load', () => {
-    document.getElementById(hrefSidebarElementMap[window.location.href.substring(window.location.href.lastIndexOf('/') + 1)]).classList.add('active');
+    try {
+        const sidebarElement = document.getElementById(hrefSidebarElementMap[window.location.href.substring(window.location.href.lastIndexOf('/') + 1)]);
+        sidebarElement.classList.add('active');
+    } catch (err) {
+    }
+    for (let hrefName in hrefSidebarElementMap) {
+        let sidebarElementId = hrefSidebarElementMap[hrefName];
+        document.getElementById(sidebarElementId).addEventListener('click', () => sidebarElementOnClick(sidebarElementId));
+    }
 })
 
 // Контекстное меню уведомлений
