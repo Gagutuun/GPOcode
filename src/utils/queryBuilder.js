@@ -141,8 +141,32 @@ class QuerryBuilder {
         sqlQuery += args.orderByExpression != null ? " " + args.orderByExpression : "";
         sqlQuery += args.limit != null ? " " + args.limit : "";
         let i = 1;
-        for(let index = sqlQuery.indexOf("$"); index != -1; index = sqlQuery.indexOf("$", index + 2))
+        for (let index = sqlQuery.indexOf("$"); index != -1; index = sqlQuery.indexOf("$", index + 2))
             sqlQuery = sqlQuery.slice(0, index + 1) + (i++) + sqlQuery.slice(index + 1);
+        return sqlQuery;
+    }
+
+    /**
+     * Создает Update SQL запрос в виде строки
+     * @param {string} tableName - имя таблицы
+     * @param {string[]} columnNames - имена колонок для изменения
+     * @param {string | undefined} whereExpression - дополнительное условие для изменения
+     * @returns строку c SQL запросом
+     */
+    static makeUpdateQuery(tableName, columnNames, whereExpression) {
+        let sqlQuery = `UPDATE ${tableName} SET `;
+        let index = 0
+        for (; index < columnNames.length;) {
+            if (index != 0)
+                sqlQuery += ", ";
+            sqlQuery += `${columnNames[index]} = $${++index}`;
+
+        }
+        if (whereExpression) {
+            for (let varIndex = whereExpression.indexOf('$'); varIndex != -1; varIndex = whereExpression.indexOf('$', varIndex + 1))
+                whereExpression = whereExpression.slice(0, varIndex + 1) + (++index) + whereExpression.slice(varIndex + 1);
+            sqlQuery += whereExpression;
+        }
         return sqlQuery;
     }
 
@@ -155,7 +179,7 @@ class QuerryBuilder {
     static makeSubexpression(subexpressionKeyWord, logicExpression) {
         return `${subexpressionKeyWord} ${logicExpression}`;
     }
-    
+
     /**
      * Создает логическое выражение
      * @param {string} logicOperator - Логический оператор
