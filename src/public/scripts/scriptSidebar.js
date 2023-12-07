@@ -7,13 +7,22 @@ const hrefSidebarElementMap = {
     'feedback': 'feedback-id'
 };
 
+function findHrefSidebarElement() {
+    let hrefRegEx;
+    for (let hrefSidebarElement in hrefSidebarElementMap) {
+        hrefRegEx = new RegExp(hrefSidebarElement);
+        if (hrefRegEx.exec(window.location.href))
+            return hrefSidebarElementMap[hrefSidebarElement];
+    }
+}
+
 function sidebarElementOnClick(id) {
     document.getElementById(id).classList.add('choosen')
 }
 
 window.addEventListener('load', () => {
     try {
-        const sidebarElement = document.getElementById(hrefSidebarElementMap[window.location.href.substring(window.location.href.lastIndexOf('/') + 1)]);
+        const sidebarElement = document.getElementById(findHrefSidebarElement());
         sidebarElement.classList.add('active');
     } catch (err) {
     }
