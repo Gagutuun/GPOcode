@@ -169,7 +169,20 @@ class QuerryBuilder {
         }
         return sqlQuery;
     }
-
+    /**
+     * Создает DELETE SQL запрос в виде строки
+     * @param {string} tableName - имя таблицы
+     * @param {string | undefined} whereExpression - условие для удаления
+     * @returns строку с данным SQL запросом
+     */
+    static makeDeleteQuery(tableName, whereExpression) {
+        let count = 1;
+        let sqlQuery = `DELETE FROM ${tableName}${whereExpression ? ` ${whereExpression}` : ""}`.replace('$', match => {
+            return `$${count++}`;
+        });
+        console.log(`[DEBUG] sqlQuery = ${sqlQuery}`);
+        return sqlQuery;
+    }
     /**
      * Создает подвыражение для уточнения запросов
      * @param {string} subexpressionKeyWord - Ключевое слово подзапроса
