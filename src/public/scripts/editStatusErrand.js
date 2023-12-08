@@ -28,8 +28,7 @@ function toggleErrandStatus(element) {
 		},
 		body: JSON.stringify({
 			errandID: parseInt(window.location.href.substring(window.location.href.lastIndexOf('/') + 1)),
-			status: errandStatusString,
-			calledFrom: window.location.href
+			status: errandStatusString
 		})
 	})
 		.then(response => {
