@@ -45,8 +45,12 @@ function confirmData() {
     });
 }
 
+console.log("[DEBUG] прям перед обработкой");
 
 document.addEventListener('DOMContentLoaded', function () {
+
+  console.log("[DEBUG] блять я делаюсь");
+
   // Находим кнопку "Добавить исполнителя"
   var addEmployeeBtn = document.getElementById('addEmployeeBtn');
 
@@ -76,4 +80,29 @@ document.addEventListener('DOMContentLoaded', function () {
     // Добавляем клонированный список к контейнеру перед кнопкой
     selectContainer.insertBefore(cloneSelect, addEmployeeBtn);
   });
+
+  const logoBtn = document.querySelector('a.button > img.mainImg').parentElement;
+  console.log(`[DEBUG] logoBtn = ${logoBtn} of ${logoBtn.tagName}`);
+  logoBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    console.log("[DEBUG] блять я тоже");
+    fetch('/api/removeUnparsedProtocol', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify()
+    })
+      .then(res => {
+        console.log(`[DEBUG] POST ${res.status} - ${res.text()}`);
+        window.location.href = logoBtn.href;
+        return;
+      })
+      .catch(err => {
+        console.error(err);
+        return;
+      });
+  });
 });
+
+console.log("[DEBUG] прям после обработки");
