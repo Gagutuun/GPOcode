@@ -45,11 +45,7 @@ function confirmData() {
     });
 }
 
-console.log("[DEBUG] прям перед обработкой");
-
 document.addEventListener('DOMContentLoaded', function () {
-
-  console.log("[DEBUG] блять я делаюсь");
 
   // Находим кнопку "Добавить исполнителя"
   var addEmployeeBtn = document.getElementById('addEmployeeBtn');
@@ -82,10 +78,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   const logoBtn = document.querySelector('a.button > img.mainImg').parentElement;
-  console.log(`[DEBUG] logoBtn = ${logoBtn} of ${logoBtn.tagName}`);
   logoBtn.addEventListener('click', (event) => {
     event.preventDefault();
-    console.log("[DEBUG] блять я тоже");
     fetch('/api/removeUnparsedProtocol', {
       method: 'POST',
       headers: {
@@ -94,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function () {
       body: JSON.stringify()
     })
       .then(res => {
-        console.log(`[DEBUG] POST ${res.status} - ${res.text()}`);
         window.location.href = logoBtn.href;
         return;
       })
@@ -104,5 +97,3 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   });
 });
-
-console.log("[DEBUG] прям после обработки");

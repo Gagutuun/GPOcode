@@ -180,7 +180,6 @@ class QuerryBuilder {
         let sqlQuery = `DELETE FROM ${tableName}${whereExpression ? ` ${whereExpression}` : ""}`.replace('$', match => {
             return `$${count++}`;
         });
-        console.log(`[DEBUG] sqlQuery = ${sqlQuery}`);
         return sqlQuery;
     }
     /**

@@ -121,7 +121,6 @@ class Protocol {
      */
     static deleteProtocolByID(protocolID) {
         return new Promise((resolve, reject) => {
-            console.log("[DEBUG] начинаю выполнять запрос");
             db.query(
                 queryBuilder.makeDeleteQuery(
                     this.tableName,
@@ -132,18 +131,14 @@ class Protocol {
                 ),
                 [protocolID],
                 (err, result) => {
-                    console.log("[DEBUG] результаты запроса получены");
                     if (err) {
-                        console.error(`[DEBUG] Ошибка запроса: ${err}`);
                         reject(err);
                         return;
                     }
                     if (result.rowCount > 0) {
-                        console.log("[DEBUG] Запрос выполнен");
                         resolve("Запрос успешно выполнен!");
                         return;
                     }
-                    console.log("[DEBUG] Запрос выполнен либо не выполнен я хз");
                     reject("Не известная ошибка!");
                     return;
                 }
