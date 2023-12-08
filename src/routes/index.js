@@ -13,6 +13,7 @@ const reportProtocol = require('./reportProtocol');
 const feedback = require('./feedback');
 const profile = require('./personRouter');
 const reportReview = require('./reportReviewRouter')
+const changeErrandStatusRouter = require('./changeErrandStatusRouter')
 
 
 // Use routes
@@ -26,6 +27,7 @@ router.use('/reportProtocol', reportProtocol);
 router.use('/feedback', feedback);
 router.use('/profile', profile);
 router.use('/review-report', reportReview);
+router.use('/api/changeErrandStatus', changeErrandStatusRouter);
 
 // Обновленный обработчик POST-запроса
 router.post('/confirm', async (req, res) => {
