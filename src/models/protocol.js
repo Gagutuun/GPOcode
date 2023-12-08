@@ -72,9 +72,9 @@ class Protocol {
                 [],
                 (error, result) => {
                     if (error) {
-                            console.error(`[ERROR] ${error}`)
-                            reject(error);
-                        }
+                        console.error(`[ERROR] ${error}`)
+                        reject(error);
+                    }
                     else if (result.rowCount > 0)
                         resolve(result.rows[0].id);
                     else
@@ -110,6 +110,42 @@ class Protocol {
                         resolve(result.rows[0].file_protocol_doc);
                     else
                         resolve(null);
+                }
+            )
+        })
+    }
+    /**
+     * Удаляет запись о протоколе из таблицы по его id
+     * @param {int} protocolID - id протокола в таблице
+     * @returns Promise на удаление записи из таблицы
+     */
+    static deleteProtocolByID(protocolID) {
+        return new Promise((resolve, reject) => {
+            console.log("[DEBUG] начинаю выполнять запрос");
+            db.query(
+                queryBuilder.makeDeleteQuery(
+                    this.tableName,
+                    queryBuilder.makeSubexpression(
+                        queryBuilder.WHERE,
+                        queryBuilder.equals(this.columnNames.id)
+                    )
+                ),
+                [protocolID],
+                (err, result) => {
+                    console.log("[DEBUG] результаты запроса получены");
+                    if (err) {
+                        console.error(`[DEBUG] Ошибка запроса: ${err}`);
+                        reject(err);
+                        return;
+                    }
+                    if (result.rowCount > 0) {
+                        console.log("[DEBUG] Запрос выполнен");
+                        resolve("Запрос успешно выполнен!");
+                        return;
+                    }
+                    console.log("[DEBUG] Запрос выполнен либо не выполнен я хз");
+                    reject("Не известная ошибка!");
+                    return;
                 }
             )
         })
