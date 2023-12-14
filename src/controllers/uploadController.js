@@ -20,7 +20,7 @@ const TEMP_DIR_PATH = path.join(
       const result = await pool.query(query);
   
       // Возвращаем массив объектов с данными о сотрудниках
-      console.log(result.rows);
+      // console.log(result.rows);
       return result.rows;
     } catch (error) {
       console.error('Ошибка при получении списка сотрудников:', error);
