@@ -27,17 +27,23 @@ function addEmployee(button) {
   selectContainer.insertBefore(cloneSelect, button);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-  // Получаем все кнопки "Добавить исполнителя"
-  var addEmployeeBtns = document.querySelectorAll(".addEmployee");
+// document.addEventListener('DOMContentLoaded', function () {
+//   // Получаем все кнопки "Добавить исполнителя"
+//   var addEmployeeBtns = document.querySelectorAll(".addEmployee");
 
-  // Присваиваем функцию addEmployee каждой кнопке
-  addEmployeeBtns.forEach(function (addEmployeeBtn) {
-    addEmployeeBtn.addEventListener("click", function () {
-      addEmployee(addEmployeeBtn);
-    });
-  });
-});
+
+//   let btnID = 1;
+
+//   // Присваиваем функцию addEmployee каждой кнопке
+//   addEmployeeBtns.forEach(function (addEmployeeBtn) {
+
+//     addEmployeeBtn.id = `addEmployeeBtn_${btnID++}`;
+
+//     addEmployeeBtn.addEventListener("click", function () {
+//       addEmployee(addEmployeeBtn);
+//     });
+//   });
+// });
 
 
 
@@ -92,37 +98,37 @@ function confirmData() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
 
-  // Находим кнопку "Добавить исполнителя"
-  var addEmployeeBtn = document.getElementById('addEmployeeBtn');
+  // // Находим кнопку "Добавить исполнителя"
+  // var addEmployeeBtn = document.getElementById('addEmployeeBtn');
 
-  // Добавляем обработчик событий для клика
-  addEmployeeBtn.addEventListener('click', function () {
-    // Находим контейнер для списка
-    var selectContainer = document.querySelector('.select-container');
+  // // Добавляем обработчик событий для клика
+  // addEmployeeBtn.addEventListener('click', function () {
+  //   // Находим контейнер для списка
+  //   var selectContainer = document.querySelector('.select-container');
 
-    // Находим оригинальный список
-    var originalSelect = selectContainer.querySelector('select');
+  //   // Находим оригинальный список
+  //   var originalSelect = selectContainer.querySelector('select');
 
-    if (!originalSelect) {
-      // Если список не найден, выводим сообщение в консоль и выходим из функции
-      console.error('Оригинальный список не найден.');
-      return;
-    }
+  //   if (!originalSelect) {
+  //     // Если список не найден, выводим сообщение в консоль и выходим из функции
+  //     console.error('Оригинальный список не найден.');
+  //     return;
+  //   }
 
-    // Клонируем оригинальный список
-    var cloneSelect = originalSelect.cloneNode(true);
+  //   // Клонируем оригинальный список
+  //   var cloneSelect = originalSelect.cloneNode(true);
 
-    // Генерируем новый уникальный идентификатор для клонированного списка
-    var newId = 'employeeId_' + selectContainer.children.length;
+  //   // Генерируем новый уникальный идентификатор для клонированного списка
+  //   var newId = 'employeeId_' + selectContainer.children.length;
 
-    // Меняем идентификатор клонированного списка
-    cloneSelect.setAttribute('name', newId);
+  //   // Меняем идентификатор клонированного списка
+  //   cloneSelect.setAttribute('name', newId);
 
-    // Добавляем клонированный список к контейнеру перед кнопкой
-    selectContainer.insertBefore(cloneSelect, addEmployeeBtn);
-  });
+  //   // Добавляем клонированный список к контейнеру перед кнопкой
+  //   selectContainer.insertBefore(cloneSelect, addEmployeeBtn);
+  // });
 
   const logoBtn = document.querySelector('a.button > img.mainImg').parentElement;
   logoBtn.addEventListener('click', (event) => {
