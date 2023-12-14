@@ -45,13 +45,17 @@ function confirmData() {
     const deadline = row.querySelector("#deadline").innerText;
 
     // Добавляем выбранный исполнитель (из выпадающего списка)
-    const selectedEmployeeId = row.querySelector(".employee-selector").value;
+    const selectedEmployeesId = Array.from(row.querySelectorAll(".employee-selector")).map(
+      (employeeSelector) => employeeSelector.value
+    );
+
+    console.log(selectedEmployeesId);
 
     errandArray.push({
       errandText,
       parsedAsgnName,
       deadline,
-      selectedEmployeeId, // Добавляем выбранный исполнитель
+      selectedEmployeesId: selectedEmployeesId, // Добавляем выбранный исполнитель
     });
   });
 
