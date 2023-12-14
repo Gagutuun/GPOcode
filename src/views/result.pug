@@ -42,7 +42,7 @@ block content
                     each employee in employees
                       option(value=employee.id)
                         | #{employee.surname} #{employee.name} #{employee.patronymic} (#{employee.subdivision_short_name})
-                  button(type='button', id='addEmployeeBtn') Добавить исполнителя
+                button.addEmployee(onclick='addEmployee()') Добавить исполнителя
               td.col-var-3
                 input.edit-errand-report-change(type="button", value="Изменить")
 

@@ -241,3 +241,26 @@
     color: white;
     transition: all 0.15s ease-in-out;
 }
+
+.addEmployee {
+    font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+    margin-top: 10px;
+    margin-right: 5px;
+    border: 1px solid black;
+    background: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    color: #000000;
+    cursor: pointer;
+    transition: background .2s ease-in-out;
+    text-align: center;
+    scale: 0.8;
+}
+
+.addEmployee:hover {
+    background: #ccc;
+}
+
+.select-container select.employee-selector {
+    margin: 5px;
+}
