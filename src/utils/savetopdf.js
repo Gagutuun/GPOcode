@@ -3,9 +3,24 @@ require('jspdf-autotable');
 const MyFont = require(__dirname + '/fonts/font');
 const MyFontItalic = require(__dirname + '/fonts/times-new-roman-italique-italic')
 const MyFontBold = require(__dirname + '/fonts/times-new-roman-gras-bold')
-const QuerryBuilder = require('../utils/queryBuilder'); // Подключаем QuerryBuilder
 const pool = require('../config/dbConfig'); // Подключаем настройки подключения к базе данных
+const protocol = require('../models/protocol');
 const fs = require('fs');
+const path = require('path');
+
+async function updateGeneralReportFilePath(protocolId, filePath) {
+  try {
+    await protocol.updateGeneralReportFilePath(protocolId, filePath);
+    console.log(`Путь до общего отчета успешно обновлен для протокола с ID ${protocolId}`);
+  } catch (error) {
+    console.error(`Ошибка при обновлении пути для протокола с ID ${protocolId}:`, error);
+    throw error;
+  }
+}
+
+// Переменная для хранения номер и id протокола, чтобы передавать его в имя файла
+let numberProt;
+let idProt;
 
 // Create a new document
 const doc = new jsPDF({
@@ -79,7 +94,8 @@ const createTable = async (errands) => {
   // const names = await getNameSubdivison();
   const introText =
   'Перечень поручений и отчетов по протоколу производственного совещания при генеральном директоре по направлению деятельности заместителя генерального директора по управлению персоналом от ' + formatDate(errands[0].protocol_date) +'\n№ ' + errands[0].protocol_number;
-
+  numberProt = errands[0].protocol_number;
+  idProt = errands[0].id_protocol;
   const headers = ['№ по протоколу', 'Поручение', 'Ответственный / Срок / Пояснения'];
   const tableData = [];
 
@@ -224,7 +240,17 @@ const createTable = async (errands) => {
 
   doc.autoTable(tableOptions);
 
-  doc.save('Общий_отчет_№' + errands[0].protocolNumber + '.pdf');
+  const currentDateTime = new Date();
+  const fileName = `Общий_отчет_№${numberProt}_${formatDate(currentDateTime)}.pdf`;
+  
+  // Используем модуль path для создания полного пути
+  const filePath = path.join(__dirname, '..', 'public', 'files', 'reports', fileName);
+  
+  // Сохранение файла отчета по указанному пути
+  doc.save(filePath);
+
+  // Обновление пути в базе данных
+  await updateGeneralReportFilePath(idProt, filePath);
 
 };
 

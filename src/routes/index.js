@@ -15,7 +15,7 @@ const profile = require('./personRouter');
 const reportReview = require('./reportReviewRouter')
 const changeErrandStatusRouter = require('./changeErrandStatusRouter')
 const removeProtocolRouter = require('./removeProtocolRouter');
-
+const changePathToReportRouter = require('./changePathToReportRouter');
 
 // Use routes
 router.use('/', helloRouter);
@@ -30,6 +30,7 @@ router.use('/profile', profile);
 router.use('/review-report', reportReview);
 router.use('/api/changeErrandStatus', changeErrandStatusRouter);
 router.use('/api/removeUnparsedProtocol', removeProtocolRouter);
+router.use('/api/changePathToReport', changePathToReportRouter);
 
 // Обновленный обработчик POST-запроса
 router.post('/confirm', async (req, res) => {

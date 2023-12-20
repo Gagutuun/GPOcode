@@ -145,6 +145,35 @@ class Protocol {
             )
         })
     }
+
+    /**
+     * Обновляет поле general_report_file_doc для протокола с указанным ID
+     * @param {number} id - ID протокола
+     * @param {string} reportFilePath - Путь к файлу отчета
+     * @returns {Promise} - Обещание обновления
+     */
+    static updateGeneralReportFilePath(id, reportFilePath) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeUpdateQuery(
+                    this.tableName,
+                    [this.columnNames.general_report_file_doc],
+                    queryBuilder.makeSubexpression(
+                        queryBuilder.WHERE,
+                        queryBuilder.equals(this.columnNames.id)
+                    )
+                ),
+                [reportFilePath, id],
+                (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                }
+            );
+        });
+    }
 }
 
 module.exports = Protocol;

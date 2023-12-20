@@ -165,7 +165,7 @@ class QuerryBuilder {
         if (whereExpression) {
             for (let varIndex = whereExpression.indexOf('$'); varIndex != -1; varIndex = whereExpression.indexOf('$', varIndex + 1))
                 whereExpression = whereExpression.slice(0, varIndex + 1) + (++index) + whereExpression.slice(varIndex + 1);
-            sqlQuery += whereExpression;
+            sqlQuery += ` ${whereExpression}`;
         }
         return sqlQuery;
     }

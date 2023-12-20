@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  script(async='', src='/scripts/scriptReportProtocol.js')
+  script(defer, src='/scripts/scriptReportProtocol.js')
   if !protocol[0].general_report_file_doc
     .marginReportProtocol
       .short-report
@@ -20,8 +20,8 @@ block content
         thead
           tr
             if !protocol[0].general_report_file_doc
-              th.col-var-1
-                button.select_all ✓
+            //  th.col-var-1
+            //    button.select_all ✓
             th.col-var-2 Текст поручения
             th.col-var-2 Ответственные
             th.col-var-2 Получено
@@ -33,8 +33,8 @@ block content
           each item in protocol
             tr
               if !protocol[0].general_report_file_doc
-                td.col-var-1
-                  input.checkbox-order-selection(type='checkbox')
+                //td.col-var-1
+                //  input.checkbox-order-selection(type='checkbox')
               td.col-var-2 #{item.text_errand}
               td.col-var-2 #{item.responsible_employees}
               td.col-var-2 #{item.date}

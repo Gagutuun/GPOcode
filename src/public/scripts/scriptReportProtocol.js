@@ -1,9 +1,9 @@
 const expandButtons = document.querySelectorAll('button.expand-button');
-const checkboxes = document.querySelectorAll('.checkbox-order-selection');
 const formProtocolBtns = document.querySelectorAll('button.formProtocol');
 const buttons = document.querySelectorAll('.buttons button');
 const activeProtocols = document.querySelector('.ActiveProtocols');
 const archiveProtocols = document.querySelector('.ArchiveProtocols');
+const tableContainer = document.querySelector('.table-container');
 const searchInput = document.getElementById('search-input'); // Получение элемента по его ID
 
 // Функция для фильтрации протоколов по поисковому запросу
@@ -28,25 +28,6 @@ if (searchInput) {
     filterReports(searchTerm);
   });
 }
-
-if (checkboxes) {
-  checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', () => {
-      // Логика для сохранения состояния чекбоксов
-    });
-  });
-
-  checkboxes.forEach(checkbox => {
-    const rowIndex = Array.from(checkbox.closest('tr').parentNode.children).indexOf(checkbox.closest('tr'));
-    const storedCheckbox = localStorage.getItem(`checkbox${rowIndex}`);
-    if (storedCheckbox) {
-      checkbox.checked = storedCheckbox === 'true';
-    }
-  });
-  
-}
-
-//Логика для сохранения и восстановления состояния чекбоксов и развернутых строк при загрузке страницы
 
 const storedSearchTerm = localStorage.getItem('searchTerm');
 if (storedSearchTerm) {
@@ -105,22 +86,6 @@ if (expandButtons) {
     });
   });
 }
-// Восстанавливаем состояние строк при загрузке страницы
-const storedExpandedRows = localStorage.getItem('expandedRows');
-if (storedExpandedRows) {
-  const expandedRows = JSON.parse(storedExpandedRows);
-  expandedRows.forEach(rowIndex => {
-    const row = document.querySelectorAll('tr')[rowIndex];
-    if (row) {
-      row.classList.add('expanded');
-      const expandButton = row.querySelector('button.expand-button');
-      if (expandButton) {
-        expandButton.textContent = 'ᐯ'; // Изменяем текст кнопки, если строка развернута
-      }
-    }
-  });
-}
-
 
 // Получаем ссылку на элементы
 const editableText = document.querySelector('.editable-text');
@@ -168,22 +133,25 @@ function flashBorder() {
   }, 1000); // Интервал мигания: 1 секунда
 }
 
-formProtocolBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    // Собрать данные о выделенных чекбоксах
-    const selectedRows = [];
-    checkboxes.forEach(checkbox => {
-      if (checkbox.checked) {
-        selectedRows.push(checkbox.dataset.row);
-        console.log(selectedRows);
-        // Здесь добавьте логику для формирования отчета на основе выбранных поручений
-        // Можете использовать AJAX-запрос для отправки данных на сервер и получения отчета
-      }
+document.querySelector('.formProtocol').addEventListener('click', async function () {
+  const activeErrands = Array.from(document.querySelectorAll('.col-var-2')).filter(td => td.textContent.trim() === 'Активно');
+  
+  if (activeErrands.length > 0) {
+    // Есть активные поручения
+    const shouldContinue = await swal({
+      title: "Предупреждение",
+      text: "Есть активные задачи. Продолжить формирование отчета?",
+      icon: "warning",
+      buttons: ["Отмена", "Продолжить"],
+      dangerMode: true,
     });
-  });
-});
 
-document.querySelector('.formProtocol').addEventListener('click', function () {
+    if (!shouldContinue) {
+      // Пользователь отменил операцию
+      return;
+    }
+  }
+
   // Assuming you have data to send, modify this as needed
   const dataToSend = {
     // Add your data properties here
@@ -193,7 +161,6 @@ document.querySelector('.formProtocol').addEventListener('click', function () {
 
   // Extracting protocolNumber from the current URL
   const protocolNumber = window.location.pathname.match(/\d+/)[0];
-  console.log(protocolNumber);
 
   // Sending data to the server using plain JavaScript AJAX
   const xhr = new XMLHttpRequest();
@@ -208,11 +175,24 @@ document.querySelector('.formProtocol').addEventListener('click', function () {
   xhr.onload = function () {
     if (xhr.status >= 200 && xhr.status < 300) {
       // Success response
+      const reportFilePath = JSON.parse(xhr.responseText).reportFilePath;
+
       swal({
         title: "Success!",
         text: "Report generated",
         icon: "success",
-        button: "OK"
+        buttons: {
+          download: {
+            text: "Download Report",
+            value: "download",
+          },
+          cancel: "Close",
+        },
+      }).then((value) => {
+        if (value === "download") {
+          // Trigger file download
+          window.location.href = reportFilePath;
+        }
       });
     } else {
       // Error response
@@ -228,3 +208,40 @@ document.querySelector('.formProtocol').addEventListener('click', function () {
   // Convert the data to JSON and send the request
   xhr.send(JSON.stringify(dataToSend));
 });
+
+// OneReportProtocol.js
+
+document.querySelector('.edit-button-errand').addEventListener('click', async function () {
+  const protocolNumber = window.location.pathname.match(/\d+/)[0];
+  const downloadUrl = `/download-report/${protocolNumber}`;
+
+  try {
+    const response = await fetch(downloadUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      const blob = await response.blob();
+
+      // Создайте ссылку для скачивания
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `Отчет_по_протоколу_${protocolNumber}.pdf`;
+
+      // Добавьте ссылку в DOM и выполните скачивание
+      document.body.appendChild(link);
+      link.click();
+
+      // Удалите ссылку из DOM
+      document.body.removeChild(link);
+    } else {
+      console.error('Failed to download report:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error during fetch:', error);
+  }
+});
+
