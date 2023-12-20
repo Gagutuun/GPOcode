@@ -91,3 +91,56 @@ function confirmData() {
       // Обработка ошибки, если необходимо
     });
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  // Находим кнопку "Добавить исполнителя"
+  var addEmployeeBtn = document.getElementById('addEmployeeBtn');
+
+  // Добавляем обработчик событий для клика
+  addEmployeeBtn.addEventListener('click', function () {
+    // Находим контейнер для списка
+    var selectContainer = document.querySelector('.select-container');
+
+    // Находим оригинальный список
+    var originalSelect = selectContainer.querySelector('select');
+
+    if (!originalSelect) {
+      // Если список не найден, выводим сообщение в консоль и выходим из функции
+      console.error('Оригинальный список не найден.');
+      return;
+    }
+
+    // Клонируем оригинальный список
+    var cloneSelect = originalSelect.cloneNode(true);
+
+    // Генерируем новый уникальный идентификатор для клонированного списка
+    var newId = 'employeeId_' + selectContainer.children.length;
+
+    // Меняем идентификатор клонированного списка
+    cloneSelect.setAttribute('name', newId);
+
+    // Добавляем клонированный список к контейнеру перед кнопкой
+    selectContainer.insertBefore(cloneSelect, addEmployeeBtn);
+  });
+
+  const logoBtn = document.querySelector('a.button > img.mainImg').parentElement;
+  logoBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    fetch('/api/removeUnparsedProtocol', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify()
+    })
+      .then(res => {
+        window.location.href = logoBtn.href;
+        return;
+      })
+      .catch(err => {
+        console.error(err);
+        return;
+      });
+  });
+});

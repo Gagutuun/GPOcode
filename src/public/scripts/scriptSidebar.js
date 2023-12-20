@@ -1,118 +1,36 @@
-// const bgBtn = document.querySelectorAll("li");
+// Выбор активного элемента списка
+const hrefSidebarElementMap = {
+    'upload': 'download-protocol-id',
+    'uploadProtocol': 'download-protocol-id',
+    'errand': 'errand-id',
+    'reportProtocol': 'report-protocol-id',
+    'feedback': 'feedback-id'
+};
 
-// const selectedLi = localStorage.getItem("selectedLi");
-// if (selectedLi) {
-//     bgBtn.forEach((li) => {
-//         if (li.classList.contains(selectedLi)) {
-//             li.classList.add("active");
-//         } else {
-//             li.classList.remove("active");
-//         }
-//     });
-// }
-
-// bgBtn.forEach((link) => {
-//     link.addEventListener("click", function (event) {
-//         bgBtn.forEach((li) => {
-//             li.classList.remove("active");
-//         });
-//         this.classList.add("active");
-
-//         localStorage.setItem("selectedLi", this.classList[0]);
-//     });
-// });
-
-
-
-// // Функция для обработки нажатий на элементы списка
-// function handleItemClick(itemId) {
-//     const clickedElement = document.getElementById(itemId);
-
-//     // Проверяем, активен ли уже этот элемент
-//     if (!clickedElement.classList.contains('active')) {
-//         // Снимаем активное состояние с других элементов
-//         const listItems = document.querySelectorAll('li');
-//         listItems.forEach(item => {
-//             item.classList.remove('active');
-//             localStorage.removeItem(item.id);
-//         });
-
-//         // Добавляем активное состояние только на выбранный элемент
-//         clickedElement.classList.add('active');
-//         localStorage.setItem(itemId, 'active');
-//     }
-// }
-
-// // Добавляем обработчик события для каждого элемента списка
-// document.getElementById('download-protocol-id').addEventListener('click', () => handleItemClick('download-protocol-id'));
-// document.getElementById('errand-id').addEventListener('click', () => handleItemClick('errand-id'));
-// document.getElementById('report-protocol-id').addEventListener('click', () => handleItemClick('report-protocol-id'));
-// document.getElementById('feedback-id').addEventListener('click', () => handleItemClick('feedback-id'));
-// document.getElementById('exit-id').addEventListener('click', () => handleItemClick('exit-id'));
-// document.getElementById('home').addEventListener('click', () => handleItemClick('home'));
-
-// // Проверяем, есть ли информация в localStorage о выбранном элементе и применяем "active"
-// if (localStorage.getItem('download-protocol-id') === 'active') {
-//     document.getElementById('download-protocol-id').classList.add('active');
-// }
-// if (localStorage.getItem('errand-id') === 'active') {
-//     document.getElementById('errand-id').classList.add('active');
-// }
-// if (localStorage.getItem('report-protocol-id') === 'active') {
-//     document.getElementById('report-protocol-id').classList.add('active');
-// }
-// if (localStorage.getItem('feedback-id') === 'active') {
-//     document.getElementById('feedback-id').classList.add('active');
-// }
-
-
-
-// Функция для обработки нажатий на элементы списка
-function handleItemClick(itemId) {
-    const clickedElement = document.getElementById(itemId);
-
-    // Проверяем, активен ли уже этот элемент
-    if (!clickedElement.classList.contains('active')) {
-        // Снимаем активное состояние с других элементов
-        const listItems = document.querySelectorAll('li');
-        listItems.forEach(item => {
-            item.classList.remove('active');
-            localStorage.removeItem(item.id);
-        });
-        
-        clickedElement.classList.add('active');
-        localStorage.setItem(itemId, 'active');
-
-        setTimeout(() => {
-            clickedElement.classList.remove('active');
-        }, 10000);
+function findHrefSidebarElement() {
+    let hrefRegEx;
+    for (let hrefSidebarElement in hrefSidebarElementMap) {
+        hrefRegEx = new RegExp(hrefSidebarElement);
+        if (hrefRegEx.exec(window.location.href))
+            return hrefSidebarElementMap[hrefSidebarElement];
     }
 }
 
-// Добавляем обработчик события для каждого элемента списка
-document.getElementById('download-protocol-id').addEventListener('click', () => handleItemClick('download-protocol-id'));
-document.getElementById('errand-id').addEventListener('click', () => handleItemClick('errand-id'));
-document.getElementById('report-protocol-id').addEventListener('click', () => handleItemClick('report-protocol-id'));
-document.getElementById('feedback-id').addEventListener('click', () => handleItemClick('feedback-id'));
-document.getElementById('exit-id').addEventListener('click', () => handleItemClick('exit-id'));
-document.getElementById('home').addEventListener('click', () => handleItemClick('home'));
-
-// Проверяем, есть ли информация в localStorage о выбранном элементе и применяем "active"
-if (localStorage.getItem('download-protocol-id') === 'active') {
-    document.getElementById('download-protocol-id').classList.add('active');
-}
-if (localStorage.getItem('errand-id') === 'active') {
-    document.getElementById('errand-id').classList.add('active');
-}
-if (localStorage.getItem('report-protocol-id') === 'active') {
-    document.getElementById('report-protocol-id').classList.add('active');
-}
-if (localStorage.getItem('feedback-id') === 'active') {
-    document.getElementById('feedback-id').classList.add('active');
+function sidebarElementOnClick(id) {
+    document.getElementById(id).classList.add('choosen')
 }
 
-
-
+window.addEventListener('load', () => {
+    try {
+        const sidebarElement = document.getElementById(findHrefSidebarElement());
+        sidebarElement.classList.add('active');
+    } catch (err) {
+    }
+    for (let hrefName in hrefSidebarElementMap) {
+        let sidebarElementId = hrefSidebarElementMap[hrefName];
+        document.getElementById(sidebarElementId).addEventListener('click', () => sidebarElementOnClick(sidebarElementId));
+    }
+})
 
 // Контекстное меню уведомлений
 var bellButton = document.getElementById("bell-btn");

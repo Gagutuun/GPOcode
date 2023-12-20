@@ -72,9 +72,9 @@ class Protocol {
                 [],
                 (error, result) => {
                     if (error) {
-                            console.error(`[ERROR] ${error}`)
-                            reject(error);
-                        }
+                        console.error(`[ERROR] ${error}`)
+                        reject(error);
+                    }
                     else if (result.rowCount > 0)
                         resolve(result.rows[0].id);
                     else
@@ -110,6 +110,37 @@ class Protocol {
                         resolve(result.rows[0].file_protocol_doc);
                     else
                         resolve(null);
+                }
+            )
+        })
+    }
+    /**
+     * Удаляет запись о протоколе из таблицы по его id
+     * @param {int} protocolID - id протокола в таблице
+     * @returns Promise на удаление записи из таблицы
+     */
+    static deleteProtocolByID(protocolID) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeDeleteQuery(
+                    this.tableName,
+                    queryBuilder.makeSubexpression(
+                        queryBuilder.WHERE,
+                        queryBuilder.equals(this.columnNames.id)
+                    )
+                ),
+                [protocolID],
+                (err, result) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    if (result.rowCount > 0) {
+                        resolve("Запрос успешно выполнен!");
+                        return;
+                    }
+                    reject("Не известная ошибка!");
+                    return;
                 }
             )
         })

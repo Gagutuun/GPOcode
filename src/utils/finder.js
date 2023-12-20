@@ -45,7 +45,6 @@ function findNewErrands(protocolText) {
             let incorrectNumber = /^\d+[.][\n]/.exec(currentErrand)[0];
             currentErrand = currentErrand.replace(incorrectNumber, incorrectNumber.substring(0, incorrectNumber.indexOf('.') + 1));
         }
-        console.log(currentErrand);
         if (RIGHT_RESPONSIBLE_NAME_REG_EX.exec(currentErrand) != null) {
             errands.push({
                 errandText: currentErrand.substring(0, currentErrand.indexOf(`\n${RESPONSIBLES_REG_EX.exec(currentErrand)[0]}`)).trim(),
