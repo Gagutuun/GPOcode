@@ -1,12 +1,13 @@
 // Определение функции addEmployee
-function addEmployee(button) {
-  console.log("Я тут!");
+function addEmployee(tdElement) {
+
+  console.log(tdElement);
 
   // Находим контейнер для списка в пределах строки
-  var selectContainer = document.querySelector(".select-container");
+  let selectContainer = tdElement.querySelector(".select-container");
 
   // Находим оригинальный список в пределах строки
-  var originalSelect = selectContainer.querySelector("select");
+  let originalSelect = selectContainer.querySelector("select");
 
   if (!originalSelect) {
     // Если список не найден, выводим сообщение в консоль и выходим из функции
@@ -15,31 +16,18 @@ function addEmployee(button) {
   }
 
   // Клонируем оригинальный список
-  var cloneSelect = originalSelect.cloneNode(true);
+  let cloneSelect = originalSelect.cloneNode(true);
 
   // Генерируем новый уникальный идентификатор для клонированного списка
-  var newId = "employeeId_" + selectContainer.children.length;
+  const newId = `employeeId_${selectContainer.children.length}`;
 
   // Меняем идентификатор клонированного списка
   cloneSelect.setAttribute("name", newId);
 
   // Добавляем клонированный список к контейнеру перед кнопкой
-  selectContainer.insertBefore(cloneSelect, button);
+  selectContainer.appendChild(cloneSelect);
+  
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-  // Получаем все кнопки "Добавить исполнителя"
-  var addEmployeeBtns = document.querySelectorAll(".addEmployee");
-
-  // Присваиваем функцию addEmployee каждой кнопке
-  addEmployeeBtns.forEach(function (addEmployeeBtn) {
-    addEmployeeBtn.addEventListener("click", function () {
-      addEmployee(addEmployeeBtn);
-    });
-  });
-});
-
-
 
 // Обновленный обработчик нажатия кнопки "Отправить"
 function confirmData() {
@@ -57,13 +45,17 @@ function confirmData() {
     const deadline = row.querySelector("#deadline").innerText;
 
     // Добавляем выбранный исполнитель (из выпадающего списка)
-    const selectedEmployeeId = row.querySelector(".employee-selector").value;
+    const selectedEmployeesId = Array.from(row.querySelectorAll(".employee-selector")).map(
+      (employeeSelector) => employeeSelector.value
+    );
+
+    console.log(selectedEmployeesId);
 
     errandArray.push({
       errandText,
       parsedAsgnName,
       deadline,
-      selectedEmployeeId, // Добавляем выбранный исполнитель
+      selectedEmployeesId: selectedEmployeesId, // Добавляем выбранный исполнитель
     });
   });
 
@@ -92,36 +84,24 @@ function confirmData() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
 
-  // Находим кнопку "Добавить исполнителя"
-  var addEmployeeBtn = document.getElementById('addEmployeeBtn');
+  // Получаем все кнопки "Добавить исполнителя"
+  let addEmployeeBtns = document.querySelectorAll(".addEmployee");
 
-  // Добавляем обработчик событий для клика
-  addEmployeeBtn.addEventListener('click', function () {
-    // Находим контейнер для списка
-    var selectContainer = document.querySelector('.select-container');
+  let idCounter = 1;
 
-    // Находим оригинальный список
-    var originalSelect = selectContainer.querySelector('select');
+  // Присваиваем функцию addEmployee каждой кнопке
+  addEmployeeBtns.forEach(function (addEmployeeBtn) {
 
-    if (!originalSelect) {
-      // Если список не найден, выводим сообщение в консоль и выходим из функции
-      console.error('Оригинальный список не найден.');
-      return;
-    }
+    addEmployeeBtn.id = `addEmployeeBtn_${idCounter++}`;
 
-    // Клонируем оригинальный список
-    var cloneSelect = originalSelect.cloneNode(true);
+    const btnParent = addEmployeeBtn.parentElement;
 
-    // Генерируем новый уникальный идентификатор для клонированного списка
-    var newId = 'employeeId_' + selectContainer.children.length;
+    addEmployeeBtn.addEventListener("click", (event) => {
+      addEmployee(btnParent);
+    });
 
-    // Меняем идентификатор клонированного списка
-    cloneSelect.setAttribute('name', newId);
-
-    // Добавляем клонированный список к контейнеру перед кнопкой
-    selectContainer.insertBefore(cloneSelect, addEmployeeBtn);
   });
 
   const logoBtn = document.querySelector('a.button > img.mainImg').parentElement;

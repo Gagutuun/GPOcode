@@ -36,10 +36,9 @@ router.use('/api/changePathToReport', changePathToReportRouter);
 router.post('/confirm', async (req, res) => {
   try {
     const { errandArray } = req.body;
-
     // Здесь добавьте логику для вставки данных в таблицы Errand и ErrandEmployee
     for (const errandData of errandArray) {
-      const { errandText, parsedAsgnName, deadline, selectedEmployeeId } = errandData;
+      const { errandText, parsedAsgnName, deadline, selectedEmployeesId } = errandData;
       const idProtocol = await ProtocolModel.getLastProtocolId();
       // Вставка данных в таблицу Errand
       let errandInsertQuery, errandValues;
@@ -68,8 +67,15 @@ router.post('/confirm', async (req, res) => {
         INSERT INTO public."ErrandEmployee" (id_errand, id_employee, report)
         VALUES ($1, $2, $3);`;
 
-      const errandEmployeeValues = [errandId, selectedEmployeeId, '']; // 'report' пока что пустой
-      await pool.query(errandEmployeeInsertQuery, errandEmployeeValues);
+      console.log(selectedEmployeesId);
+
+      selectedEmployeesId.forEach(async (selectedEmployeeId) => {
+        console.log(selectedEmployeeId);
+        await pool.query(
+          errandEmployeeInsertQuery,
+          [errandId, selectedEmployeeId, ''],
+        );
+      })
     }
 
     // Отправка успешного ответа
