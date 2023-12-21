@@ -49,6 +49,7 @@ router.get('/:id', async (req, res, next) => {
       INNER JOIN public."Errand" AS errand ON ee.id_errand = errand.id
       WHERE errand.id = $1;    
     `;
+
     const { rows } = await pool.query(query, [id]);
     
     if (rows.length === 0) {
@@ -64,9 +65,9 @@ router.get('/:id', async (req, res, next) => {
       actual_date: formatDate(rows[0].actual_date),
       // Другие поля, которые нужно отформатировать
     };
-    console.log(formattedErrand);
+    console.log(rows);
     // Передайте данные о поручении и ответственном сотруднике на страницу OneErrand.pug
-    res.render('OneErrand', { title: 'Поручение', errand: formattedErrand });
+    res.render('OneErrand', { title: 'Поручение', errand: formattedErrand, emp: rows});
   } catch (error) {
     console.error('Ошибка при получении информации о поручении из базы данных:', error);
     next(error);

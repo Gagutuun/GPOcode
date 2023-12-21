@@ -1,5 +1,6 @@
 const express = require('express');
 const pool = require('../config/dbConfig');
+const protocol = require('../models/protocol');
 const router = express.Router();
 const { createTable } = require('../utils/savetopdf');
 
@@ -142,11 +143,16 @@ router.get('/:protocolNumber', async (req, res, next) => {
 });
 
 router.post('/:protocolNumber/generate-report', async (req, res) => {
-    const protocolNumber = req.params.protocolNumber
+    const protocolNumber = req.params.protocolNumber;
     const errands = await getErrandsFromDatabase(protocolNumber);
     await createTable(errands);
 });
 
+router.get('/:protocolNumber/download-report', async (req, res) => {
+    const { protocolNumber } = req.params.protocolNumber;
+    const { protocolDate } = req.params.date;
+    const path  = await protocol.getProtocolPathByID()
+});
 
 
 module.exports = router;

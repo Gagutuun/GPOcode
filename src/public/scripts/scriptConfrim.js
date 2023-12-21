@@ -42,6 +42,7 @@ function confirmData() {
     const parsedAsgnName = Array.from(assigneeElements).map(
       (assignee) => assignee.innerText
     );
+    const parsedAsgnNameStr = parsedAsgnName.join()
     const deadline = row.querySelector("#deadline").innerText;
 
     // Добавляем выбранный исполнитель (из выпадающего списка)

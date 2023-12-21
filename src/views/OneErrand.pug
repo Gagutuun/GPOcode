@@ -45,17 +45,11 @@ block content
           button.addPerformer( onclick='closeModal()' ) Отменить
   span.text-at-the-top-of-reports Отчёты подразделений
   .report-divisions
-    .short-report-item
-      span.divisions-name ООТиЗ
-      span Mr. Пушистые Штанишки
-      input.edit-button-errand(type="submit", value="Смотреть")
-      span.status-report-accepted Принято
-      //- Добавить в класс under-revision, если на доработке.
-      span.date-report 23.03.2023, 10:24
-    .short-report-item
-      span.divisions-name ОКиТО
-      span Васильев И. В.
-      input.edit-button-errand(type="submit", value="Смотреть")
-      span.status-report-accepted.under-revision На доработке
-      //- Добавить в класс under-revision, если на доработке.
-      span.date-report 23.03.2023, 10:24
+    each employee in emp
+      .short-report-item
+        span.divisions-name #{employee.subdivision_short_name}
+        span #{employee.surname} #{employee.name} #{employee.patronymic}
+        input.edit-button-errand(type="submit", value="Смотреть", onclick=`window.location.href='/errand/${errand.id}/edit'`)
+        span.status-report-accepted Принято
+        //- Добавить в класс under-revision, если на доработке.
+        span.date-report 23.03.2023, 10:24

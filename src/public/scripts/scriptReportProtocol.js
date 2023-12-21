@@ -227,14 +227,6 @@ document.querySelector('.edit-button-errand').addEventListener('click', async fu
       const blob = await response.blob();
 
       // Создайте ссылку для скачивания
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = `Отчет_по_протоколу_${protocolNumber}.pdf`;
-
-      // Добавьте ссылку в DOM и выполните скачивание
-      document.body.appendChild(link);
-      link.click();
-
       // Удалите ссылку из DOM
       document.body.removeChild(link);
     } else {
