@@ -179,6 +179,35 @@ class Protocol {
         })
     }
 
+    static getReportPathByProtocolID(protocolID) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeSelectQuery(
+                    this.tableName,
+                    {
+                        columnNames: [this.columnNames.general_report_file_doc],
+                        whereExpression: queryBuilder.makeSubexpression(
+                            queryBuilder.WHERE,
+                            queryBuilder.equals(this.columnNames.id)
+                        )
+                    }
+                ),
+                [protocolID],
+                (error, result) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    if (result.rowCount > 0) {
+                        resolve(result.rows[0].report_doc);
+                        return;
+                    }
+                    reject("Неизвестная ошибка!");
+                }
+            );
+        })
+    }
+
 }
 
 module.exports = Protocol;
