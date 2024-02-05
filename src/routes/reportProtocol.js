@@ -150,8 +150,10 @@ router.post('/:protocolNumber/generate-report', async (req, res) => {
 
 router.get('/:protocolNumber/download-report', async (req, res) => {
     const { protocolNumber } = req.params.protocolNumber;
-    const { protocolDate } = req.params.date;
-    const path  = await protocol.getProtocolPathByID()
+    const { protocolDate } = req.params.protocol_date;
+    const protocol_id  = await protocol.getProtocolID(protocolNumber, protocolDate);
+    const path = await protocol.getReportPathByProtocolID(protocol_id);
+    res.download(path);
 });
 
 

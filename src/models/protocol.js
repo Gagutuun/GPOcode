@@ -158,11 +158,11 @@ class Protocol {
                 queryBuilder.makeUpdateQuery(
                     this.tableName,
                     [this.columnNames.general_report_file_doc],
-                    queryBuilder.makeSubexpression(
-                        queryBuilder.WHERE,
-                        queryBuilder.equals(this.columnNames.id)
-                    )
-                ),
+                        queryBuilder.makeSubexpression(
+                            queryBuilder.WHERE,
+                            queryBuilder.equals(this.columnNames.id)
+                        )
+                    ),
                 [reportFilePath, id],
                 (err, result) => {
                     if (err) {
@@ -174,6 +174,40 @@ class Protocol {
             );
         });
     }
+
+    static getProtocolID(protocolNumber, protocolDate) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                queryBuilder.makeSelectQuery(
+                    this.tableName,
+                    {
+                        columnNames: [this.columnNames.id],
+                        whereExpression: queryBuilder.makeSubexpression(
+                            queryBuilder.WHERE,
+                            queryBuilder.makeLogicExpression(
+                                queryBuilder.AND,
+                                queryBuilder.equals(this.columnNames.protocol_number),
+                                queryBuilder.equals(this.columnNames.protocol_date)
+                            )
+                        )
+                    }
+                ),
+                [protocolNumber, protocolDate],
+                (error, result) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    if (result.rowCount > 0) {
+                        resolve(result.rows[0].id);
+                        return;
+                    }
+                    reject("Неизвестная ошибка!");
+                }
+            )
+        })
+    }
+
 }
 
 module.exports = Protocol;

@@ -350,3 +350,25 @@ button.close-modal {
     /* Обновленный стиль для центрирования изображения */
     object-fit: contain;
 }
+
+/* Общие стили кнопки */
+.delete-button-performers {
+    background-color: #ff0000; /* Цвет фона кнопки */
+    color: #ffffff; /* Цвет текста на кнопке */
+    border: none; /* Убрать границу кнопки */
+    padding: 10px 20px; /* Отступы внутри кнопки */
+    font-size: 16px; /* Размер шрифта */
+    cursor: pointer; /* Изменить вид курсора при наведении на кнопку */
+    border-radius: 8px;
+    margin-left: 10px;
+  }
+  
+  /* Стили кнопки при наведении на нее курсора */
+  .delete-button-performers:hover {
+    background-color: #cc0000; /* Изменить цвет фона кнопки при наведении */
+  }
+  
+  /* Стили кнопки при нажатии на нее */
+  .delete-button-performers:active {
+    background-color: #990000; /* Изменить цвет фона кнопки при нажатии */
+  }
