@@ -38,7 +38,7 @@ router.post('/confirm', async (req, res) => {
     const { errandArray } = req.body;
     // Здесь добавьте логику для вставки данных в таблицы Errand и ErrandEmployee
     for (const errandData of errandArray) {
-      const { errandText, parsedAsgnNameStr, deadline, selectedEmployeesId } = errandData;
+      const { errandText, parsedAsgnName, deadline, selectedEmployeesId } = errandData;
       const idProtocol = await ProtocolModel.getLastProtocolId();
       // Вставка данных в таблицу Errand
       let errandInsertQuery, errandValues;
@@ -49,14 +49,14 @@ router.post('/confirm', async (req, res) => {
           VALUES ($1, $2, $3, $4, $5)
           RETURNING id;`;
 
-        errandValues = [parsedAsgnNameStr, errandText, true, idProtocol, 'Активно'];
+        errandValues = [parsedAsgnName, errandText, true, idProtocol, 'Активно'];
       } else {
         errandInsertQuery = `
           INSERT INTO public."Errand" (perfomers_protocol, text_errand, scheduled_due_date, id_protocol, status)
           VALUES ($1, $2, $3, $4, $5)
           RETURNING id;`;
 
-        errandValues = [parsedAsgnNameStr, errandText, deadline, idProtocol, 'Активно'];
+        errandValues = [parsedAsgnName, errandText, deadline, idProtocol, 'Активно'];
       }
 
       const errandResult = await pool.query(errandInsertQuery, errandValues);

@@ -193,11 +193,11 @@ const createTable = async (errands) => {
     
     const subdivisionShortNames = errand.subdivision_short_name;
     const reports = errand.report;
-
+    
     const formattedSubdivisionReports = subdivisionShortNames.map((subdivisionShortName, index) => {
-      const report = reports[index] !== '' ? reports[index] : "На момент формирования документа отчет не предоставлен";
-      return `${subdivisionShortName}: ${report}`;
+      return `${subdivisionShortName}: ${reports[index]}`;
     });
+    
     const formattedSubdivisionReportsString = formattedSubdivisionReports.join('\n\n');
 
     row2.push(briefReport);

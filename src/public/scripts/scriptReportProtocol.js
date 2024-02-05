@@ -170,7 +170,7 @@ document.querySelector('.formProtocol').addEventListener('click', async function
 
   // Set the request header to indicate the content type
   xhr.setRequestHeader('Content-Type', 'application/json');
-  window.location.href = "/reportProtocol";
+
   // Define the callback functions for success and error
   xhr.onload = function () {
     if (xhr.status >= 200 && xhr.status < 300) {
@@ -212,62 +212,28 @@ document.querySelector('.formProtocol').addEventListener('click', async function
 // OneReportProtocol.js
 
 document.querySelector('.edit-button-errand').addEventListener('click', async function () {
-  // Extracting protocolNumber and protocolDate from the current context
-  const protocolDateElement = document.querySelector('.date-protocol'); //
-
-  const protocolNumber = window.location.pathname.match(/\d+/)[0]; // Предполагаем, что номер протокола находится в текстовом содержимом элемента
-  const protocolDate = protocolDateElement.textContent; // Предполагаем, что дата протокола находится в текстовом содержимом элемента
+  const protocolNumber = window.location.pathname.match(/\d+/)[0];
+  const downloadUrl = `/download-report/${protocolNumber}`;
 
   try {
-    // Assuming you have a route for downloading the report
-    const downloadUrl = `/${protocolNumber}/download-report?date=${protocolDate}`;
+    const response = await fetch(downloadUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-    // Open a new window or tab with the download route
-    window.open(downloadUrl, '_blank');
-  } catch (error) {
-    console.error('Error during download:', error);
-  }
-});
-
-// Получаем элемент кнопки с классом "edit-button-errand"
-const downloadButton = document.querySelector('.edit-button-errand');
-
-// Добавляем обработчик события "click" на кнопку
-downloadButton.addEventListener('click', async () => {
-  const protocolDateElement = document.querySelector('.date-protocol'); //
-  try {
-    // Получаем значение протокольного номера и даты из нужного места на странице
-    const protocolNumber = window.location.pathname.match(/\d+/)[0]; // Замените '123' на реальное значение
-    const protocolDate = protocolDateElement.textContent; // Замените '2022-01-01' на реальную дату
-
-    // Формируем URL для вызова роута
-    const url = `/${protocolNumber}/download-report`; // Замените '/path/to/route' на реальный путь к роуту на сервере
-
-    // Отправляем GET-запрос на сервер
-    const response = await fetch(url);
-
-    // Проверяем статус ответа
     if (response.ok) {
-      // Получаем данные о скачиваемом файле
-      const contentDisposition = response.headers.get('content-disposition');
-      const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-      const filename = filenameMatch ? filenameMatch[1] : 'file'; // Замените 'file' на реальное имя файла по умолчанию
-
-      // Создаем временную ссылку для скачивания файла
       const blob = await response.blob();
-      const tempLink = document.createElement('a');
-      tempLink.href = URL.createObjectURL(blob);
-      tempLink.setAttribute('download', filename);
 
-      // Добавляем временную ссылку на страницу и эмулируем клик на нее
-      document.body.appendChild(tempLink);
-      tempLink.click();
-      document.body.removeChild(tempLink);
+      // Создайте ссылку для скачивания
+      // Удалите ссылку из DOM
+      document.body.removeChild(link);
     } else {
-      console.error('Ошибка скачивания файла:', response.status);
+      console.error('Failed to download report:', response.statusText);
     }
   } catch (error) {
-    console.error('Ошибка при выполнении запроса:', error);
+    console.error('Error during fetch:', error);
   }
 });
 
