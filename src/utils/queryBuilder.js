@@ -1,16 +1,25 @@
 // Все функции этого модуля Возвращают строковый sql запрос
 class QueryBuilder {
-    constructor(rawQuery) {
+    constructor(rawQuery, values) {
         this.stringQuery = rawQuery;
         this._dbPool = require('../config/dbConfig');
+        this.values = values;
     }
 
     static select(columns, table) {
-        return new QueryBuilder(`SELECT ${(columns == undefined || columns == null || columns.length > 0) ? columns : '*'} FROM ${table}`);
+        return new QueryBuilder(
+            `SELECT ${
+                (columns.length > 0)
+                    ? columns
+                    : '*'} FROM ${table}`,
+            []);
     }
 
-    static selectDistinct(columns, table) {
-        return new QueryBuilder(`SELECT DISTINCT ${columns.length > 0 ? columns : '*'} FROM ${table}`);
+    static insert(table, columns, values) {
+        return new QueryBuilder(
+            `INSERT INTO ${table} (${columns.join(", ")}) VALUES (${
+                Array.from({length: values.length}, (_, i) => `$${i + 1}`).join(", ")
+            })`, values);
     }
 
     where(condition) {
@@ -23,16 +32,25 @@ class QueryBuilder {
         return this;
     }
 
+    /**
+     * 
+     * @param {*} condition 
+     * @returns 
+     */
     orderBy(condition) {
         this.stringQuery += ` ORDER BY ${condition}`;
         return this;
     }
 
+    /**
+     * Выполняет построенный SQL запрос
+     * @returns Промис на выполнение запроса
+     */
     exec() {
         return new Promise((resolve, reject) => {
             this._dbPool.query(
                 this.stringQuery,
-                [],
+                this.values,
                 (err, result) => {
                 if (err) {
                     reject(err);
@@ -49,21 +67,3 @@ class QueryBuilder {
 
 }
 module.exports = QueryBuilder;
-
-const protocolModel = require('../models/protocol');
-
-QueryBuilder.select(
-    protocolModel.columnNames.id,
-    protocolModel.tableName)
-    // .orderBy(protocolModel.columnNames.id)
-    .exec()
-    .then(res => {
-        console.log(res);
-        return;
-    })
-    .catch(err => {
-        console.error(err);
-        return;
-    });
-
-return;
