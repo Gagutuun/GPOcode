@@ -38,7 +38,7 @@ router.post('/confirm', async (req, res) => {
     // Здесь добавьте логику для вставки данных в таблицы Errand и ErrandEmployee
     for (const errandData of errandArray) {
       const { errandText, parsedAsgnName, deadline, selectedEmployeesId } = errandData;
-      const idProtocol = await ProtocolModel.getLastProtocolId();
+      const idProtocol = (await ProtocolModel.getLastProtocolId()).rows[0].id;
       // Вставка данных в таблицу Errand
       let errandInsertQuery, errandValues;
 
