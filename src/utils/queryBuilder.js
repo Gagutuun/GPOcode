@@ -1,11 +1,17 @@
 // Все функции этого модуля Возвращают строковый sql запрос
 class QueryBuilder {
     constructor(rawQuery, values) {
-        this.stringQuery = rawQuery;
+        this._stringQuery = rawQuery;
         this._dbPool = require('../config/dbConfig');
-        this.values = values;
+        this._values = values;
     }
 
+    /**
+     * Создает SELECT запрос
+     * @param {string[]} columns - массив названий столбцов
+     * @param {string} table - имя таблицы
+     * @returns Подготовленный SQL запрос
+     */
     static select(columns, table) {
         return new QueryBuilder(
             `SELECT ${
@@ -15,6 +21,13 @@ class QueryBuilder {
             []);
     }
 
+    /**
+     * Создает INSERT запрос
+     * @param {string} table - имя таблицы
+     * @param {string[]} columns - массив названий столбцов
+     * @param {*[]} values - массив значений
+     * @returns Подготовленный SQL запрос
+     */
     static insert(table, columns, values) {
         return new QueryBuilder(
             `INSERT INTO ${table} (${columns.join(", ")}) VALUES (${
@@ -22,23 +35,110 @@ class QueryBuilder {
             })`, values);
     }
 
-    where(condition) {
-        this.stringQuery += ` WHERE ${condition}`;
-        return this;
+    /**
+     * Создает UPDATE запрос
+     * @param {string} table - имя таблицы
+     * @param {string[]} columns - массив названий столбцов
+     * @param {*[]} values - массив значений
+     * @returns Подготовленный SQL запрос
+     */
+    static update(table, columns, values) {
+        return new QueryBuilder(
+            `UPDATE ${table} SET ${
+                columns
+                    .map((column, i) => `${column} = $${i + 1}`)
+                    .join(", ")
+            }`, values
+        )
     }
 
-    groupBy(condition) {
-        this.stringQuery += ` GROUP BY ${condition}`;
+    /**
+     * Добавляет условие WHERE
+     * @param {string} condition - условие 
+     * @param {*[]} values - массив значений, которые должны быть вставлены вместо '?'
+     * @returns SQL запрос с условием WHERE
+     */
+    where(condition, values) {
+        if (values !== undefined) {
+            this._addValues(values);
+            condition = this._replaceToApiStrings(condition);
+        }
+        this._stringQuery += ` WHERE ${condition}`;
+        return this
+    }
+
+    /**
+     * Добавляет значения в общий массив
+     * @param {*[]} values - значения для добавления
+     */
+    _addValues(values) {
+        values.forEach(element => this._values.push(element));
+    }
+
+    /**
+     * Заменяет ? на $n
+     * @param {string} condition - условие
+     * @returns Строку с замененными значениями
+     */
+    _replaceToApiStrings(condition) {
+        let count = this._getLastCount();
+        let index;
+        while ((index = condition.indexOf('?')) !== -1) {
+            condition = condition.replace('?', `$${++count}`);
+        }
+        return condition;
+    }
+
+    /**
+     * Находит последний вставленный $
+     * @returns число после последнего $
+     */
+    _getLastCount() {
+        const lastInsertSubstring = this._lastInsertSubstring();
+        return lastInsertSubstring !== null
+            ? parseInt(lastInsertSubstring.substring(1))
+            : 0;
+    }
+
+    /**
+     * Находит последнее вхождение строки вида /\$\d+/
+     * @returns Найденную подстроку или null
+     */
+    _lastInsertSubstring() {
+        let matches = this._stringQuery.match(/\$\d+/gm);
+        if (matches) {
+            return matches[0];
+        }
+        return null;
+    }
+
+    /**
+     * Добавляет GROUP BY в запрос
+     * @param {string} condition - условие
+     * @param {*[]} values - массив значений, которые должны быть вставлены вместо '?'
+     * @returns SQL запрос с условием GROUP BY
+     */
+    groupBy(condition, values) {
+        if (values !== undefined) {
+            this._addValues(values);
+            condition = this._replaceToApiStrings(condition);
+        }
+        this._stringQuery += ` GROUP BY ${condition}`;
         return this;
     }
 
     /**
-     * 
-     * @param {*} condition 
-     * @returns 
+     * Добавляет ORDER BY в запрос
+     * @param {string} condition - условие
+     * @param {*[]} values - массив значений, которые должны быть вставлены вместо '?'
+     * @returns SQL запрос с условием ORDER BY
      */
-    orderBy(condition) {
-        this.stringQuery += ` ORDER BY ${condition}`;
+    orderBy(condition, values) {
+        if (values !== undefined) {
+            this._addValues(values);
+            condition = this._replaceToApiStrings(condition);
+        }
+        this._stringQuery += ` ORDER BY ${condition}`;
         return this;
     }
 
@@ -49,8 +149,8 @@ class QueryBuilder {
     exec() {
         return new Promise((resolve, reject) => {
             this._dbPool.query(
-                this.stringQuery,
-                this.values,
+                this._stringQuery,
+                this._values,
                 (err, result) => {
                 if (err) {
                     reject(err);
