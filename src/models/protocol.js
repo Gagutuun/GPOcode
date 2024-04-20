@@ -1,6 +1,8 @@
-const db = require('../config/dbConfig');
 const queryBuilder = require('../utils/queryBuilder');
 
+/**
+ * Модель протокола
+ */
 class Protocol {
     /**
      * Имя таблицы в базе данных
@@ -16,103 +18,55 @@ class Protocol {
         protocol_number: "protocol_number",
         general_report_file_doc: "general_report_file_doc"
     };
-
     /**
      * Добавляет новый протокол в бд
-     * @param {string} protocolPath - Путь до протокола 
+     * @param {string} protocolPath - Путь до протокола
+     * @param {Date} protocolDate - Дата протокола
+     * @param {number} protocolNumber - Номер протокола
+     * @returns Промис выполнения запроса
      */
     static addNewProtocol(protocolPath, protocolDate, protocolNumber) {
-        return new Promise((resolve, reject) => {
-            db.query(
-                queryBuilder.makeInsertQuery(
-                    this.tableName,
-                    [
-                        this.columnNames.file_protocol_doc,
-                        this.columnNames.protocol_date,
-                        this.columnNames.protocol_number
-                    ]
-                ),
-                [protocolPath, protocolDate, protocolNumber],
-                (err, res) => {
-                    if (err)
-                        reject(err);
-                    else if (res.rowCount > 0)
-                        resolve();
-                    else
-                        reject();
-                }
-            )
-        })
+        return queryBuilder.insert(
+            this.tableName,
+            [
+                this.columnNames.file_protocol_doc,
+                this.columnNames.protocol_date,
+                this.columnNames.protocol_number
+            ],
+            [
+                protocolPath,
+                protocolDate,
+                protocolNumber
+            ]
+        ).exec();
     }
-
     /**
      * Возвращает ID последнего добавленного протокола
      * @returns ID протокола
      */
     static getLastProtocolId() {
-        return new Promise((resolve, reject) => {
-            db.query(
-                queryBuilder.makeSelectQuery(
-                    this.tableName,
-                    {
-                        columnNames: new Array(this.columnNames.id),
-                        orderByExpression: queryBuilder.makeSubexpression(
-                            queryBuilder.ORDER_BY,
-                            queryBuilder.makeLogicExpression(
-                                queryBuilder.DESC,
-                                this.columnNames.id
-                            )
-                        ),
-                        limit: queryBuilder.makeSubexpression(
-                            queryBuilder.LIMIT,
-                            "1"
-                        )
-                    }
-                ),
-                [],
-                (error, result) => {
-                    if (error) {
-                        console.error(`[ERROR] ${error}`)
-                        reject(error);
-                    }
-                    else if (result.rowCount > 0)
-                        resolve(result.rows[0].id);
-                    else
-                        resolve(null);
-                }
-            )
-        })
+        return queryBuilder.select(
+                [
+                    this.columnNames.id
+                ],
+                this.tableName
+            ).orderBy(`${this.columnNames.id} DESC`)
+            .limit(1)
+            .exec();
     }
-
     /**
      * Возвращает путь до протокла по его ID
      * @param {int} id - ID искомого протокола 
      * @returns Путь до протокола
      */
     static getProtocolPathByID(id) {
-        return new Promise((resolve, reject) => {
-            db.query(
-                queryBuilder.makeSelectQuery(
-                    this.tableName,
-                    {
-                        columnNames: new Array(this.columnNames.file_protocol_doc),
-                        whereExpression: queryBuilder.makeSubexpression(
-                            queryBuilder.WHERE,
-                            queryBuilder.equals(this.columnNames.id)
-                        )
-                    }
-                ),
-                [id],
-                (error, result) => {
-                    if (error)
-                        reject(error);
-                    else if (result.rowCount > 0)
-                        resolve(result.rows[0].file_protocol_doc);
-                    else
-                        resolve(null);
-                }
-            )
-        })
+        return queryBuilder.select(
+                [
+                    this.columnNames.file_protocol_doc
+                ],
+                this.tableName
+            ).where(`${this.columnNames.id} = ${id}`)
+            .exec();
     }
     /**
      * Удаляет запись о протоколе из таблицы по его id
@@ -120,92 +74,38 @@ class Protocol {
      * @returns Promise на удаление записи из таблицы
      */
     static deleteProtocolByID(protocolID) {
-        return new Promise((resolve, reject) => {
-            db.query(
-                queryBuilder.makeDeleteQuery(
-                    this.tableName,
-                    queryBuilder.makeSubexpression(
-                        queryBuilder.WHERE,
-                        queryBuilder.equals(this.columnNames.id)
-                    )
-                ),
-                [protocolID],
-                (err, result) => {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    if (result.rowCount > 0) {
-                        resolve("Запрос успешно выполнен!");
-                        return;
-                    }
-                    reject("Не известная ошибка!");
-                    return;
-                }
-            )
-        })
+        return queryBuilder.delete(this.tableName)
+                            .where(`${this.columnNames.id} = ${protocolID}`)
+                            .exec();
     }
-
+    /**
+     * Возвращает ID протокола по его номеру и дате
+     * @param {number} protocolNumber - Номер протокола
+     * @param {Date} protocolDate - Дата протокола
+     * @returns Промис на выполнение запроса
+     */
     static getProtocolID(protocolNumber, protocolDate) {
-        return new Promise((resolve, reject) => {
-            db.query(
-                queryBuilder.makeSelectQuery(
-                    this.tableName,
-                    {
-                        columnNames: [this.columnNames.id],
-                        whereExpression: queryBuilder.makeSubexpression(
-                            queryBuilder.WHERE,
-                            queryBuilder.makeLogicExpression(
-                                queryBuilder.AND,
-                                queryBuilder.equals(this.columnNames.protocol_number),
-                                queryBuilder.equals(this.columnNames.protocol_date)
-                            )
-                        )
-                    }
-                ),
-                [protocolNumber, protocolDate],
-                (error, result) => {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
-                    if (result.rowCount > 0) {
-                        resolve(result.rows[0].id);
-                        return;
-                    }
-                    reject("Неизвестная ошибка!");
-                }
-            )
-        })
+        return queryBuilder.select(
+                [
+                    this.columnNames.id
+                ],
+                this.tableName
+            ).where(`${this.columnNames.protocol_number} = '${protocolNumber}' AND ${this.columnNames.protocol_date} = '${protocolDate}'`)
+            .exec();
     }
-
+    /**
+     * Возвращает путь до генерального отчёта по ID протокола, с которым он связан 
+     * @param {number} protocolID - ID протокола
+     * @returns Промис на выполнение запроса
+     */
     static getReportPathByProtocolID(protocolID) {
-        return new Promise((resolve, reject) => {
-            db.query(
-                queryBuilder.makeSelectQuery(
-                    this.tableName,
-                    {
-                        columnNames: [this.columnNames.general_report_file_doc],
-                        whereExpression: queryBuilder.makeSubexpression(
-                            queryBuilder.WHERE,
-                            queryBuilder.equals(this.columnNames.id)
-                        )
-                    }
-                ),
-                [protocolID],
-                (error, result) => {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
-                    if (result.rowCount > 0) {
-                        resolve(result.rows[0].report_doc);
-                        return;
-                    }
-                    reject("Неизвестная ошибка!");
-                }
-            );
-        })
+        return queryBuilder.select(
+                [
+                    this.columnNames.general_report_file_doc
+                ],
+                this.tableName
+            ).where(`${this.columnNames.id} = ${protocolID}`)
+            .exec();
     }
 
 }

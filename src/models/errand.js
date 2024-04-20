@@ -1,7 +1,8 @@
-// Модель поручения
-const db = require('../config/dbConfig');
 const queryBuilder = require('../utils/queryBuilder');
 
+/**
+ * Модель поручения
+ */
 class Errand {
     static tableName = 'public."Errand"';
     static columnNames = {
@@ -21,213 +22,101 @@ class Errand {
 
     /**
      * Добавляет новое поручение в базу данных
-     * @param {string} errandText 
-     * @param {string} deadline 
-     * @param {int} idProtocol 
+     * @param {string} errandText - Текст поручения
+     * @param {string} deadline - Дата или "постоянно"
+     * @param {int} idProtocol - ID протокола
+     * @returns Промис выполнения запроса
      */
     static addNewErrand(errandText, deadline, idProtocol) {
-        return new Promise(async (resolve, reject) => {
-            db.query(
-                queryBuilder.makeInsertQuery(
-                    this.tableName,
-                    new Array(
-                        this.columnNames.constantly,
-                        this.columnNames.id_protocol,
-                        this.columnNames.scheduled_due_date,
-                        this.columnNames.text_errand,
-                        this.columnNames.status
-                    )
-                ),
+        return queryBuilder.insert(
+                this.tableName,
+                [
+                    this.columnNames.constantly,
+                    this.columnNames.id_protocol,
+                    this.columnNames.scheduled_due_date,
+                    this.columnNames.text_errand,
+                    this.columnNames.status
+                ],
                 deadline === "постоянно"
                     ? [true, idProtocol, null, errandText, this.activeStatus]
-                    : [false, idProtocol, deadline, errandText, this.activeStatus],
-                async (error) => {
-                    if (error) {
-                            reject(error);
-                            return;
-                    }
-                }
-            )
-        })
+                    : [false, idProtocol, deadline, errandText, this.activeStatus]
+            ).exec();
     }
-
+    /**
+     * Возвращает ID последнего добавленного поручения
+     * @returns Промис выполнения запроса
+     */
     static getLastAddedErrandId() {
-        return new Promise((resolve, reject) => {
-            db.query(
-                queryBuilder.makeSelectQuery(
-                    this.tableName,
-                    {
-                        columnNames: [this.columnNames.id],
-                        orderByExpression: queryBuilder.makeSubexpression(
-                            queryBuilder.ORDER_BY,
-                            queryBuilder.makeLogicExpression(
-                                queryBuilder.DESC,
-                                this.columnNames.id
-                            )
-                        ),
-                        limit: queryBuilder.makeSubexpression(
-                            queryBuilder.LIMIT,
-                            "1"
-                        )
-                    }
-                ),
-                [],
-                (error, result) => {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
-                    if (result.rowCount > 0) {
-                        resolve(result.rows[0].id);
-                        return;
-                    }
-                    reject("Unknown error");
-                }
-            );
-        })
+        return queryBuilder.select(
+                [this.columnNames.id],
+                this.tableName
+            ).orderBy(`${this.columnNames.id} DESC`)
+            .limit(1)
+            .exec();
     }
-
     /**
      * Возвращает полную информацию о поручении по его id
      * @param {int} idErrand - ID поручения
-     * @returns 
+     * @returns Промис выполнения запроса
      */
     static getErrandByID(idErrand) {
-        return new Promise((resolve, reject) => {
-            db.query(
-                queryBuilder.makeSelectQuery(
-                    this.tableName,
-                    {
-                        whereExpression: queryBuilder.makeSubexpression(
-                            queryBuilder.WHERE,
-                            queryBuilder.equals(this.columnNames.id)
-                        )
-                    }
-                ),
-                [idErrand],
-                (err, res) => {
-                    if (err) {
-                        reject(err);
-                    } else if (res.rowCount > 0) {
-                        resolve(res.rows[0]);
-                    } else {
-                        resolve(null);
-                    }
-                }
-            )
-        })
+        return queryBuilder.select(
+                [],
+                this.tableName
+            ).where(`${this.columnNames.id} = ${idErrand}`)
+            .exec();
     }
-
     /**
      * Возвращает массив поручений с информацией: id, text_errand - по id протокола
      * @param {int} idProtocol - ID протокола
      * @returns Массив ID и текстов поручений
      */
     static getAllErrandsOfProtocol(idProtocol) {
-        return new Promise((resolve, reject) => {
-            db.query(
-                queryBuilder.makeSelectQuery(
-                    this.tableName,
-                    {
-                        columnNames: new Array(
-                            this.columnNames.id,
-                            this.columnNames.text_errand
-                        ),
-                        whereExpression: queryBuilder.makeSubexpression(
-                            queryBuilder.WHERE,
-                            queryBuilder.equals(this.columnNames.id_protocol)
-                        )
-                    }
-                ),
-                [idProtocol],
-                (err, res) => {
-                    if (err) {
-                        reject(err);
-                    } else if (res.rowCount > 0) {
-                        resolve(res.rows);
-                    } else {
-                        resolve(null);
-                    }
-                }
-            )
-        })
+        return queryBuilder.select(
+                [this.columnNames.id, this.columnNames.text_errand],
+                this.tableName
+            ).where(`${this.columnNames.id_protocol} = ${idProtocol}`)
+            .exec();
     }
-
-    // Возвращает массив поручение, к которым приложили отчет
-    // P.S. Как оказалось, поле status это string, а не boolean 😥
+    /**
+     * Возвращает все завершенные поручения
+     * @returns Промис выполнения запроса
+     */
     static getFinishedErrands() {
-        return new Promise((resolve, reject) => {
-            db.query(
-                queryBuilder.makeSelectQuery(
-                    this.tableName,
-                    {
-                        whereExpression: queryBuilder.makeSubexpression(
-                            queryBuilder.WHERE,
-                            queryBuilder.equals(this.columnNames.status)
-                        )
-                    }
-                ),
-                ['done'],
-                (err, res) => {
-                    if (err)
-                        reject(err);
-                    else if (res.rowCount > 0) {
-                        resolve(res.rows);
-                    }
-                    else
-                        resolve(null);
-                }
-            );
-        });
-    }
-
-    // Возвращает все поручения
-    static getAllErrands() {
-        return new Promise((resolve, reject) => {
-            db.query(
-                queryBuilder.makeSelectQuery(
+        return queryBuilder.select(
+                    [],
                     this.tableName
-                ),
+            ).where(`${this.columnNames.status} = '${this.complitedStatus}'`)
+            .exec();
+    }
+    /**
+     * Возвращает все поручения
+     * @returns Промис выполнения запроса
+     */
+    static getAllErrands() {
+        return queryBuilder.select(
                 [],
-                (err, res) => {
-                    if (err)
-                        reject(err);
-                    else if (res.rowCount > 0)
-                        resolve(res.rows);
-                    else
-                        resolve(null);
-                }
-            );
-        });
+                this.tableName
+            ).exec();
     }
-
+    /**
+     * Меняет статус поручения
+     * @param {number} idErrand - ID поручения
+     * @param {string} status - Статус
+     * @returns Промис выполнения запроса
+     */
     static changeStatus(idErrand, status) {
-        return new Promise((resolve, reject) => {
-            db.query(
-                queryBuilder.makeUpdateQuery(
-                    this.tableName,
-                    [this.columnNames.status],
-                    queryBuilder.makeSubexpression(
-                        queryBuilder.WHERE,
-                        queryBuilder.equals(this.columnNames.id)
-                    )
-                ),
-                [status, idErrand],
-                (err, result) => {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    if (result.rowCount > 0) {
-                        resolve();
-                        return;
-                    }
-                    reject("Не правильно стоставленный SQL запрос");
-                }
-            )
-        });
+        return queryBuilder.update(
+                this.tableName,
+                [
+                    this.columnNames.status
+                ],
+                [
+                    status
+                ]
+            ).where(`${this.columnNames.id} = ${idErrand}`)
+            .exec();
     }
-
 }
 
 module.exports = Errand;
