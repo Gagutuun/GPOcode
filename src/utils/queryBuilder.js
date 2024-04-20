@@ -53,6 +53,15 @@ class QueryBuilder {
     }
 
     /**
+     * Создает DELETE запрос
+     * @param {string} table - имя таблицы
+     * @returns Подготовленный SQL запрос
+     */
+    static delete(table) {
+        return new QueryBuilder(`DELETE FROM ${table}`, []);
+    }
+
+    /**
      * Добавляет условие WHERE
      * @param {string} condition - условие 
      * @param {*[]} values - массив значений, которые должны быть вставлены вместо '?'
@@ -142,11 +151,17 @@ class QueryBuilder {
         return this;
     }
 
+    limit(limitValue) {
+        this._stringQuery += ` LIMIT ${limitValue}`;
+        return this;
+    }
+
     /**
      * Выполняет построенный SQL запрос
      * @returns Промис на выполнение запроса
      */
     exec() {
+        console.log(`[DEBUG] sqlQuery = ${this._stringQuery}`);
         return new Promise((resolve, reject) => {
             this._dbPool.query(
                 this._stringQuery,
@@ -156,11 +171,7 @@ class QueryBuilder {
                     reject(err);
                     return;
                 }
-                if (result.rowCount > 0) {
-                    resolve(result.rows);
-                    return;
-                }
-                resolve(null);
+                resolve(result);
             })
         })
     }
